@@ -3,7 +3,7 @@
     {
       "name": "Linux",
       "includePath": ["${workspaceFolder}/**"],
-      "defines": ["NTT_DEBUG", "NTT_PLATFORM_LINUX"],
+      "defines": ["NTT_DEBUG", "NTT_PLATFORM_UNIX"],
       "compilerPath": "/usr/bin/clang",
       "cStandard": "c17",
       "cppStandard": "c++17",

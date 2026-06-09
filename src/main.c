@@ -8,5 +8,10 @@ int main(void)
 	ntt_Deallocate(allocator, ptr, 128);
 	ntt_DestroyAllocator(allocator);
 
+	ntt_ConsoleSetColor(NTT_COLOR_GREEN);
+	ntt_ConsolePrint("Hello, World!\n");
+	ntt_ConsoleResetColor();
+	ntt_ConsolePrint("This is a graphics engine.\n");
+
 	return 0;
 }

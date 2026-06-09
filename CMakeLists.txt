@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 4.0)
 
 project(NTTGraphicsEngine LANGUAGES C)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmakes")
+include(ntt-configure)
+ntt_setup()
+
 file(
     GLOB_RECURSE 
     NTT_GRAPHICS_ENGINE_SOURCES
@@ -25,3 +29,7 @@ target_include_directories(
     PRIVATE
     "inc"
 )
+
+attach_options(${PROJECT_NAME})
+
+ntt_log_options()

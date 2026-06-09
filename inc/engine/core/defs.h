@@ -2,7 +2,7 @@
 #define _DEFS_H_
 
 #if NTT_DEBUG
-#if NTT_PLATFORM_LINUX
+#if NTT_PLATFORM_UNIX
 #include <builtins.h>
 
 #define NTT_ASSERT(cond)                                                                                               \
