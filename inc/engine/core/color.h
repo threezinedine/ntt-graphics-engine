@@ -19,4 +19,6 @@ enum ntt_Color
 #undef ENUM_OPTION_END
 };
 
+const char* ntt_ColorToString(enum ntt_Color color);
+
 #endif /* _COLOR_H_ */

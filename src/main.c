@@ -13,7 +13,7 @@ int main(void)
 	ntt_ConsoleResetColor();
 	ntt_ConsolePrint("This is a graphics engine.\n");
 
-	NTT_ASSERT(3 == 4);
+	ntt_ConsolePrint("%s\n", ntt_ColorToString(NTT_COLOR_RED));
 
 	return 0;
 }
