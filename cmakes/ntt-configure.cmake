@@ -1,6 +1,24 @@
 macro(ntt_setup)
     set(NTT_OPTIONS)
     ntt_platform_detect()
+
+    # build profile options
+    option(CMAKE_BUILD_TYPE "Choose the type of build." "Debug")
+
+    if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "")
+        set(NTT_DEBUG ON)
+        list(APPEND NTT_OPTIONS "NTT_DEBUG")
+    elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(NTT_RELEASE ON)
+        list(APPEND NTT_OPTIONS "NTT_RELEASE")
+    elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+        set(NTT_RELWITHDEBINFO ON)
+        list(APPEND NTT_OPTIONS "NTT_RELWITHDEBINFO")
+    else()
+        message(WARNING "Unknown build type: ${CMAKE_BUILD_TYPE}, defaulting to Debug")
+        set(NTT_DEBUG ON)
+        list(APPEND NTT_OPTIONS "NTT_DEBUG")
+    endif()
 endmacro()
 
 macro(ntt_platform_detect)

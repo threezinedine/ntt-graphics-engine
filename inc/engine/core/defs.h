@@ -3,14 +3,20 @@
 
 #if NTT_DEBUG
 #if NTT_PLATFORM_UNIX
-#include <builtins.h>
+#include <stdlib.h>
+
+#if defined(__clang__) || defined(__GNUC__)
+#define NTT_DEBUG_BREAK() __builtin_trap()
+#else
+#define NTT_DEBUG_BREAK() abort()
+#endif
 
 #define NTT_ASSERT(cond)                                                                                               \
 	do                                                                                                                 \
 	{                                                                                                                  \
 		if (!(cond))                                                                                                   \
 		{                                                                                                              \
-			__builtin_trap();                                                                                          \
+			NTT_DEBUG_BREAK();                                                                                         \
 		}                                                                                                              \
 	} while (0)
 
