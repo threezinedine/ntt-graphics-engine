@@ -19,3 +19,9 @@ add_executable(
     ${NTT_GRAPHICS_ENGINE_SOURCES}
     ${NTT_GRAPHICS_ENGINE_HEADERS}
 )
+
+target_include_directories(
+    ${PROJECT_NAME}
+    PRIVATE
+    "inc"
+)
