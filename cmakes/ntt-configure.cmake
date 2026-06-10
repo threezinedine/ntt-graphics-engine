@@ -33,6 +33,11 @@ macro(ntt_platform_detect)
     elseif (UNIX)
         set(NTT_PLATFORM_UNIX ON)
         list(APPEND NTT_OPTIONS "NTT_PLATFORM_UNIX")
+        list(APPEND NTT_COMPILE_FLAGS 
+                "-Wall" 
+                "-Wextra" 
+                "-Wpedantic" 
+                "-Werror")
     else()
         message(FATAL_ERROR "Unsupported platform")
     endif()

@@ -21,7 +21,6 @@ void ntt_PrintCallStack()
 
 	void* callstack[128];
 	int	  frames = backtrace(callstack, 128);
-	void* offsets[128];
 
 #if 1
 	char** strs = backtrace_symbols(callstack, frames);

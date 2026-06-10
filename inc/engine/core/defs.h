@@ -1,6 +1,20 @@
 #ifndef _DEFS_H_
 #define _DEFS_H_
 
+/**
+ * Used for bypassing unused variable warnings
+ *
+ * @example
+ * ```c
+ * void myFunction(int unusedParam)
+ * {
+ * 		NTT_UNUSED(unusedParam);
+ * 		// Function implementation...
+ * }
+ * ```
+ */
+#define NTT_UNUSED(x) (void)(x)
+
 #if NTT_DEBUG
 #if NTT_PLATFORM_UNIX
 #include "engine/core/utils/utils.h"
@@ -12,6 +26,11 @@
 #define NTT_DEBUG_BREAK() abort()
 #endif
 
+/**
+ * **Runtime** checking for a certain condition.
+ * If the condition is false, it prints an error message with the condition, file name, and line number, then prints the
+ * 		call stack and breaks into the debugger.
+ */
 #define NTT_ASSERT(cond)                                                                                               \
 	do                                                                                                                 \
 	{                                                                                                                  \

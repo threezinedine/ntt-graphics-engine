@@ -4,6 +4,7 @@
 
 struct ntt_MallocAllocator
 {
+	void* dummy; // Placeholder for potential future state
 };
 
 static void* allocate(struct ntt_Allocator* allocator, usize size);
@@ -38,6 +39,7 @@ static void deallocate(struct ntt_Allocator* allocator, void* ptr, usize size)
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->internalState != NULL);
 	NTT_ASSERT(ptr != NULL);
+	NTT_UNUSED(size); // Size is not needed for deallocation in this allocator
 
 	free(ptr);
 }

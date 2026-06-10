@@ -1,15 +1,16 @@
 #include "engine/engine.h"
 #include <stdio.h>
 
-void test()
+void test(int a)
 {
+	NTT_UNUSED(a);
 	NTT_ASSERT(1 == 2);
 }
 
 int	   g_argc;
 char** g_argv;
 
-int main(u32 argc, char** argv)
+int main(i32 argc, char** argv)
 {
 	g_argc = argc;
 	g_argv = argv;
@@ -26,7 +27,7 @@ int main(u32 argc, char** argv)
 	ntt_ConsoleResetColor();
 	ntt_ConsolePrint("This is a graphics engine.\n");
 
-	test();
+	test(0);
 	ntt_ConsolePrint("%s\n", ntt_ColorToString(NTT_COLOR_RED));
 
 	return 0;
