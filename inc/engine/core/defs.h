@@ -38,7 +38,7 @@
 		{                                                                                                              \
 			ntt_ConsoleSetColor(NTT_COLOR_RED);                                                                        \
 			ntt_ConsolePrint("Assertion failed: %s, file: %s, line: %d\n", #cond, __FILE__, __LINE__);                 \
-			ntt_PrintCallStack();                                                                                      \
+			ntt_PrintCallStack(NULL);                                                                                  \
 			ntt_ConsoleResetColor();                                                                                   \
 			NTT_DEBUG_BREAK();                                                                                         \
 		}                                                                                                              \

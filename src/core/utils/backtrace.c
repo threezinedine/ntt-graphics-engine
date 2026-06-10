@@ -15,19 +15,20 @@
 #endif
 
 #if NTT_DEBUG
-void ntt_PrintCallStack()
+void ntt_PrintCallStack(struct ntt_BacktraceInfo* pInfo)
 {
 #if NTT_PLATFORM_UNIX
+	if (pInfo == NULL)
+	{
+		struct ntt_BacktraceInfo info = ntt_CaptureCallStack();
+		pInfo						  = &info;
+	}
 
-	void* callstack[128];
-	int	  frames = backtrace(callstack, 128);
-
-#if 1
-	char** strs = backtrace_symbols(callstack, frames);
-	for (int i = 0; i < frames; i++)
+	char** strs = backtrace_symbols(pInfo->backtraces, pInfo->frames);
+	for (int i = 0; i < pInfo->frames; i++)
 	{
 		char cmd[256];
-		snprintf(cmd, sizeof(cmd), "addr2line -e %s -a -piCf %p", g_argv[0], callstack[i]);
+		snprintf(cmd, sizeof(cmd), "addr2line -e %s -a -piCf %p", g_argv[0], pInfo->backtraces[i]);
 		FILE* fp = popen(cmd, "r");
 		if (fp)
 		{
@@ -40,13 +41,25 @@ void ntt_PrintCallStack()
 		}
 	}
 	free(strs);
-#endif
 
 #elif NTT_PLATFORM_WINDOWS
 #error "Windows platform is not supported yet."
 #else
 #error "Unknown platform."
 #endif /* NTT_PLATFORM_UNIX */
+}
+
+struct ntt_BacktraceInfo ntt_CaptureCallStack()
+{
+	struct ntt_BacktraceInfo info = {0};
+#if NTT_PLATFORM_UNIX
+	info.frames = backtrace(info.backtraces, MAX_CALLSTACK_DEPTH);
+#elif NTT_PLATFORM_WINDOWS
+#error "Windows platform is not supported yet."
+#else
+#error "Unknown platform."
+#endif /* NTT_PLATFORM_UNIX */
+	return info;
 }
 
 #endif /* NTT_DEBUG */
