@@ -31,5 +31,6 @@ target_include_directories(
 )
 
 attach_options(${PROJECT_NAME})
+attach_flags(${PROJECT_NAME})
 
 ntt_log_options()

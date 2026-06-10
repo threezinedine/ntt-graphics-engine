@@ -3,7 +3,7 @@
 
 #if NTT_DEBUG
 #if NTT_PLATFORM_UNIX
-#include "engine/core/console.h"
+#include "engine/core/utils/utils.h"
 #include <stdlib.h>
 
 #if defined(__clang__) || defined(__GNUC__)
@@ -19,6 +19,7 @@
 		{                                                                                                              \
 			ntt_ConsoleSetColor(NTT_COLOR_RED);                                                                        \
 			ntt_ConsolePrint("Assertion failed: %s, file: %s, line: %d\n", #cond, __FILE__, __LINE__);                 \
+			ntt_PrintCallStack();                                                                                      \
 			ntt_ConsoleResetColor();                                                                                   \
 			NTT_DEBUG_BREAK();                                                                                         \
 		}                                                                                                              \

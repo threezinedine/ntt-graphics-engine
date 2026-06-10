@@ -2,6 +2,7 @@
 #define _CONSOLE_H_
 
 #include "engine/core/color.h"
+#include "engine/core/types.h"
 
 /**
  * The console module is singleton which is used for interacting with the command line / terminal, which show the
@@ -37,5 +38,17 @@ void ntt_ConsoleResetColor();
  *      implementation, but it generally follows the rules of the standard printf function.
  */
 void ntt_ConsolePrint(const char* message, ...);
+
+/**
+ * Construct the output buffer with a certain format and the arguments.
+ *
+ * @param pBuffer The pointer to the buffer where the formatted message will be saved. This parameter can not be NULL or
+ *      trigger an assertion failure.
+ * @param bufferSize The size of the output buffer, which is used for preventing buffer overflow. This parameter can not
+ *      be zero or trigger an assertion failure.
+ * @param format The format string, which contains the text to be written to the output buffer and the format specifiers
+ *      for the additional arguments. This parameter can not be NULL or trigger an assertion failure.
+ */
+void ntt_FormatMessage(char* pBuffer, usize bufferSize, const char* format, ...);
 
 #endif /* _CONSOLE_H_ */

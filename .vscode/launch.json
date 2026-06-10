@@ -5,11 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Engine main",
+      "name": "Engine",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/linux/NTTGraphicsEngine",
-      "cwd": "${workspaceFolder}/build/linux",
+      "program": "${workspaceFolder}/build/debug/NTTGraphicsEngine",
+      "cwd": "${workspaceFolder}/build/debug",
       "preLaunchTask": "Build Engine"
     }
   ]

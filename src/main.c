@@ -1,8 +1,21 @@
 #include "engine/engine.h"
 #include <stdio.h>
 
-int main(void)
+void test()
 {
+	NTT_ASSERT(1 == 2);
+}
+
+int	   g_argc;
+char** g_argv;
+
+int main(u32 argc, char** argv)
+{
+	g_argc = argc;
+	g_argv = argv;
+
+	ntt_ConsolePrint("%s\n", g_argv[0]);
+
 	struct ntt_Allocator* allocator = ntt_CreateMallocAllocator();
 	void*				  ptr		= ntt_Allocate(allocator, 128);
 	ntt_Deallocate(allocator, ptr, 128);
@@ -13,7 +26,7 @@ int main(void)
 	ntt_ConsoleResetColor();
 	ntt_ConsolePrint("This is a graphics engine.\n");
 
-	NTT_ASSERT(1 == 2);
+	test();
 	ntt_ConsolePrint("%s\n", ntt_ColorToString(NTT_COLOR_RED));
 
 	return 0;

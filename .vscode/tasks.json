@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "Build Engine",
-      "command": "cmake --build build/linux",
+      "command": "cmake --build build/debug",
       "type": "shell"
     }
   ]

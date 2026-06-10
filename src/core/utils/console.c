@@ -1,4 +1,4 @@
-#include "engine/core/console.h"
+#include "engine/core/utils/console.h"
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -60,5 +60,13 @@ void ntt_ConsolePrint(const char* message, ...)
 	va_list args;
 	va_start(args, message);
 	vprintf(message, args);
+	va_end(args);
+}
+
+void ntt_FormatMessage(char* pBuffer, usize bufferSize, const char* format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	vsnprintf(pBuffer, bufferSize, format, args);
 	va_end(args);
 }
