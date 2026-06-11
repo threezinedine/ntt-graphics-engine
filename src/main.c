@@ -20,15 +20,18 @@ int main(i32 argc, char** argv)
 	struct ntt_Allocator* allocator = ntt_CreateMallocAllocator();
 	void*				  ptr		= ntt_Allocate(allocator, 128);
 	ntt_Deallocate(allocator, ptr, 128);
-	ntt_DestroyAllocator(allocator);
+
+	ntt_Allocate(allocator, 256);
 
 	ntt_ConsoleSetColor(NTT_COLOR_GREEN);
 	ntt_ConsolePrint("Hello, World!\n");
 	ntt_ConsoleResetColor();
 	ntt_ConsolePrint("This is a graphics engine.\n");
 
-	test(0);
+	// test(0);
 	ntt_ConsolePrint("%s\n", ntt_ColorToString(NTT_COLOR_RED));
+
+	ntt_DestroyAllocator(allocator);
 
 	return 0;
 }
