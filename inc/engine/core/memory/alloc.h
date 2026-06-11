@@ -16,7 +16,7 @@ struct ntt_Allocator
 	 *      state of the allocator, such as the memory pool, the stack pointer, the free list, etc. This data
 	 *      is opaque to the user of the allocator.
 	 */
-	void* internalState;
+	void* pInternalState;
 
 	/**
 	 * The function pointer which is the detailed implementation of the allocation logic for the specific allocator.

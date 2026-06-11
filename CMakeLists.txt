@@ -6,6 +6,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmakes")
 include(ntt-configure)
 ntt_setup()
 
+ntt_option_with_value(NTT_STRICT_MEMORY_MANAGEMENT OFF)
+
 file(
     GLOB_RECURSE 
     NTT_GRAPHICS_ENGINE_SOURCES

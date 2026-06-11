@@ -44,21 +44,23 @@
 		}                                                                                                              \
 	} while (0)
 
-#define NTT_ASSERT_M(cond, message)                                                                                    \
+#define NTT_ASSERT_M(cond, message, ...)                                                                               \
 	do                                                                                                                 \
 	{                                                                                                                  \
 		if (!(cond))                                                                                                   \
 		{                                                                                                              \
 			char assertMessage[512];                                                                                   \
-			ntt_FormatMessage(assertMessage,                                                                           \
-							  sizeof(assertMessage),                                                                   \
+			ntt_FormatMessage(assertMessage, sizeof(assertMessage), message, ##__VA_ARGS__);                           \
+			char finalMessage[512];                                                                                    \
+			ntt_FormatMessage(finalMessage,                                                                            \
+							  sizeof(finalMessage),                                                                    \
 							  "Assertion failed: %s, file: %s, line: %d\nMessage: %s\n",                               \
 							  #cond,                                                                                   \
 							  __FILE__,                                                                                \
 							  __LINE__,                                                                                \
-							  message);                                                                                \
+							  assertMessage);                                                                          \
 			ntt_ConsoleSetColor(NTT_COLOR_RED);                                                                        \
-			ntt_ConsolePrint("%s", assertMessage);                                                                     \
+			ntt_ConsolePrint("%s", finalMessage);                                                                      \
 			ntt_PrintCallStack(NULL);                                                                                  \
 			ntt_ConsoleResetColor();                                                                                   \
 			NTT_DEBUG_BREAK();                                                                                         \
@@ -71,8 +73,8 @@
 #error "Unknown platform."
 #endif
 #else
-#define NTT_ASSERT(cond)			((void)0)
-#define NTT_ASSERT_M(cond, message) ((void)0)
+#define NTT_ASSERT(cond)				 ((void)0)
+#define NTT_ASSERT_M(cond, message, ...) ((void)0)
 #endif
 
 #endif /* _DEFS_H_ */

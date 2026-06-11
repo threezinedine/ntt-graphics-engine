@@ -3,7 +3,7 @@
 
 #include "engine/core/types.h"
 
-#define MAX_CALLSTACK_DEPTH 128
+#define MAX_CALLSTACK_DEPTH 12
 
 #if NTT_DEBUG
 struct ntt_BacktraceInfo
