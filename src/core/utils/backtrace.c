@@ -1,6 +1,7 @@
 #include "engine/core/utils/backtrace.h"
 #include "engine/core/common.h"
 #include "engine/core/utils/console.h"
+#include "engine/core/defs.h"
 #include "engine/core/utils/file.h"
 #include "engine/core/utils/time.h"
 #include "stdlib.h"
@@ -11,6 +12,8 @@
 #if NTT_PLATFORM_UNIX
 #include <execinfo.h>
 #include <stdint.h>
+#elif NTT_PLATFORM_WINDOWS /* NTT_PLATFORM_UNIX */
+#include <windows.h>
 #endif /* NTT_PLATFORM_UNIX */
 #endif
 
@@ -43,7 +46,7 @@ void ntt_PrintCallStack(struct ntt_BacktraceInfo* pInfo)
 	free(strs);
 
 #elif NTT_PLATFORM_WINDOWS
-#error "Windows platform is not supported yet."
+	NTT_UNUSED(pInfo);
 #else
 #error "Unknown platform."
 #endif /* NTT_PLATFORM_UNIX */
@@ -54,8 +57,8 @@ struct ntt_BacktraceInfo ntt_CaptureCallStack()
 	struct ntt_BacktraceInfo info = {0};
 #if NTT_PLATFORM_UNIX
 	info.frames = backtrace(info.backtraces, MAX_CALLSTACK_DEPTH);
-#elif NTT_PLATFORM_WINDOWS
-#error "Windows platform is not supported yet."
+#elif NTT_PLATFORM_WINDOWS /* NTT_PLATFORM_UNIX */
+	info.frames = (int)CaptureStackBackTrace(0, MAX_CALLSTACK_DEPTH, info.backtraces, NULL);
 #else
 #error "Unknown platform."
 #endif /* NTT_PLATFORM_UNIX */

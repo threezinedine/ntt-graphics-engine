@@ -16,8 +16,8 @@
 #define NTT_UNUSED(x) (void)(x)
 
 #if NTT_DEBUG
-#if NTT_PLATFORM_UNIX
 #include "engine/core/utils/utils.h"
+#if NTT_PLATFORM_UNIX
 #include <stdlib.h>
 
 #if defined(__clang__) || defined(__GNUC__)
@@ -25,6 +25,11 @@
 #else
 #define NTT_DEBUG_BREAK() abort()
 #endif
+#elif NTT_PLATFORM_WINDOWS /* NTT_PLATFORM_UNIX */
+#define NTT_DEBUG_BREAK() __debugbreak()
+#else /* NTT_PLATFORM_UNIX*/
+#error "Unknown platform."
+#endif /* NTT_PLATFORM_UNIX */
 
 /**
  * **Runtime** checking for a certain condition.
@@ -67,14 +72,9 @@
 		}                                                                                                              \
 	} while (0)
 
-#elif NTT_PLATFORM_WINDOWS
-#error "Windows platform is not supported yet."
-#else
-#error "Unknown platform."
-#endif
-#else
+#else /* NTT_DEBUG */
 #define NTT_ASSERT(cond)				 ((void)0)
 #define NTT_ASSERT_M(cond, message, ...) ((void)0)
-#endif
+#endif /* NTT_DEBUG */
 
 #endif /* _DEFS_H_ */

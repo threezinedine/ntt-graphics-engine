@@ -1,5 +1,5 @@
-#ifndef _TIME_H
-#define _TIME_H_
+#ifndef _NTT_TIME_H
+#define _NTT_TIME_H
 
 #include "engine/core/types.h"
 
@@ -26,4 +26,4 @@ struct ntt_Time
  */
 void ntt_GetCurrentTime(struct ntt_Time* pTime);
 
-#endif /* _TIME_H_ */
+#endif /* _NTT_TIME_H */

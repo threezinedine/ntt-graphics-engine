@@ -16,7 +16,7 @@
 
 struct ntt_MallocAllocator
 {
-	u32 allocatedBytes;
+	usize allocatedBytes;
 };
 
 struct ntt_MallocBlockHeader

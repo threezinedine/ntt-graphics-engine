@@ -75,7 +75,7 @@ void ntt_UpdateID(ID* id)
 	version++;
 
 	s_IDMetas[id->index] = META_FROM_TYPE_AND_VERSION(type, version);
-	id->version			 = version;
+	id->version			 = (u32)version;
 }
 
 ID ntt_GetIDByID(ID* pId)

@@ -2,6 +2,10 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#if NTT_PLATFORM_WINDOWS
+#include <Windows.h>
+#endif /* NTT_PLATFORM_WINDOWS */
+
 void ntt_ConsoleSetColor(enum ntt_Color color)
 {
 #if NTT_PLATFORM_UNIX
@@ -38,7 +42,44 @@ void ntt_ConsoleSetColor(enum ntt_Color color)
 		break;
 	}
 #elif NTT_PLATFORM_WINDOWS
-#error "Windows platform is not supported yet."
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	int icolor;
+
+	switch (color) {
+	case NTT_COLOR_BLACK:
+		icolor = 0;
+		break;
+	case NTT_COLOR_RED:
+		icolor = FOREGROUND_RED;
+		break;
+	case NTT_COLOR_GREEN:
+		icolor = FOREGROUND_GREEN;
+		break;
+	case NTT_COLOR_YELLOW:
+		icolor = FOREGROUND_RED | FOREGROUND_GREEN;
+		break;
+	case NTT_COLOR_BLUE:
+		icolor = FOREGROUND_BLUE;
+		break;
+	case NTT_COLOR_MAGENTA:
+		icolor = FOREGROUND_RED | FOREGROUND_BLUE;
+		break;
+	case NTT_COLOR_CYAN:
+		icolor = FOREGROUND_GREEN | FOREGROUND_BLUE;
+		break;
+	case NTT_COLOR_WHITE:
+		icolor = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE;
+		break;
+	case NTT_COLOR_GRAY:
+		icolor = FOREGROUND_INTENSITY;
+		break;
+	default:
+		icolor = 7; // Default color (light gray)
+		break;
+	}
+
+	SetConsoleTextAttribute(hConsole, (WORD)icolor);
 #else
 #error "Unknown platform."
 #endif
@@ -49,7 +90,8 @@ void ntt_ConsoleResetColor()
 #if NTT_PLATFORM_UNIX
 	printf("\033[0m");
 #elif NTT_PLATFORM_WINDOWS
-#error "Windows platform is not supported yet."
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, 7); // 7 is the default color (light gray)
 #else
 #error "Unknown platform."
 #endif
