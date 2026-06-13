@@ -1,0 +1,11 @@
+{
+  "engine:common": {
+    "inherit": [],
+    "options": []
+  },
+  "engine:debug": {
+    "inherit": ["engine:common"],
+    "options": ["NTT_STRICT_MEMORY_MANAGEMENT=1"],
+    "command": "cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug {{ options }}"
+  }
+}

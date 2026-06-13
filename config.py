@@ -4,6 +4,8 @@ import json
 from dacite import from_dict
 from dataclasses import dataclass, field, asdict
 import logging
+from jinja2 import Template
+import os
 
 logger = logging.getLogger("CONFIG")
 
@@ -33,6 +35,7 @@ logger.setLevel(logging.INFO)
 class Profile:
     inherit: List[str] = field(default_factory=list)
     options: List[str] = field(default_factory=list)
+    command: Optional[str] = None
 
 def extract_options(profiles: dict[str, Profile], profileName: str) -> Dict[str, int]:
     options: Dict[str, int] = {}
@@ -48,6 +51,9 @@ def extract_options(profiles: dict[str, Profile], profileName: str) -> Dict[str,
 
     return options
 
+def make_cmake_options(options: Dict[str, int]) -> str:
+    return " ".join([f"-D{key}={'ON' if value == 1 else 'OFF'}" for key, value in options.items()])
+
 def main():
     parser = argparse.ArgumentParser(description="NTT Graphics Engine Configuration")
     parser.add_argument("-p", "--profile", type=str, default="default", help="Profile to use")
@@ -60,7 +66,7 @@ def main():
 
     profiles: dict[str, Profile] = {}
 
-    with open("config.json", "r") as f:
+    with open("profiles.json", "r") as f:
         config = json.load(f)
         logger.debug(f"\nLoaded config: {json.dumps(config, indent=4)}")
 
@@ -80,6 +86,20 @@ def main():
 
     logger.debug(f"\n--------- Options for profile {profileName} -----------\n{json.dumps(options, indent=4)}")
 
+    cmake_options = make_cmake_options(options)
+    logger.debug(f"CMake options: {cmake_options}")
+
+    if profiles[profileName].command is None:
+        logger.error("Custom command is not supported yet, cannot execute it")
+        return
+
+    command = profiles[profileName].command
+    template = Template(command)
+    rendered_command = template.render(options=cmake_options)
+    logger.info(f"Generated command: {rendered_command}")
+
+    logger.info("Executing command...")
+    os.system(rendered_command)
 
 if __name__ == "__main__":
     main()
