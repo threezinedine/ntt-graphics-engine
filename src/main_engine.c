@@ -9,14 +9,14 @@ int main(i32 argc, char** argv)
 	g_argc = argc;
 	g_argv = argv;
 
-	ntt_InitializeIDSystem();
-	ntt_MemoryGlobalsInitialize();
+	NTT_SUCCESS_ASSERT(ntt_InitializeIDSystem());
+	NTT_SUCCESS_ASSERT(ntt_MemoryGlobalsInitialize());
 
-	ntt_ObjectRegisterType();
-	ntt_SystemRegisterType();
+	NTT_SUCCESS_ASSERT(ntt_ObjectRegisterType());
+	NTT_SUCCESS_ASSERT(ntt_SystemRegisterType());
 
 	ntt_Object object;
-	ntt_ObjectInitialize(&object, g_memoryGlobals.mallocAllocator);
+	NTT_SUCCESS_ASSERT(ntt_ObjectInitialize(&object, g_memoryGlobals.mallocAllocator));
 	ntt_ConsolePrint("Object ID: type = %d\n", object.type.index);
 	ntt_ConsolePrint("Object is instance of Object: %s\n", ntt_ObjectIsInstanceOf(&object) ? "TRUE" : "FALSE");
 	ntt_ConsolePrint("Object is derived from Object: %s\n", ntt_ObjectIsDerivedFrom(&object) ? "TRUE" : "FALSE");
@@ -26,7 +26,7 @@ int main(i32 argc, char** argv)
 					 ntt_SystemIsDerivedFrom((ntt_System*)&object) ? "TRUE" : "FALSE");
 
 	ntt_System system;
-	ntt_SystemInitialize(&system, g_memoryGlobals.mallocAllocator);
+	NTT_SUCCESS_ASSERT(ntt_SystemInitialize(&system, g_memoryGlobals.mallocAllocator));
 	ntt_ConsolePrint("System ID: type = %d\n", ((ntt_Object*)&system)->type.index);
 	ntt_ConsolePrint("System is instance of System: %s\n", ntt_SystemIsInstanceOf(&system) ? "TRUE" : "FALSE");
 	ntt_ConsolePrint("System is derived from Object: %s\n", ntt_SystemIsDerivedFrom(&system) ? "TRUE" : "FALSE");
@@ -38,11 +38,11 @@ int main(i32 argc, char** argv)
 	ntt_ObjectDestroy(&object);
 	ntt_SystemDestroy(&system);
 
-	ntt_SystemUnregisterType();
-	ntt_ObjectUnregisterType();
+	NTT_SUCCESS_ASSERT(ntt_SystemUnregisterType());
+	NTT_SUCCESS_ASSERT(ntt_ObjectUnregisterType());
 
-	ntt_MemoryGlobalsDestroy();
-	ntt_DestroyIDSystem();
+	NTT_SUCCESS_ASSERT(ntt_MemoryGlobalsDestroy());
+	NTT_SUCCESS_ASSERT(ntt_DestroyIDSystem());
 
 	return 0;
 }

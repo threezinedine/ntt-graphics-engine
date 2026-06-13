@@ -2,6 +2,7 @@
 #define _MEMORY_H_
 
 #include "alloc.h"
+#include "engine/core/result.h"
 #include "malloc.h"
 
 /**
@@ -19,11 +20,11 @@ extern ntt_MemoryGlobals g_memoryGlobals;
 /**
  * Starting all needed global data, resources for the memory management.
  */
-void ntt_MemoryGlobalsInitialize();
+ntt_Result ntt_MemoryGlobalsInitialize();
 
 /**
  * Cleaning up all the global data, resources for the memory management.
  */
-void ntt_MemoryGlobalsDestroy();
+ntt_Result ntt_MemoryGlobalsDestroy();
 
 #endif /* _MEMORY_H_ */

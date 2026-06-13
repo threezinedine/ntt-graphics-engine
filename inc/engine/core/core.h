@@ -3,6 +3,7 @@
 
 #include "color.h"
 #include "common.h"
+#include "containers/containers.h"
 #include "defs.h"
 #include "id.h"
 #include "memory/memory.h"

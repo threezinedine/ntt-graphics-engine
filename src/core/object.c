@@ -3,17 +3,20 @@
 
 ID		   ntt_ObjectID	 = INVALID_ID_INIT;
 static ID* s_pBaseTypeID = NULL;
-void	   ntt_ObjectRegisterType()
+ntt_Result ntt_ObjectRegisterType()
 {
 	ntt_ObjectID = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	return NTT_RESULT_SUCCESS;
 }
-void ntt_ObjectUnregisterType()
+
+ntt_Result ntt_ObjectUnregisterType()
 {
 	ntt_ObjectID  = INVALID_ID;
 	s_pBaseTypeID = NULL;
+	return NTT_RESULT_SUCCESS;
 }
 
-void ntt_ObjectInitialize(ntt_Object* pObject, ntt_Allocator* pAllocator)
+ntt_Result ntt_ObjectInitialize(ntt_Object* pObject, ntt_Allocator* pAllocator)
 {
 	NTT_ASSERT(pObject != NULL);
 	NTT_ASSERT(pAllocator != NULL);
@@ -22,9 +25,11 @@ void ntt_ObjectInitialize(ntt_Object* pObject, ntt_Allocator* pAllocator)
 	pObject->id			= ntt_NewID(NTT_OBJECT_TYPE_OBJECT);
 	pObject->type		= ntt_ObjectID;
 	pObject->pAllocator = pAllocator;
+
+	return NTT_RESULT_SUCCESS;
 }
 
-void ntt_ObjectDestroy(ntt_Object* pObject)
+ntt_Result ntt_ObjectDestroy(ntt_Object* pObject)
 {
 	NTT_ASSERT(pObject != NULL);
 	NTT_ASSERT_M(ntt_IsIDEqual(&pObject->id, &INVALID_ID) == FALSE,
@@ -32,6 +37,8 @@ void ntt_ObjectDestroy(ntt_Object* pObject)
 
 	// Invalidate the ID of the object, so that it can not be used anymore.
 	pObject->id = INVALID_ID;
+
+	return NTT_RESULT_SUCCESS;
 }
 
 b8 ntt_ObjectIsInstanceOf(ntt_Object* pObject)

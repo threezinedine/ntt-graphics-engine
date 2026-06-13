@@ -2,12 +2,14 @@
 
 OBJECT_DEFINE(ntt_System, ntt_Object)
 
-void ntt_SystemInitialize(ntt_System* pSystem, ntt_Allocator* pAllocator)
+ntt_Result ntt_SystemInitialize(ntt_System* pSystem, ntt_Allocator* pAllocator)
 {
 	OBJECT_INITIALIZE(pSystem, ntt_System, ntt_Object);
+	return NTT_RESULT_SUCCESS;
 }
 
-void ntt_SystemDestroy(ntt_System* pSystem)
+ntt_Result ntt_SystemDestroy(ntt_System* pSystem)
 {
 	OBJECT_DESTROY(pSystem, ntt_System, ntt_Object);
+	return NTT_RESULT_SUCCESS;
 }

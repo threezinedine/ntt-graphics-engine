@@ -11,22 +11,25 @@ static u64 s_IDMetas[MAX_OBJECTS];
 #define TYPE_FROM_META(meta)					  ((meta >> 32) & 0xFFFFFFFF)
 #define VERSION_FROM_META(meta)					  (meta & 0xFFFFFFFF)
 
-void ntt_InitializeIDSystem()
+ntt_Result ntt_InitializeIDSystem()
 {
 	s_currentIndex = 0;
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
 		s_IDMetas[i] = INVALID_META;
 	}
+	return NTT_RESULT_SUCCESS;
 }
 
-void ntt_DestroyIDSystem()
+ntt_Result ntt_DestroyIDSystem()
 {
 	s_currentIndex = 0;
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
 		s_IDMetas[i] = INVALID_META;
 	}
+
+	return NTT_RESULT_SUCCESS;
 }
 
 ID ntt_NewID(ntt_ObjectType type)
@@ -62,7 +65,7 @@ b8 ntt_IsIDValid(ID* pId)
 	return TRUE;
 }
 
-void ntt_UpdateID(ID* id)
+ntt_Result ntt_UpdateID(ID* id)
 {
 	NTT_ASSERT_M(id != NULL, "ID pointer is NULL");
 	u64 meta = s_IDMetas[id->index];
@@ -76,6 +79,8 @@ void ntt_UpdateID(ID* id)
 
 	s_IDMetas[id->index] = META_FROM_TYPE_AND_VERSION(type, version);
 	id->version			 = (u32)version;
+
+	return NTT_RESULT_SUCCESS;
 }
 
 ID ntt_GetIDByID(ID* pId)

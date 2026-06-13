@@ -2,6 +2,7 @@
 #define _ID_H_
 
 #include "object_type.h"
+#include "result.h"
 #include "types.h"
 
 /**
@@ -36,12 +37,12 @@ typedef struct ID ID;
 /**
  * Be called at the start of the engine, this will starting up, allocate the resources for the system.
  */
-void ntt_InitializeIDSystem();
+ntt_Result ntt_InitializeIDSystem();
 
 /**
  * Be called at the end of the engine, this will clean up, deallocate the resources for the system.
  */
-void ntt_DestroyIDSystem();
+ntt_Result ntt_DestroyIDSystem();
 
 /**
  * Each time needa get a new ID, use this function, it will automatically return a new, unique ID for the object,
@@ -74,7 +75,7 @@ ID ntt_GetIDByID(ID* pId);
  *
  * @param id The ID to be updated.
  */
-void ntt_UpdateID(ID* id);
+ntt_Result ntt_UpdateID(ID* id);
 
 /**
  * Check if the two IDs are equal or not, this is used for the objects to compare with each other.

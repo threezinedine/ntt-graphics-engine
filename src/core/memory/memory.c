@@ -2,13 +2,15 @@
 
 ntt_MemoryGlobals g_memoryGlobals;
 
-void ntt_MemoryGlobalsInitialize()
+ntt_Result ntt_MemoryGlobalsInitialize()
 {
 	g_memoryGlobals.mallocAllocator = ntt_CreateMallocAllocator();
+	return NTT_RESULT_SUCCESS;
 }
 
-void ntt_MemoryGlobalsDestroy()
+ntt_Result ntt_MemoryGlobalsDestroy()
 {
 	ntt_DestroyAllocator(g_memoryGlobals.mallocAllocator);
 	g_memoryGlobals.mallocAllocator = NULL;
+	return NTT_RESULT_SUCCESS;
 }

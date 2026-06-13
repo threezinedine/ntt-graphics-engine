@@ -4,6 +4,7 @@
 #include "engine/core/defs.h"
 #include "id.h"
 #include "memory/alloc.h"
+#include "result.h"
 
 /**
  * The based for all things inside the game engine. This provides the common interface for all objects.
@@ -29,22 +30,24 @@ struct ntt_Object
 };
 
 #define OBJECT_ID_DECLARE(type)                                                                                        \
-	extern ID type##ID;                                                                                                \
-	void	  type##RegisterType();                                                                                    \
-	void	  type##UnregisterType();
+	extern ID  type##ID;                                                                                               \
+	ntt_Result type##RegisterType();                                                                                   \
+	ntt_Result type##UnregisterType();
 
 #define OBJECT_ID_DEFINE(objectType, baseType)                                                                         \
 	ID		   objectType##ID = INVALID_ID_INIT;                                                                       \
 	static ID* s_pBaseTypeID  = NULL;                                                                                  \
-	void	   objectType##RegisterType()                                                                              \
+	ntt_Result objectType##RegisterType()                                                                              \
 	{                                                                                                                  \
 		objectType##ID = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);                                                         \
 		s_pBaseTypeID  = &baseType##ID;                                                                                \
+		return NTT_RESULT_SUCCESS;                                                                                     \
 	}                                                                                                                  \
-	void objectType##UnregisterType()                                                                                  \
+	ntt_Result objectType##UnregisterType()                                                                            \
 	{                                                                                                                  \
 		objectType##ID = INVALID_ID;                                                                                   \
 		s_pBaseTypeID  = NULL;                                                                                         \
+		return NTT_RESULT_SUCCESS;                                                                                     \
 	}
 
 /**
@@ -52,8 +55,8 @@ struct ntt_Object
  */
 #define OBJECT_DECLARE(type)                                                                                           \
 	typedef struct type type;                                                                                          \
-	void				type##Initialize(type* pObject, ntt_Allocator* pAllocator);                                    \
-	void				type##Destroy(type*);                                                                          \
+	ntt_Result			type##Initialize(type* pObject, ntt_Allocator* pAllocator);                                    \
+	ntt_Result			type##Destroy(type*);                                                                          \
 	b8					type##IsInstanceOf(type* pObject);                                                             \
 	b8					type##IsDerivedFrom(type* pObject);                                                            \
 	OBJECT_ID_DECLARE(type)
@@ -83,10 +86,10 @@ struct ntt_Object
 	}
 
 #define OBJECT_INITIALIZE(pObj, derivedType, baseType)                                                                 \
-	baseType##Initialize(&(pObj->base), pAllocator);                                                                   \
+	NTT_SUCCESS_ASSERT(baseType##Initialize(&(pObj->base), pAllocator));                                               \
 	((ntt_Object*)(pObj))->type = derivedType##ID;
 
-#define OBJECT_DESTROY(pObj, derivedType, baseType) baseType##Destroy(&(pObj->base));
+#define OBJECT_DESTROY(pObj, derivedType, baseType) NTT_SUCCESS_ASSERT(baseType##Destroy(&(pObj->base)));
 
 OBJECT_DECLARE(ntt_Object)
 

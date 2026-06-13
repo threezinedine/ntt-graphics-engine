@@ -1,0 +1,10 @@
+#ifndef ENUM_OPTION
+#define ENUM_OPTION(name)
+#endif
+
+#ifndef ENUM_OPTION_END
+#define ENUM_OPTION_END(name)
+#endif
+
+ENUM_OPTION(NTT_RESULT_SUCCESS)
+ENUM_OPTION_END(NTT_RESULT_COUNT)

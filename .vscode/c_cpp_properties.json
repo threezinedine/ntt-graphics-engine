@@ -6,7 +6,8 @@
       "defines": [
         "NTT_DEBUG",
         "NTT_PLATFORM_UNIX",
-        "NTT_STRICT_MEMORY_MANAGEMENT"
+        "NTT_STRICT_MEMORY_MANAGEMENT",
+        "VSCODE_DISABLE"
       ],
       "compilerPath": "/usr/bin/clang",
       "cStandard": "c17",
