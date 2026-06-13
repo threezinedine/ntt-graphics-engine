@@ -1,0 +1,10 @@
+{
+  "engine:common": {
+    "inherit": [],
+    "options": []
+  },
+  "engine:debug": {
+    "inherit": ["engine:common"],
+    "options": ["NTT_STRICT_MEMORY_MANAGEMENT=1", "NTT_DEBUG=1"]
+  }
+}
