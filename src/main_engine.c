@@ -29,8 +29,8 @@ int main(i32 argc, char** argv)
 	ntt_ConsoleResetColor();
 	ntt_ConsolePrint("This is a graphics engine.\n");
 
-	ntt_Deallocate(allocator, testPtr, 200);
-	//ntt_Deallocate(allocator, testPtr, 256);
+	// ntt_Deallocate(allocator, testPtr, 200);
+	ntt_Deallocate(allocator, testPtr, 256);
 
 	ID id  = ntt_NewID(NTT_OBJECT_TYPE_OBJECT);
 	ID id2 = id;
@@ -40,7 +40,7 @@ int main(i32 argc, char** argv)
 	ntt_ConsolePrint("id valid: '%s'\n", ntt_IsIDValid(&id) ? "true" : "false");
 	ntt_ConsolePrint("id2 valid: '%s'\n", ntt_IsIDValid(&id2) ? "true" : "false");
 
-	//test(0);
+	test(0);
 	ntt_ConsolePrint("%s\n", ntt_ColorToString(NTT_COLOR_RED));
 
 	ntt_DestroyAllocator(allocator);
