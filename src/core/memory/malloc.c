@@ -14,52 +14,52 @@
  *      is later used for tracking the deallocation size modification.
  */
 
-struct ntt_MallocAllocator
+typedef struct ntt_MallocAllocator
 {
 	usize allocatedBytes;
-};
+} ntt_MallocAllocator;
 
-struct ntt_MallocBlockHeader
+typedef struct ntt_MallocBlockHeader
 {
 	usize size;
 #if NTT_STRICT_MEMORY_MANAGEMENT
-	struct ntt_BacktraceInfo backtraceInfo;
+	ntt_BacktraceInfo backtraceInfo;
 #endif /* NTT_STRICT_MEMORY_MANAGEMENT */
-};
+} ntt_MallocBlockHeader;
 
-static void* allocate(struct ntt_Allocator* allocator, usize size);
-static void	 deallocate(struct ntt_Allocator* allocator, void* ptr, usize size);
-static void	 destroy(struct ntt_Allocator* allocator);
+static void* allocate(ntt_Allocator* allocator, usize size);
+static void	 deallocate(ntt_Allocator* allocator, void* ptr, usize size);
+static void	 destroy(ntt_Allocator* allocator);
 
-struct ntt_Allocator* ntt_CreateMallocAllocator()
+ntt_Allocator* ntt_CreateMallocAllocator()
 {
-	struct ntt_Allocator* allocator = (struct ntt_Allocator*)malloc(sizeof(struct ntt_Allocator));
+	ntt_Allocator* allocator = (ntt_Allocator*)malloc(sizeof(ntt_Allocator));
 	NTT_ASSERT(allocator != NULL);
 
 	allocator->allocate	  = allocate;
 	allocator->deallocate = deallocate;
 	allocator->destroy	  = destroy;
 
-	allocator->pInternalState = malloc(sizeof(struct ntt_MallocAllocator));
+	allocator->pInternalState = malloc(sizeof(ntt_MallocAllocator));
 	NTT_ASSERT(allocator->pInternalState != NULL);
-	struct ntt_MallocAllocator* pMallocState = (struct ntt_MallocAllocator*)allocator->pInternalState;
+	ntt_MallocAllocator* pMallocState = (ntt_MallocAllocator*)allocator->pInternalState;
 
 	pMallocState->allocatedBytes = 0;
 
 	return allocator;
 }
 
-static void* allocate(struct ntt_Allocator* allocator, usize size)
+static void* allocate(ntt_Allocator* allocator, usize size)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->pInternalState != NULL);
 
-	struct ntt_MallocAllocator* pMallocState = (struct ntt_MallocAllocator*)allocator->pInternalState;
+	ntt_MallocAllocator* pMallocState = (ntt_MallocAllocator*)allocator->pInternalState;
 	pMallocState->allocatedBytes += size;
-	void*						  block	  = malloc(sizeof(struct ntt_MallocBlockHeader) + size);
-	void*						  ptr	  = (char*)block + sizeof(struct ntt_MallocBlockHeader);
-	struct ntt_MallocBlockHeader* pHeader = (struct ntt_MallocBlockHeader*)block;
-	pHeader->size						  = size;
+	void*				   block   = malloc(sizeof(ntt_MallocBlockHeader) + size);
+	void*				   ptr	   = (char*)block + sizeof(ntt_MallocBlockHeader);
+	ntt_MallocBlockHeader* pHeader = (ntt_MallocBlockHeader*)block;
+	pHeader->size				   = size;
 
 #if NTT_STRICT_MEMORY_MANAGEMENT
 	pHeader->backtraceInfo = ntt_CaptureCallStack();
@@ -68,14 +68,13 @@ static void* allocate(struct ntt_Allocator* allocator, usize size)
 	return ptr;
 }
 
-static void deallocate(struct ntt_Allocator* allocator, void* ptr, usize size)
+static void deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->pInternalState != NULL);
 	NTT_ASSERT(ptr != NULL);
 
-	struct ntt_MallocBlockHeader* pHeader =
-		(struct ntt_MallocBlockHeader*)((char*)ptr - sizeof(struct ntt_MallocBlockHeader));
+	ntt_MallocBlockHeader* pHeader = (ntt_MallocBlockHeader*)((char*)ptr - sizeof(ntt_MallocBlockHeader));
 
 #if NTT_STRICT_MEMORY_MANAGEMENT
 	if (pHeader->size != size)
@@ -106,7 +105,7 @@ static void deallocate(struct ntt_Allocator* allocator, void* ptr, usize size)
 	}
 #endif /* NTT_STRICT_MEMORY_MANAGEMENT */
 
-	struct ntt_MallocAllocator* pMallocState = (struct ntt_MallocAllocator*)allocator->pInternalState;
+	ntt_MallocAllocator* pMallocState = (ntt_MallocAllocator*)allocator->pInternalState;
 	if (pMallocState->allocatedBytes >= size)
 	{
 		pMallocState->allocatedBytes -= size;
@@ -136,14 +135,14 @@ static void deallocate(struct ntt_Allocator* allocator, void* ptr, usize size)
 	free(pHeader);
 }
 
-static void destroy(struct ntt_Allocator* allocator)
+static void destroy(ntt_Allocator* allocator)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->pInternalState != NULL);
 
-	NTT_ASSERT_M(((struct ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes == 0,
+	NTT_ASSERT_M(((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes == 0,
 				 "Memory leak detected: %zu bytes still allocated.",
-				 (((struct ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes));
+				 (((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes));
 
 	free(allocator->pInternalState);
 	free(allocator);

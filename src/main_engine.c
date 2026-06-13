@@ -1,12 +1,6 @@
 #include "engine/engine.h"
 #include <stdio.h>
 
-void test(int a)
-{
-	NTT_UNUSED(a);
-	NTT_ASSERT(1 == 2);
-}
-
 int	   g_argc;
 char** g_argv;
 
@@ -16,34 +10,38 @@ int main(i32 argc, char** argv)
 	g_argv = argv;
 
 	ntt_InitializeIDSystem();
-	ntt_ConsolePrint("%s\n", g_argv[0]);
+	ntt_MemoryGlobalsInitialize();
 
-	struct ntt_Allocator* allocator = ntt_CreateMallocAllocator();
-	void*				  ptr		= ntt_Allocate(allocator, 128);
-	ntt_Deallocate(allocator, ptr, 128);
+	ntt_ObjectRegisterType();
+	ntt_SystemRegisterType();
 
-	void* testPtr = ntt_Allocate(allocator, 256);
+	ntt_Object object;
+	ntt_ObjectInitialize(&object, g_memoryGlobals.mallocAllocator);
+	ntt_ConsolePrint("Object ID: type = %d\n", object.type.index);
+	ntt_ConsolePrint("Object is instance of Object: %s\n", ntt_ObjectIsInstanceOf(&object) ? "TRUE" : "FALSE");
+	ntt_ConsolePrint("Object is derived from Object: %s\n", ntt_ObjectIsDerivedFrom(&object) ? "TRUE" : "FALSE");
+	ntt_ConsolePrint("Object is instance of System: %s\n",
+					 ntt_SystemIsInstanceOf((ntt_System*)&object) ? "TRUE" : "FALSE");
+	ntt_ConsolePrint("Object is derived from System: %s\n",
+					 ntt_SystemIsDerivedFrom((ntt_System*)&object) ? "TRUE" : "FALSE");
 
-	ntt_ConsoleSetColor(NTT_COLOR_GREEN);
-	ntt_ConsolePrint("Hello, World!\n");
-	ntt_ConsoleResetColor();
-	ntt_ConsolePrint("This is a graphics engine.\n");
+	ntt_System system;
+	ntt_SystemInitialize(&system, g_memoryGlobals.mallocAllocator);
+	ntt_ConsolePrint("System ID: type = %d\n", ((ntt_Object*)&system)->type.index);
+	ntt_ConsolePrint("System is instance of System: %s\n", ntt_SystemIsInstanceOf(&system) ? "TRUE" : "FALSE");
+	ntt_ConsolePrint("System is derived from Object: %s\n", ntt_SystemIsDerivedFrom(&system) ? "TRUE" : "FALSE");
+	ntt_ConsolePrint("System is instance of Object: %s\n",
+					 ntt_ObjectIsInstanceOf((ntt_Object*)&system) ? "TRUE" : "FALSE");
+	ntt_ConsolePrint("System is derived from System: %s\n",
+					 ntt_SystemIsDerivedFrom((ntt_System*)&system) ? "TRUE" : "FALSE");
 
-	// ntt_Deallocate(allocator, testPtr, 200);
-	ntt_Deallocate(allocator, testPtr, 256);
+	ntt_ObjectDestroy(&object);
+	ntt_SystemDestroy(&system);
 
-	ID id  = ntt_NewID(NTT_OBJECT_TYPE_OBJECT);
-	ID id2 = id;
+	ntt_SystemUnregisterType();
+	ntt_ObjectUnregisterType();
 
-	ntt_UpdateID(&id);
-
-	ntt_ConsolePrint("id valid: '%s'\n", ntt_IsIDValid(&id) ? "true" : "false");
-	ntt_ConsolePrint("id2 valid: '%s'\n", ntt_IsIDValid(&id2) ? "true" : "false");
-
-	test(0);
-	ntt_ConsolePrint("%s\n", ntt_ColorToString(NTT_COLOR_RED));
-
-	ntt_DestroyAllocator(allocator);
+	ntt_MemoryGlobalsDestroy();
 	ntt_DestroyIDSystem();
 
 	return 0;

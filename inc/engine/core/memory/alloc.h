@@ -9,7 +9,7 @@
  *      different purposes, such as stack allocator, linear allocator, pool allocator, etc. Each allocator has
  *      its own implementation and characteristics, but they all share the same interface defined by this structure.
  */
-struct ntt_Allocator
+typedef struct ntt_Allocator
 {
 	/**
 	 * The dedicated data for the specific allocator implementation, which is used for storing the internal
@@ -70,7 +70,7 @@ struct ntt_Allocator
 	 *      cleanup operations accordingly. This parameter can not be NULL or trigger an assertion failure.
 	 */
 	void (*destroy)(struct ntt_Allocator* allocator);
-};
+} ntt_Allocator;
 
 /**
  * Interface for allocating a memory block of the specified size using the given allocator.
@@ -89,7 +89,7 @@ struct ntt_Allocator
  *      successful or not. If NULL is returned, it means that the allocation failed, the owner should handle the failure
  *      case accordingly, such as logging an error message, trying a different allocator, etc.
  */
-void* ntt_Allocate(struct ntt_Allocator* allocator, usize size);
+void* ntt_Allocate(ntt_Allocator* allocator, usize size);
 
 /**
  * Interface for deallocating a memory block pointed by the given pointer using the specified allocator. The behavior of
@@ -115,7 +115,7 @@ void* ntt_Allocate(struct ntt_Allocator* allocator, usize size);
  *      ignored.
  *
  */
-void ntt_Deallocate(struct ntt_Allocator* allocator, void* ptr, usize size);
+void ntt_Deallocate(ntt_Allocator* allocator, void* ptr, usize size);
 
 /**
  * The method for destroying the any types of the allocator instance, which is used for cleaning up the internal
@@ -126,6 +126,6 @@ void ntt_Deallocate(struct ntt_Allocator* allocator, void* ptr, usize size);
  *      destroy function, so that it can access the internal state of the allocator and perform the necessary cleanup
  *      operations accordingly. This parameter can not be NULL or trigger an assertion failure.
  */
-void ntt_DestroyAllocator(struct ntt_Allocator* allocator);
+void ntt_DestroyAllocator(ntt_Allocator* allocator);
 
 #endif /* _ALLOC_H_ */

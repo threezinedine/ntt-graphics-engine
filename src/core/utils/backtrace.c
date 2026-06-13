@@ -1,7 +1,7 @@
 #include "engine/core/utils/backtrace.h"
 #include "engine/core/common.h"
-#include "engine/core/utils/console.h"
 #include "engine/core/defs.h"
+#include "engine/core/utils/console.h"
 #include "engine/core/utils/file.h"
 #include "engine/core/utils/time.h"
 #include "stdlib.h"
@@ -18,13 +18,13 @@
 #endif
 
 #if NTT_DEBUG
-void ntt_PrintCallStack(struct ntt_BacktraceInfo* pInfo)
+void ntt_PrintCallStack(ntt_BacktraceInfo* pInfo)
 {
 #if NTT_PLATFORM_UNIX
 	if (pInfo == NULL)
 	{
-		struct ntt_BacktraceInfo info = ntt_CaptureCallStack();
-		pInfo						  = &info;
+		ntt_BacktraceInfo info = ntt_CaptureCallStack();
+		pInfo				   = &info;
 	}
 
 	char** strs = backtrace_symbols(pInfo->backtraces, pInfo->frames);
@@ -52,9 +52,9 @@ void ntt_PrintCallStack(struct ntt_BacktraceInfo* pInfo)
 #endif /* NTT_PLATFORM_UNIX */
 }
 
-struct ntt_BacktraceInfo ntt_CaptureCallStack()
+ntt_BacktraceInfo ntt_CaptureCallStack()
 {
-	struct ntt_BacktraceInfo info = {0};
+	ntt_BacktraceInfo info = {0};
 #if NTT_PLATFORM_UNIX
 	info.frames = backtrace(info.backtraces, MAX_CALLSTACK_DEPTH);
 #elif NTT_PLATFORM_WINDOWS /* NTT_PLATFORM_UNIX */

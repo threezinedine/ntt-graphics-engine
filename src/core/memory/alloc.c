@@ -2,7 +2,7 @@
 #include "engine/core/defs.h"
 #include "engine/core/types.h"
 
-void* ntt_Allocate(struct ntt_Allocator* allocator, usize size)
+void* ntt_Allocate(ntt_Allocator* allocator, usize size)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->allocate != NULL);
@@ -10,7 +10,7 @@ void* ntt_Allocate(struct ntt_Allocator* allocator, usize size)
 	return allocator->allocate(allocator, size);
 }
 
-void ntt_Deallocate(struct ntt_Allocator* allocator, void* ptr, usize size)
+void ntt_Deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->deallocate != NULL);
@@ -18,7 +18,7 @@ void ntt_Deallocate(struct ntt_Allocator* allocator, void* ptr, usize size)
 	allocator->deallocate(allocator, ptr, size);
 }
 
-void ntt_DestroyAllocator(struct ntt_Allocator* allocator)
+void ntt_DestroyAllocator(ntt_Allocator* allocator)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->destroy != NULL);

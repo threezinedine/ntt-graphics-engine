@@ -89,3 +89,13 @@ ID ntt_GetIDByID(ID* pId)
 
 	return (ID){.type = TYPE_FROM_META(meta), .version = VERSION_FROM_META(meta), .index = pId->index};
 }
+
+b8 ntt_IsIDEqual(ID* a, ID* b)
+{
+	if (a == NULL || b == NULL)
+	{
+		return FALSE;
+	}
+
+	return a->type == b->type && a->version == b->version && a->index == b->index;
+}
