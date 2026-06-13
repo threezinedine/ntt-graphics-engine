@@ -6,6 +6,8 @@ macro(ntt_setup)
 
     # build profile options
     option(CMAKE_BUILD_TYPE "Choose the type of build." "Debug")
+    ntt_option_with_value(NTT_ENGINE ON)
+    ntt_option_with_value(NTT_EDITOR OFF)
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "")
         set(NTT_DEBUG ON)
@@ -23,6 +25,19 @@ macro(ntt_setup)
         message(WARNING "Unknown build type: ${CMAKE_BUILD_TYPE}, defaulting to Debug")
         set(NTT_DEBUG ON)
         list(APPEND NTT_OPTIONS "NTT_DEBUG")
+    endif()
+
+    message("NTT_EDITOR: ${NTT_EDITOR} NTT_ENGINE: ${NTT_ENGINE}")
+    if (NTT_EDITOR AND NTT_ENGINE)
+        message(FATAL_ERROR "Cannot enable both NTT_EDITOR and NTT_ENGINE at the same time")
+    elseif (NTT_EDITOR AND NOT NTT_ENGINE)
+        set(NTT_MAIN_FILE "src/main_editor.c")
+        set(NTT_PROJECT_NAME "ntt-graphics-editor")
+    elseif (NTT_ENGINE AND NOT NTT_EDITOR)
+        set(NTT_MAIN_FILE "src/main_engine.c")
+        set(NTT_PROJECT_NAME "ntt-graphics-engine")
+    else()
+        message(FATAL_ERROR "At least one of NTT_EDITOR or NTT_ENGINE must be enabled")
     endif()
 endmacro()
 

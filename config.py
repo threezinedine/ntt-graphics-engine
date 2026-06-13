@@ -44,6 +44,7 @@ def extract_options(profiles: dict[str, Profile], profileName: str) -> Dict[str,
         options.update(extract_options(profiles, parent))
 
     for option in profiles[profileName].options:
+        logger.debug(f"Processing option: {option}")
         if option.endswith("=0"):
             options[option[:-2]] = 0
         elif option.endswith("=1"):

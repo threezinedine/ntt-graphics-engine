@@ -7,5 +7,15 @@
     "inherit": ["engine:common"],
     "options": ["NTT_STRICT_MEMORY_MANAGEMENT=1"],
     "command": "cmake -B build/debug -DCMAKE_BUILD_TYPE=Debug {{ options }}"
+  },
+  "engine:release": {
+    "inherit": ["engine:common"],
+    "options": ["NTT_STRICT_MEMORY_MANAGEMENT=0"],
+    "command": "cmake -B build/release -DCMAKE_BUILD_TYPE=Release {{ options }}"
+  },
+  "editor:debug": {
+    "inherit": ["engine:debug"],
+    "options": ["NTT_EDITOR=1", "NTT_ENGINE=0"],
+    "command": "cmake -B build/editor_debug -DCMAKE_BUILD_TYPE=Debug {{ options }}"
   }
 }

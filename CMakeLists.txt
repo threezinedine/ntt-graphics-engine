@@ -11,7 +11,7 @@ ntt_option_with_value(NTT_STRICT_MEMORY_MANAGEMENT OFF)
 file(
     GLOB_RECURSE 
     NTT_GRAPHICS_ENGINE_SOURCES
-    "src/*.c"
+    "src/**/*.c"
 )
 
 file(
@@ -21,18 +21,19 @@ file(
 )
 
 add_executable(
-    ${PROJECT_NAME}
+    ${NTT_PROJECT_NAME}
     ${NTT_GRAPHICS_ENGINE_SOURCES}
     ${NTT_GRAPHICS_ENGINE_HEADERS}
+    ${NTT_MAIN_FILE}
 )
 
 target_include_directories(
-    ${PROJECT_NAME}
+    ${NTT_PROJECT_NAME}
     PRIVATE
     "inc"
 )
 
-attach_options(${PROJECT_NAME})
-attach_flags(${PROJECT_NAME})
+attach_options(${NTT_PROJECT_NAME})
+attach_flags(${NTT_PROJECT_NAME})
 
 ntt_log_options()

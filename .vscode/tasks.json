@@ -2,8 +2,18 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build Engine",
+      "label": "Build Engine (Debug)",
       "command": "cmake --build build/debug",
+      "type": "shell"
+    },
+    {
+      "label": "Build Engine (Release)",
+      "command": "cmake --build build/release",
+      "type": "shell"
+    },
+    {
+      "label": "Build Editor (Debug)",
+      "command": "cmake --build build/editor_debug",
       "type": "shell"
     }
   ]
