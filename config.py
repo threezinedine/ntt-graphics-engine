@@ -110,10 +110,8 @@ def main():
 
     command = profiles[profileName].command
     template = Template(command)
-    rendered_command = template.render(options=cmake_options)
-    logger.info(f"Generated command: {rendered_command}")
-
-    logger.info("Executing command...")
+    rendered_command = template.render(options=cmake_options) + " -Wno-dev"
+    logger.info(f"Executing command: {rendered_command}")
     os.system(rendered_command)
 
 if __name__ == "__main__":

@@ -10,12 +10,10 @@
  */
 enum ntt_Color
 {
-#define ENUM_OPTION(option)				   option,
-#define ENUM_OPTION_NUMBER(option, number) option = number,
-#define ENUM_OPTION_END(name)			   name##_COUNT
+#define ENUM_OPTION(option)	  option,
+#define ENUM_OPTION_END(name) name,
 #include "color.inl"
 #undef ENUM_OPTION
-#undef ENUM_OPTION_NUMBER
 #undef ENUM_OPTION_END
 };
 

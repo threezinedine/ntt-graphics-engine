@@ -19,4 +19,7 @@ typedef u8 b8;
 
 typedef long usize;
 
+#define TRUE  ((b8)1)
+#define FALSE ((b8)0)
+
 #endif /* _TYPES_H_ */

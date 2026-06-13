@@ -36,4 +36,12 @@ target_include_directories(
 attach_options(${NTT_PROJECT_NAME})
 attach_flags(${NTT_PROJECT_NAME})
 
+ntt_find_package(ntt-glfw "Dependencies")
+
+target_link_libraries(
+    ${NTT_PROJECT_NAME}
+    PRIVATE
+    ntt-glfw
+)
+
 ntt_log_options()

@@ -4,6 +4,7 @@
 #include "color.h"
 #include "common.h"
 #include "defs.h"
+#include "id.h"
 #include "memory/memory.h"
 #include "types.h"
 #include "utils/utils.h"
