@@ -11,6 +11,7 @@ logger = logging.getLogger("CONFIG")
 
 class ColorFormatter(logging.Formatter):
     def format(self, record):
+        """Render log records with ANSI colors based on severity level."""
         start_color = ""
         end_color = "\033[0m"
         if record.levelno == logging.DEBUG:
@@ -38,6 +39,13 @@ class Profile:
     command: Optional[str] = None
 
 def extract_options(profiles: dict[str, Profile], profileName: str) -> Dict[str, int]:
+    """
+    Resolve inherited profile options into a flat flag-to-bool mapping.
+
+    :param profiles: A dictionary of profile names to Profile objects.
+    :param profileName: The name of the profile to resolve.
+    :return: A dictionary mapping option keys to 0/1 values.
+    """
     options: Dict[str, int] = {}
 
     for parent in profiles[profileName].inherit:
@@ -53,6 +61,12 @@ def extract_options(profiles: dict[str, Profile], profileName: str) -> Dict[str,
     return options
 
 def make_cmake_options(options: Dict[str, int]) -> str:
+    """
+    Convert profile options to CMake -D KEY=ON/OFF arguments.
+
+    :param options: A dictionary mapping option keys to 0/1 values.
+    :return: A string of CMake options, e.g. "-DNTT_ENGINE=ON -DNTT_EDITOR=OFF".
+    """
     return " ".join([f"-D{key}={'ON' if value == 1 else 'OFF'}" for key, value in options.items()])
 
 def main():
