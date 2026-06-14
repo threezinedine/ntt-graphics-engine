@@ -39,9 +39,9 @@ int main(i32 argc, char** argv)
 	u64 totalTestsCount	 = 0;
 	u64 passedTestsCount = 0;
 
-	RUN_TEST_SUITE(id_tests);
-	RUN_TEST_SUITE(memory_tests);
-	RUN_TEST_SUITE(string_view);
+	RUN_TEST_SUITE(id);
+	RUN_TEST_SUITE(memory);
+	RUN_TEST_SUITE(string);
 
 	const char* testResultMessage		   = "************ TEST RESULT ***********";
 	i32			width					   = (i32)strlen(testResultMessage); // TODO: use self-implemented strlen later

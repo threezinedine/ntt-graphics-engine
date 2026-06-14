@@ -1,5 +1,5 @@
-#ifndef _STRING_VIEW_H_
-#define _STRING_VIEW_H_
+#ifndef _STRING_H_
+#define _STRING_H_
 
 #include "engine/core/result.h"
 #include "engine/core/types.h"
@@ -13,7 +13,7 @@
  *      optimization technique called short string.
  * @note The string view uses the global malloc for memory management.
  */
-struct ntt_StringView
+struct ntt_String
 {
 	/**
 	 * With the short string optimization, if the length < MAX_SHORT_STRING_LENGTH,
@@ -28,22 +28,29 @@ struct ntt_StringView
 	usize length;
 };
 
-typedef struct ntt_StringView ntt_StringView;
+typedef struct ntt_String ntt_String;
 
-DEFINE_RETURN_RESULT_TYPE(ntt_StringView)
+DEFINE_RETURN_RESULT_TYPE(ntt_String)
 
 /**
  * Creates a new string view from the given C-style string. The length of the string view is determined
  *      by the length of the C-style string, excluding the null terminator. The ownership of the c-string
  *      is not transferred to the string view.
  */
-ntt_StringViewResult ntt_StringViewFromCString(const char* cString);
+ntt_StringResult ntt_StringFromCString(const char* cString);
+
+/**
+ * Creates a new string view from the given format string and its corresponding arguments. The length of the
+ *     string view is determined by the length of the formatted string, excluding the null terminator
+ *     The ownership of the format string and its arguments is not transferred to the string view.
+ */
+ntt_StringResult ntt_StringFromFormat(const char* format, ...);
 
 /**
  * Returns the number of the characters in the string view (not including the null terminator)
  */
-usize ntt_StringViewLength(const ntt_StringView* stringView);
+usize ntt_StringLength(const ntt_String* stringView);
 
-ntt_Result ntt_StringViewDestroy(ntt_StringView* stringView);
+ntt_Result ntt_StringDestroy(ntt_String* stringView);
 
-#endif /* _STRING_VIEW_H_ */
+#endif /* _STRING_H_ */

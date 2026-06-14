@@ -40,7 +40,7 @@ TEST_CASE(MemoryLeak)
 	TEST_ASSERT(destroyResult == NTT_RESULT_MEMORY_LEAK);
 }
 
-TEST_SUITE_DEFINE(memory_tests,
+TEST_SUITE_DEFINE(memory,
 				  memory_tests_before_each,
 				  memory_tests_after_each,
 				  TEST_CASE_DECLARE(AllocateAndDeallocate),

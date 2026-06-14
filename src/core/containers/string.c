@@ -1,18 +1,18 @@
-#include "engine/core/containers/string_view.h"
+#include "engine/core/containers/string.h"
 #include "engine/core/memory/memory.h"
 #include "engine/core/result.h"
 #include <string.h>
 
-ntt_StringViewResult ntt_StringViewFromCString(const char* cString)
+ntt_StringResult ntt_StringFromCString(const char* cString)
 {
 	NTT_ASSERT_M(cString != NULL, "cString cannot be NULL");
 	if (cString == NULL)
 	{
-		ntt_StringViewResult result = {.result = NTT_RESULT_NULL_POINTER};
+		ntt_StringResult result = {.result = NTT_RESULT_NULL_POINTER};
 		return result;
 	}
 
-	ntt_StringViewResult result;
+	ntt_StringResult result;
 	result.result = NTT_RESULT_SUCCESS;
 
 	usize length	   = (usize)strlen(cString);
@@ -40,12 +40,12 @@ ntt_StringViewResult ntt_StringViewFromCString(const char* cString)
 	return result;
 }
 
-usize ntt_StringViewLength(const ntt_StringView* stringView)
+usize ntt_StringLength(const ntt_String* stringView)
 {
 	return stringView->length;
 }
 
-ntt_Result ntt_StringViewDestroy(ntt_StringView* stringView)
+ntt_Result ntt_StringDestroy(ntt_String* stringView)
 {
 	if (stringView->length >= NTT_SHORT_STRING_MAX_LENGTH)
 	{

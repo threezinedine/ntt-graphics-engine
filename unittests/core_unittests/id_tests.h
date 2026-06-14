@@ -93,7 +93,7 @@ TEST_CASE(CheckingEqualityOfIDs)
 	TEST_ASSERT(ntt_IsIDEqual(&clone1, &clone2) == FALSE);
 }
 
-TEST_SUITE_DEFINE(id_tests,
+TEST_SUITE_DEFINE(id,
 				  id_tests_before_each,
 				  id_tests_after_each,
 				  TEST_CASE_DECLARE(CreateIDTest),
