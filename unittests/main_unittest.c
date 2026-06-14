@@ -41,6 +41,7 @@ int main(i32 argc, char** argv)
 
 	RUN_TEST_SUITE(id_tests);
 	RUN_TEST_SUITE(memory_tests);
+	RUN_TEST_SUITE(string_view);
 
 	const char* testResultMessage		   = "************ TEST RESULT ***********";
 	i32			width					   = (i32)strlen(testResultMessage); // TODO: use self-implemented strlen later
