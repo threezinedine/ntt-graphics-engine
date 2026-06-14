@@ -36,7 +36,12 @@ typedef struct ntt_TestCase ntt_TestCase;
 		if (!(condition))                                                                                              \
 		{                                                                                                              \
 			g_currentTestResult = FALSE;                                                                               \
-			ntt_FormatMessage(g_currentTestMessage, g_currentTestMessageSize, "Assertion failed: %s", #condition);     \
+			ntt_FormatMessage(g_currentTestMessage,                                                                    \
+							  g_currentTestMessageSize,                                                                \
+							  "Assertion failed: %s\n\tFile: %s:%d",                                                   \
+							  #condition,                                                                              \
+							  __FILE__,                                                                                \
+							  __LINE__);                                                                               \
 			return;                                                                                                    \
 		}                                                                                                              \
 	} while (0)
@@ -72,8 +77,11 @@ typedef struct ntt_TestCase ntt_TestCase;
 			{                                                                                                          \
 				beforeEach();                                                                                          \
 			}                                                                                                          \
-			testCases[i].testFunc();                                                                                   \
-			if (testCases[i].useWrapperCallbacks)                                                                      \
+			if (g_currentTestResult)                                                                                   \
+			{                                                                                                          \
+				testCases[i].testFunc();                                                                               \
+			}                                                                                                          \
+			if (testCases[i].useWrapperCallbacks && g_currentTestResult)                                               \
 			{                                                                                                          \
 				afterEach();                                                                                           \
 			}                                                                                                          \

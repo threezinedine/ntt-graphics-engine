@@ -54,11 +54,23 @@ TEST_CASE(StringViewMemoryLeak)
 	TEST_ASSERT(destroyResult == NTT_RESULT_MEMORY_LEAK);
 }
 
+TEST_CASE(StringView)
+{
+	ntt_StringResult result = ntt_StringFromCString("Hello, World!");
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	ntt_StringView stringView = ntt_stringToView(&result.data);
+	TEST_ASSERT(stringView.pBuffer != NULL);
+	TEST_ASSERT(stringView.length == 13);
+	TEST_ASSERT(memcmp(stringView.pBuffer, "Hello, World!", 13) == 0);
+}
+
 TEST_SUITE_DEFINE(string,
 				  string_tests_before_each,
 				  string_tests_after_each,
 				  TEST_CASE_DECLARE(ShortString),
 				  TEST_CASE_DECLARE(LongString),
+				  TEST_CASE_DECLARE(StringView),
 				  TEST_CASE_DECLARE_WITHOUT_WRAPPER(StringViewMemoryLeak))
 
 #endif /* _STRING_TESTS_H_ */

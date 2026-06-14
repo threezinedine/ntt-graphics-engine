@@ -15,6 +15,8 @@
  */
 struct ntt_String
 {
+	b8 isShortString; // This field is used for indicating whether the string is a short string or a long string, this
+					  // is used for determining which buffer to use when accessing the string data.
 	/**
 	 * With the short string optimization, if the length < MAX_SHORT_STRING_LENGTH,
 	 *      the string is stored in the pBuffer, otherwise, it is stored in the pLongBuffer.
@@ -29,6 +31,17 @@ struct ntt_String
 };
 
 typedef struct ntt_String ntt_String;
+
+/**
+ * Be passed as the input arguments
+ */
+struct ntt_StringView
+{
+	const char* pBuffer;
+	usize		length;
+};
+
+typedef struct ntt_StringView ntt_StringView;
 
 DEFINE_RETURN_RESULT_TYPE(ntt_String)
 
@@ -52,5 +65,7 @@ ntt_StringResult ntt_StringFromFormat(const char* format, ...);
 usize ntt_StringLength(const ntt_String* stringView);
 
 ntt_Result ntt_StringDestroy(ntt_String* stringView);
+
+ntt_StringView ntt_stringToView(ntt_String* pStr);
 
 #endif /* _STRING_H_ */
