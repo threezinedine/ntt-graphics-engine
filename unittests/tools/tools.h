@@ -55,10 +55,10 @@ typedef struct ntt_TestCase ntt_TestCase;
 	void run_##testSuit##_tests(u64* pTestsCount, u64* pTestsPassed)                                                   \
 	{                                                                                                                  \
 		ntt_TestCase testCases[] = {__VA_ARGS__};                                                                      \
-		u32			 testsCount	 = sizeof(testCases) / sizeof(ntt_TestCase);                                           \
+		u64			 testsCount	 = (u64)(sizeof(testCases) / sizeof(ntt_TestCase));                                    \
 		*pTestsCount			 = *pTestsCount + testsCount;                                                          \
-		u32 testsPassed			 = 0;                                                                                  \
-		for (u32 i = 0; i < testsCount; i++)                                                                           \
+		u64 testsPassed			 = 0;                                                                                  \
+		for (u64 i = 0; i < testsCount; i++)                                                                           \
 		{                                                                                                              \
 			beforeEach();                                                                                              \
 			g_currentTestResult = TRUE;                                                                                \

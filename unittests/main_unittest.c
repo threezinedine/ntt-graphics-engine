@@ -50,8 +50,11 @@ int main(i32 argc, char** argv)
 		ntt_FormatMessage(
 			resultMessage, sizeof(resultMessage), "All tests passed! (%llu/%llu)", passedTestsCount, totalTestsCount);
 
-		centerContent(
-			centeredResultMessage, sizeof(centeredResultMessage), resultMessage, strlen(resultMessage), width - 2);
+		centerContent(centeredResultMessage,
+					  sizeof(centeredResultMessage),
+					  resultMessage,
+					  (usize)strlen(resultMessage),
+					  (usize)width - 2); // TODO: use self-implemented strlen later
 
 		ntt_ConsoleSetColor(NTT_COLOR_GREEN);
 		ntt_ConsolePrint("%s\n", testResultMessage);
@@ -63,7 +66,7 @@ int main(i32 argc, char** argv)
 			resultMessage, sizeof(resultMessage), "Some tests failed! (%llu/%llu)", passedTestsCount, totalTestsCount);
 
 		centerContent(
-			centeredResultMessage, sizeof(centeredResultMessage), resultMessage, strlen(resultMessage), width - 2);
+			centeredResultMessage, sizeof(centeredResultMessage), resultMessage, (usize)strlen(resultMessage), (usize)width - 2);
 
 		ntt_ConsoleSetColor(NTT_COLOR_RED);
 		ntt_ConsolePrint("%s\n", testResultMessage);
