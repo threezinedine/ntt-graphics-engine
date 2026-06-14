@@ -71,10 +71,16 @@ b8 ntt_IsIDValid(ID* pId)
 
 ntt_Result ntt_UpdateID(ID* id)
 {
-	NTT_ASSERT_M(id != NULL, "ID pointer is NULL");
+	if (id == NULL)
+	{
+		return NTT_RESULT_UPDATE_NULL_ID;
+	}
 	u64 meta = s_IDMetas[id->index];
 
-	NTT_ASSERT_M(ntt_IsIDValid(id), "Cannot update an invalid ID");
+	if (!ntt_IsIDValid(id))
+	{
+		return NTT_RESULT_UPDATE_INVALID_ID;
+	}
 
 	u64 type	= TYPE_FROM_META(meta);
 	u64 version = VERSION_FROM_META(meta);
