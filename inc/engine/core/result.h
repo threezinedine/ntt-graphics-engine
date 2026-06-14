@@ -2,6 +2,7 @@
 #define _RESULT_H_
 
 #include "defs.h"
+#include "engine/core/types.h"
 
 /**
  * The methods inside the engine should return a result code to indicate the function status.
@@ -44,7 +45,7 @@ DEFINE_RETURN_RESULT_TYPE(f32)
 DEFINE_RETURN_RESULT_TYPE(b8)
 DEFINE_RETURN_RESULT_TYPE(usize)
 
-#if NTT_DEBUG
+#if NTT_DEBUG && NTT_ENABLE_ASSERT
 #define NTT_SUCCESS_ASSERT(express)                                                                                    \
 	do                                                                                                                 \
 	{                                                                                                                  \
@@ -70,7 +71,7 @@ DEFINE_RETURN_RESULT_TYPE(usize)
 	{                                                                                                                  \
 		if (result.result != NTT_RESULT_SUCCESS)                                                                       \
 		{                                                                                                              \
-			return result;                                                                                             \
+			return result.result;                                                                                      \
 		}                                                                                                              \
 	} while (0)
 #endif /* NTT_DEBUG */

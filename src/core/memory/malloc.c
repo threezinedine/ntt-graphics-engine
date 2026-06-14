@@ -1,6 +1,7 @@
 #include "engine/core/memory/malloc.h"
 #include "engine/core/defs.h"
 #include "engine/core/utils/backtrace.h"
+#include "engine/core/utils/console.h"
 #include <stdlib.h>
 
 /**
@@ -27,13 +28,14 @@ typedef struct ntt_MallocBlockHeader
 #endif /* NTT_STRICT_MEMORY_MANAGEMENT */
 } ntt_MallocBlockHeader;
 
-static void* allocate(ntt_Allocator* allocator, usize size);
-static void	 deallocate(ntt_Allocator* allocator, void* ptr, usize size);
-static void	 destroy(ntt_Allocator* allocator);
+static voidPtrResult allocate(ntt_Allocator* allocator, usize size);
+static ntt_Result	 deallocate(ntt_Allocator* allocator, void* ptr, usize size);
+static ntt_Result	 destroy(ntt_Allocator* allocator);
 
-ntt_Allocator* ntt_CreateMallocAllocator()
+AllocatorResult ntt_CreateMallocAllocator()
 {
-	ntt_Allocator* allocator = (ntt_Allocator*)malloc(sizeof(ntt_Allocator));
+	AllocatorResult result;
+	ntt_Allocator*	allocator = (ntt_Allocator*)malloc(sizeof(ntt_Allocator));
 	NTT_ASSERT(allocator != NULL);
 
 	allocator->allocate	  = allocate;
@@ -46,11 +48,14 @@ ntt_Allocator* ntt_CreateMallocAllocator()
 
 	pMallocState->allocatedBytes = 0;
 
-	return allocator;
+	result.result	  = NTT_RESULT_SUCCESS;
+	result.pAllocator = allocator;
+	return result;
 }
 
-static void* allocate(ntt_Allocator* allocator, usize size)
+static voidPtrResult allocate(ntt_Allocator* allocator, usize size)
 {
+	voidPtrResult result;
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->pInternalState != NULL);
 
@@ -65,10 +70,12 @@ static void* allocate(ntt_Allocator* allocator, usize size)
 	pHeader->backtraceInfo = ntt_CaptureCallStack();
 #endif /* NTT_STRICT_MEMORY_MANAGEMENT */
 
-	return ptr;
+	result.pData  = ptr;
+	result.result = NTT_RESULT_SUCCESS;
+	return result;
 }
 
-static void deallocate(ntt_Allocator* allocator, void* ptr, usize size)
+static ntt_Result deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 {
 	NTT_ASSERT(allocator != NULL);
 	NTT_ASSERT(allocator->pInternalState != NULL);
@@ -77,6 +84,7 @@ static void deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 	ntt_MallocBlockHeader* pHeader = (ntt_MallocBlockHeader*)((char*)ptr - sizeof(ntt_MallocBlockHeader));
 
 #if NTT_STRICT_MEMORY_MANAGEMENT
+#if !NTT_TESTS
 	if (pHeader->size != size)
 	{
 		// Print the call stack information of the allocation point.
@@ -89,11 +97,16 @@ static void deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 		ntt_PrintCallStack(NULL);
 		ntt_ConsoleResetColor();
 	}
+#endif /* !NTT_TESTS */
 
 	NTT_ASSERT_M(pHeader->size == size,
 				 "Deallocation size does not match allocated size. Allocated size: %zu, deallocation size: %zu.\n",
 				 pHeader->size,
 				 size);
+	if (pHeader->size != size)
+	{
+		return NTT_RESULT_FREE_MISMATCH_SIZE;
+	}
 #else
 	if (pHeader->size != size)
 	{
@@ -112,6 +125,7 @@ static void deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 	}
 	else
 	{
+#if !NTT_TESTS
 #if NTT_STRICT_MEMORY_MANAGEMENT
 		// Print the call stack information of the allocation point.
 		ntt_ConsoleSetColor(NTT_COLOR_RED);
@@ -128,22 +142,37 @@ static void deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 			size);
 		ntt_ConsoleResetColor();
 #endif /* NTT_STRICT_MEMORY_MANAGEMENT */
+#endif /* !NTT_TESTS */
 
 		pMallocState->allocatedBytes = 0;
 	}
 
 	free(pHeader);
+	return NTT_RESULT_SUCCESS;
 }
 
-static void destroy(ntt_Allocator* allocator)
+static ntt_Result destroy(ntt_Allocator* allocator)
 {
 	NTT_ASSERT(allocator != NULL);
+	if (allocator == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
 	NTT_ASSERT(allocator->pInternalState != NULL);
+	if (allocator->pInternalState == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
 
 	NTT_ASSERT_M(((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes == 0,
 				 "Memory leak detected: %zu bytes still allocated.",
 				 (((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes));
+	if (((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes != 0)
+	{
+		return NTT_RESULT_MEMORY_LEAK;
+	}
 
 	free(allocator->pInternalState);
 	free(allocator);
+	return NTT_RESULT_SUCCESS;
 }

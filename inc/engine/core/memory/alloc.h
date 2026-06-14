@@ -1,7 +1,16 @@
 #ifndef _ALLOC_H_
 #define _ALLOC_H_
 
+#include "engine/core/result.h"
 #include "engine/core/types.h"
+
+struct voidPtrResult
+{
+	ntt_Result result;
+	void*	   pData;
+};
+
+typedef struct voidPtrResult voidPtrResult;
 
 /**
  * The common internal state of the allocator interface, which is used for allocating and deallocating memory
@@ -32,7 +41,7 @@ typedef struct ntt_Allocator
 	 *      was successful or not. If NULL is returned, it means that the allocation failed, the owner should handle
 	 *      the failure case accordingly, such as logging an error message, trying a different allocator, etc.
 	 */
-	void* (*allocate)(struct ntt_Allocator* allocator, usize size);
+	voidPtrResult (*allocate)(struct ntt_Allocator* allocator, usize size);
 
 	/**
 	 * The function pointer which is the detailed implementation of the deallocation logic for the specific allocator.
@@ -57,7 +66,7 @@ typedef struct ntt_Allocator
 	 *      parameter depends on the specific allocator implementation, but it generally provides additional information
 	 *      for debugging purposes.
 	 */
-	void (*deallocate)(struct ntt_Allocator* allocator, void* ptr, usize size);
+	ntt_Result (*deallocate)(struct ntt_Allocator* allocator, void* ptr, usize size);
 
 	/**
 	 * The function pointer which is the detailed implementation of the destroy logic for the specific allocator, which
@@ -69,8 +78,16 @@ typedef struct ntt_Allocator
 	 *      the destroy function, so that it can access the internal state of the allocator and perform the necessary
 	 *      cleanup operations accordingly. This parameter can not be NULL or trigger an assertion failure.
 	 */
-	void (*destroy)(struct ntt_Allocator* allocator);
+	ntt_Result (*destroy)(struct ntt_Allocator* allocator);
 } ntt_Allocator;
+
+struct AllocatorResult
+{
+	ntt_Result	   result;
+	ntt_Allocator* pAllocator;
+};
+
+typedef struct AllocatorResult AllocatorResult;
 
 /**
  * Interface for allocating a memory block of the specified size using the given allocator.
@@ -89,7 +106,7 @@ typedef struct ntt_Allocator
  *      successful or not. If NULL is returned, it means that the allocation failed, the owner should handle the failure
  *      case accordingly, such as logging an error message, trying a different allocator, etc.
  */
-void* ntt_Allocate(ntt_Allocator* allocator, usize size);
+voidPtrResult ntt_Allocate(ntt_Allocator* allocator, usize size);
 
 /**
  * Interface for deallocating a memory block pointed by the given pointer using the specified allocator. The behavior of
@@ -115,7 +132,7 @@ void* ntt_Allocate(ntt_Allocator* allocator, usize size);
  *      ignored.
  *
  */
-void ntt_Deallocate(ntt_Allocator* allocator, void* ptr, usize size);
+ntt_Result ntt_Deallocate(ntt_Allocator* allocator, void* ptr, usize size);
 
 /**
  * The method for destroying the any types of the allocator instance, which is used for cleaning up the internal
@@ -126,6 +143,6 @@ void ntt_Deallocate(ntt_Allocator* allocator, void* ptr, usize size);
  *      destroy function, so that it can access the internal state of the allocator and perform the necessary cleanup
  *      operations accordingly. This parameter can not be NULL or trigger an assertion failure.
  */
-void ntt_DestroyAllocator(ntt_Allocator* allocator);
+ntt_Result ntt_DestroyAllocator(ntt_Allocator* allocator);
 
 #endif /* _ALLOC_H_ */

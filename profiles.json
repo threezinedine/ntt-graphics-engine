@@ -20,7 +20,12 @@
   },
   "tests:debug": {
     "inherit": ["engine:debug"],
-    "options": ["NTT_TESTS=1", "NTT_EDITOR=0", "NTT_ENGINE=0"],
+    "options": [
+      "NTT_TESTS=1",
+      "NTT_EDITOR=0",
+      "NTT_ENGINE=0",
+      "NTT_ENABLE_ASSERT=0"
+    ],
     "command": "cmake -B build/tests_debug -DCMAKE_BUILD_TYPE=Debug {{ options }}"
   }
 }

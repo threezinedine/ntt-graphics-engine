@@ -2,11 +2,12 @@
 #include "tools/tools.h"
 #include <string.h> // TODO: use self-implemented string functions later
 
-int	   g_argc;
-char** g_argv;
-b8	   g_currentTestResult		 = TRUE;
-char   g_currentTestMessage[256] = {0};
-usize  g_currentTestMessageSize	 = sizeof(g_currentTestMessage);
+int			g_argc;
+char**		g_argv;
+b8			g_currentTestResult		  = TRUE;
+char		g_currentTestMessage[256] = {0};
+usize		g_currentTestMessageSize  = sizeof(g_currentTestMessage);
+const char* g_currentTestCase		  = NULL;
 
 #include "core_unittests/core_unittests.h"
 
@@ -39,6 +40,7 @@ int main(i32 argc, char** argv)
 	u64 passedTestsCount = 0;
 
 	RUN_TEST_SUITE(id_tests);
+	RUN_TEST_SUITE(memory_tests);
 
 	const char* testResultMessage		   = "************ TEST RESULT ***********";
 	i32			width					   = (i32)strlen(testResultMessage); // TODO: use self-implemented strlen later
@@ -65,8 +67,11 @@ int main(i32 argc, char** argv)
 		ntt_FormatMessage(
 			resultMessage, sizeof(resultMessage), "Some tests failed! (%llu/%llu)", passedTestsCount, totalTestsCount);
 
-		centerContent(
-			centeredResultMessage, sizeof(centeredResultMessage), resultMessage, (usize)strlen(resultMessage), (usize)width - 2);
+		centerContent(centeredResultMessage,
+					  sizeof(centeredResultMessage),
+					  resultMessage,
+					  (usize)strlen(resultMessage),
+					  (usize)width - 2);
 
 		ntt_ConsoleSetColor(NTT_COLOR_RED);
 		ntt_ConsolePrint("%s\n", testResultMessage);

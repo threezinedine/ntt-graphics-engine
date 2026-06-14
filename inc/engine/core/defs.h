@@ -15,7 +15,7 @@
  */
 #define NTT_UNUSED(x) (void)(x)
 
-#if NTT_DEBUG
+#if NTT_DEBUG && NTT_ENABLE_ASSERT
 #include "engine/core/utils/utils.h"
 #if NTT_PLATFORM_UNIX
 #include <stdlib.h>

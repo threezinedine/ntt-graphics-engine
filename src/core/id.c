@@ -32,6 +32,7 @@ ntt_Result ntt_DestroyIDSystem()
 
 IDResult ntt_NewID(ntt_ObjectType type)
 {
+	NTT_ASSERT(s_currentIndex < MAX_OBJECTS);
 	if (s_currentIndex >= MAX_OBJECTS)
 	{
 		return (IDResult){.result = NTT_RESULT_EXCEEDED_MAX_OBJECTS, .data = INVALID_ID};
@@ -49,6 +50,7 @@ IDResult ntt_NewID(ntt_ObjectType type)
 
 b8 ntt_IsIDValid(ID* pId)
 {
+	NTT_ASSERT(pId != NULL);
 	if (pId == NULL)
 	{
 		return FALSE;
@@ -71,12 +73,14 @@ b8 ntt_IsIDValid(ID* pId)
 
 ntt_Result ntt_UpdateID(ID* id)
 {
+	NTT_ASSERT(id != NULL);
 	if (id == NULL)
 	{
 		return NTT_RESULT_UPDATE_NULL_ID;
 	}
 	u64 meta = s_IDMetas[id->index];
 
+	NTT_ASSERT(ntt_IsIDValid(id));
 	if (!ntt_IsIDValid(id))
 	{
 		return NTT_RESULT_UPDATE_INVALID_ID;
@@ -97,6 +101,7 @@ IDResult ntt_GetIDByID(ID* pId)
 {
 	u64 meta = s_IDMetas[pId->index];
 
+	NTT_ASSERT(meta != INVALID_META);
 	if (meta == INVALID_META)
 	{
 		return (IDResult){.result = NTT_RESULT_ID_IS_NOT_ALLOCATED, .data = INVALID_ID};
