@@ -25,12 +25,13 @@ add_executable(
     ${NTT_GRAPHICS_ENGINE_SOURCES}
     ${NTT_GRAPHICS_ENGINE_HEADERS}
     ${NTT_MAIN_FILE}
+    ${NTT_ADDITIONAL_SOURCES}
 )
 
 target_include_directories(
     ${NTT_PROJECT_NAME}
     PRIVATE
-    "inc"
+    ${NTT_INCLUDE_DIRS}
 )
 
 attach_options(${NTT_PROJECT_NAME})

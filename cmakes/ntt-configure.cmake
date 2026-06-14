@@ -42,12 +42,22 @@ macro(ntt_setup)
     if (NTT_EDITOR)
         set(NTT_MAIN_FILE "src/main_editor.c")
         set(NTT_PROJECT_NAME "ntt-graphics-editor")
+        set(NTT_INCLUDE_DIRS "inc")
+        set(NTT_ADDITIONAL_SOURCES "")
     elseif (NTT_ENGINE)
         set(NTT_MAIN_FILE "src/main_engine.c")
         set(NTT_PROJECT_NAME "ntt-graphics-engine")
+        set(NTT_INCLUDE_DIRS "inc")
+        set(NTT_ADDITIONAL_SOURCES "")
     elseif (NTT_TESTS)
         set(NTT_MAIN_FILE "unittests/main_unittest.c")
         set(NTT_PROJECT_NAME "ntt-graphics-tests")
+        set(NTT_INCLUDE_DIRS "unittests" "inc")
+        file(
+            GLOB_RECURSE 
+            NTT_ADDITIONAL_SOURCES
+            "unittests/*"
+        )
     else()
         message(FATAL_ERROR "Internal CMake error")
     endif()

@@ -27,4 +27,10 @@ ntt_Result ntt_MemoryGlobalsInitialize();
  */
 ntt_Result ntt_MemoryGlobalsDestroy();
 
+/**
+ * Assign the specified value to the memory block pointed by dest, for size bytes. This is used for initializing or
+ *      resetting a memory block to a specific value, such as 0 for zero-initial.
+ */
+ntt_Result ntt_Memset(void* dest, u8 value, usize size);
+
 #endif /* _MEMORY_H_ */
