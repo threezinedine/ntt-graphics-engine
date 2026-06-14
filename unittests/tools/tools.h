@@ -51,7 +51,7 @@ typedef struct ntt_TestCase ntt_TestCase;
 		}                                                                                                              \
 	} while (0)
 
-#define TEST_SUITE_DEFINE(testSuit, ...)                                                                               \
+#define TEST_SUITE_DEFINE(testSuit, beforeEach, afterEach, ...)                                                        \
 	void run_##testSuit##_tests(u64* pTestsCount, u64* pTestsPassed)                                                   \
 	{                                                                                                                  \
 		ntt_TestCase testCases[] = {__VA_ARGS__};                                                                      \
@@ -60,6 +60,7 @@ typedef struct ntt_TestCase ntt_TestCase;
 		u32 testsPassed			 = 0;                                                                                  \
 		for (u32 i = 0; i < testsCount; i++)                                                                           \
 		{                                                                                                              \
+			beforeEach();                                                                                              \
 			g_currentTestResult = TRUE;                                                                                \
 			ntt_Memset(g_currentTestMessage, 0, g_currentTestMessageSize);                                             \
 			g_currentTestMessageSize = sizeof(g_currentTestMessage);                                                   \
@@ -79,6 +80,7 @@ typedef struct ntt_TestCase ntt_TestCase;
 			}                                                                                                          \
 			ntt_ConsoleSetColor(NTT_COLOR_GREEN);                                                                      \
 			ntt_ConsolePrint("##########################\n\n");                                                        \
+			afterEach();                                                                                               \
 		}                                                                                                              \
 		*pTestsPassed = *pTestsPassed + testsPassed;                                                                   \
 	}

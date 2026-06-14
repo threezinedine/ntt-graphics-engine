@@ -5,6 +5,12 @@
 #include "result.h"
 #include "types.h"
 
+#if !NTT_TESTS
+#define MAX_OBJECTS 1000
+#else /* NTT_TESTS */
+#define MAX_OBJECTS 100
+#endif /* NTT_TESTS */
+
 /**
  * The number which is used for managing the objectives inside the engine, each object in side the engine must
  *      contains 1 and only 1 ID, the ID is unique for each object, and it is used for identifying the object,

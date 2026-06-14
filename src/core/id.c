@@ -1,8 +1,6 @@
 #include "engine/core/id.h"
 #include "engine/core/defs.h"
 
-#define MAX_OBJECTS 1000
-
 static u64 s_currentIndex = 0;
 static u64 s_IDMetas[MAX_OBJECTS];
 
@@ -34,7 +32,6 @@ ntt_Result ntt_DestroyIDSystem()
 
 IDResult ntt_NewID(ntt_ObjectType type)
 {
-	NTT_ASSERT_M(s_currentIndex < MAX_OBJECTS, "Exceeded the maximum number of objects: %llu", MAX_OBJECTS);
 	if (s_currentIndex >= MAX_OBJECTS)
 	{
 		return (IDResult){.result = NTT_RESULT_EXCEEDED_MAX_OBJECTS, .data = INVALID_ID};

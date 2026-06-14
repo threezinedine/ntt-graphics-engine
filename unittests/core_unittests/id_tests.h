@@ -1,18 +1,41 @@
 #ifndef _ID_TESTS_H_
 #define _ID_TESTS_H_
 
+#include "engine/engine.h"
 #include "tools/tools.h"
 
-TEST_CASE(ExampleTest)
+void id_tests_before_each()
 {
-	TEST_ASSERT(1 == 1);
+	ntt_InitializeIDSystem();
 }
 
-TEST_CASE(ExampleTest2)
+void id_tests_after_each()
 {
-	TEST_ASSERT(2 == 3);
+	ntt_DestroyIDSystem();
 }
 
-TEST_SUITE_DEFINE(id_tests, TEST_CASE_DECLARE(ExampleTest), TEST_CASE_DECLARE(ExampleTest2))
+TEST_CASE(CreateIDTest)
+{
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+}
+
+TEST_CASE(ExceedMaxObjectsTest)
+{
+	for (u64 i = 0; i < MAX_OBJECTS; i++)
+	{
+		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+		TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+	}
+
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	TEST_ASSERT(result.result == NTT_RESULT_EXCEEDED_MAX_OBJECTS);
+}
+
+TEST_SUITE_DEFINE(id_tests,
+				  id_tests_before_each,
+				  id_tests_after_each,
+				  TEST_CASE_DECLARE(CreateIDTest),
+				  TEST_CASE_DECLARE(ExceedMaxObjectsTest))
 
 #endif /* _ID_TESTS_H_ */
