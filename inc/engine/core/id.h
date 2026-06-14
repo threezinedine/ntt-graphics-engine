@@ -29,6 +29,8 @@ struct ID
 
 typedef struct ID ID;
 
+DEFINE_RETURN_RESULT_TYPE(ID)
+
 // #define INVALID_ID ((ID){.type = NTT_OBJECT_TYPE_NONE, .version = (u32) - 1, .index = (u64) - 1})
 #define INVALID_ID_INIT {.type = NTT_OBJECT_TYPE_NONE, .version = (u32) - 1, .index = (u64) - 1}
 
@@ -51,7 +53,7 @@ ntt_Result ntt_DestroyIDSystem();
  * @param type The type of the object which is used for identifying the object.
  * @return A new, unique ID for the object.
  */
-ID ntt_NewID(ntt_ObjectType type);
+IDResult ntt_NewID(ntt_ObjectType type);
 
 /**
  * Check if the ID is valid or not (the version of the ID is the same as the version at the ID manager).
@@ -66,9 +68,9 @@ b8 ntt_IsIDValid(ID* pId);
  *
  * @param pId The ID to be obtained, if the ID is invalid, it will return an invalid ID. No matter the version, type
  * 		of the ID, the same index is used only for this method.
- * @return The copied ID from the ID manager, if the ID is invalid, it will
+ * @return The copied ID from the ID manager, if the ID is invalid, it will return an invalid ID.
  */
-ID ntt_GetIDByID(ID* pId);
+IDResult ntt_GetIDByID(ID* pId);
 
 /**
  * Notify that the ID has been updated, this will increase the version of the ID.

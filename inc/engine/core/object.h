@@ -39,7 +39,9 @@ struct ntt_Object
 	static ID* s_pBaseTypeID  = NULL;                                                                                  \
 	ntt_Result objectType##RegisterType()                                                                              \
 	{                                                                                                                  \
-		objectType##ID = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);                                                         \
+		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);                                                        \
+		NTT_SUCCESS_ASSERT_RETURN(result);                                                                             \
+		objectType##ID = result.data;                                                                                  \
 		s_pBaseTypeID  = &baseType##ID;                                                                                \
 		return NTT_RESULT_SUCCESS;                                                                                     \
 	}                                                                                                                  \

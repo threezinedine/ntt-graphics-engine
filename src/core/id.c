@@ -32,15 +32,22 @@ ntt_Result ntt_DestroyIDSystem()
 	return NTT_RESULT_SUCCESS;
 }
 
-ID ntt_NewID(ntt_ObjectType type)
+IDResult ntt_NewID(ntt_ObjectType type)
 {
 	NTT_ASSERT_M(s_currentIndex < MAX_OBJECTS, "Exceeded the maximum number of objects: %llu", MAX_OBJECTS);
+	if (s_currentIndex >= MAX_OBJECTS)
+	{
+		return (IDResult){.result = NTT_RESULT_EXCEEDED_MAX_OBJECTS, .data = INVALID_ID};
+	}
+
 	u64 index = s_currentIndex;
 	s_currentIndex++;
 
 	s_IDMetas[index] = META_FROM_TYPE_AND_VERSION(type, 0);
 
-	return (ID){.type = type, .version = 0, .index = index};
+	return (IDResult){
+		.result = NTT_RESULT_SUCCESS, .data = {.type = type, .version = 0, .index = index}
+	  };
 }
 
 b8 ntt_IsIDValid(ID* pId)
@@ -83,16 +90,19 @@ ntt_Result ntt_UpdateID(ID* id)
 	return NTT_RESULT_SUCCESS;
 }
 
-ID ntt_GetIDByID(ID* pId)
+IDResult ntt_GetIDByID(ID* pId)
 {
 	u64 meta = s_IDMetas[pId->index];
 
 	if (meta == INVALID_META)
 	{
-		return INVALID_ID;
+		return (IDResult){.result = NTT_RESULT_ID_IS_NOT_ALLOCATED, .data = INVALID_ID};
 	}
 
-	return (ID){.type = TYPE_FROM_META(meta), .version = VERSION_FROM_META(meta), .index = pId->index};
+	return (IDResult){
+		.result = NTT_RESULT_SUCCESS,
+		.data	= {.type = TYPE_FROM_META(meta), .version = VERSION_FROM_META(meta), .index = pId->index}
+	 };
 }
 
 b8 ntt_IsIDEqual(ID* a, ID* b)
