@@ -19,6 +19,14 @@
       "program": "${workspaceFolder}/build/editor_debug/ntt-graphics-editor",
       "cwd": "${workspaceFolder}/build/editor_debug",
       "preLaunchTask": "Build Editor (Debug)"
+    },
+    {
+      "name": "Tests",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/tests_debug/ntt-graphics-tests",
+      "cwd": "${workspaceFolder}/build/tests_debug",
+      "preLaunchTask": "Build Tests (Debug)"
     }
   ]
 }

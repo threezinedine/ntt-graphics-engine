@@ -15,6 +15,11 @@
       "label": "Build Editor (Debug)",
       "command": "cmake --build build/editor_debug",
       "type": "shell"
+    },
+    {
+      "label": "Build Tests (Debug)",
+      "command": "cmake --build build/tests_debug",
+      "type": "shell"
     }
   ]
 }
