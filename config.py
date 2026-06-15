@@ -81,6 +81,8 @@ def main():
 
     profiles: dict[str, Profile] = {}
 
+    usedProfile = "engine:debug"
+
     with open("profiles.json", "r") as f:
         config = json.load(f)
         logger.debug(f"\nLoaded config: {json.dumps(config, indent=4)}")
@@ -89,26 +91,27 @@ def main():
             profiles[profileName] = from_dict(Profile, config[profileName])
 
     if args.profile == "default":
-        profileName = "engine:debug"
+        usedProfile = "engine:debug"
     elif args.profile not in profiles:
-        # change color to green
         logger.warning(f"Profile \"{args.profile}\" not found, using default profile")
-        profileName = "engine:debug"
+        usedProfile = "engine:debug"
+    else:
+        usedProfile = args.profile
 
-    logger.info(f"Using profile: {profileName}")
+    logger.info(f"Using profile: {usedProfile}")
 
-    options = extract_options(profiles, profileName)
+    options = extract_options(profiles, usedProfile)
 
-    logger.debug(f"\n--------- Options for profile {profileName} -----------\n{json.dumps(options, indent=4)}")
+    logger.debug(f"\n--------- Options for profile {usedProfile} -----------\n{json.dumps(options, indent=4)}")
 
     cmake_options = make_cmake_options(options)
     logger.debug(f"CMake options: {cmake_options}")
 
-    if profiles[profileName].command is None:
+    if profiles[usedProfile].command is None:
         logger.error("Custom command is not supported yet, cannot execute it")
         return
 
-    command = profiles[profileName].command
+    command = profiles[usedProfile].command
     template = Template(command)
     rendered_command = template.render(options=cmake_options) + " -Wno-dev"
     logger.info(f"Executing command: {rendered_command}")

@@ -8,7 +8,7 @@
 
 void ntt_ConsoleSetColor(enum ntt_Color color)
 {
-#if NTT_PLATFORM_UNIX
+#if NTT_PLATFORM_UNIX || NTT_PLATFORM_WEB
 	switch (color)
 	{
 	case NTT_COLOR_BLACK:
@@ -46,7 +46,8 @@ void ntt_ConsoleSetColor(enum ntt_Color color)
 
 	int icolor;
 
-	switch (color) {
+	switch (color)
+	{
 	case NTT_COLOR_BLACK:
 		icolor = 0;
 		break;
@@ -87,7 +88,7 @@ void ntt_ConsoleSetColor(enum ntt_Color color)
 
 void ntt_ConsoleResetColor()
 {
-#if NTT_PLATFORM_UNIX
+#if NTT_PLATFORM_UNIX || NTT_PLATFORM_WEB
 	printf("\033[0m");
 #elif NTT_PLATFORM_WINDOWS
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

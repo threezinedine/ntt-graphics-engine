@@ -3,7 +3,7 @@
 
 void ntt_GetCurrentTime(struct ntt_Time* pTime)
 {
-#if NTT_PLATFORM_UNIX
+#if NTT_PLATFORM_UNIX || NTT_PLATFORM_WEB
 	time_t	   rawTime;
 	struct tm* timeInfo;
 	time(&rawTime);

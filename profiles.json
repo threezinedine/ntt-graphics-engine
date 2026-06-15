@@ -13,6 +13,11 @@
     "options": ["NTT_STRICT_MEMORY_MANAGEMENT=0", "NTT_ENGINE=1"],
     "command": "cmake -B build/release -DCMAKE_BUILD_TYPE=Release {{ options }}"
   },
+  "engine:web:debug": {
+    "inherit": ["engine:debug"],
+    "options": [],
+    "command": "emcmake cmake -B build/web_debug -DCMAKE_BUILD_TYPE=Debug {{ options }}"
+  },
   "editor:debug": {
     "inherit": ["engine:debug"],
     "options": ["NTT_EDITOR=1", "NTT_ENGINE=0"],

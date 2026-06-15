@@ -47,6 +47,8 @@ void ntt_PrintCallStack(ntt_BacktraceInfo* pInfo)
 
 #elif NTT_PLATFORM_WINDOWS
 	NTT_UNUSED(pInfo);
+#elif NTT_PLATFORM_WEB /* NTT_PLATFORM_UNIX */
+	NTT_UNUSED(pInfo);
 #else
 #error "Unknown platform."
 #endif /* NTT_PLATFORM_UNIX */
@@ -59,6 +61,8 @@ ntt_BacktraceInfo ntt_CaptureCallStack()
 	info.frames = backtrace(info.backtraces, MAX_CALLSTACK_DEPTH);
 #elif NTT_PLATFORM_WINDOWS /* NTT_PLATFORM_UNIX */
 	info.frames = (int)CaptureStackBackTrace(0, MAX_CALLSTACK_DEPTH, info.backtraces, NULL);
+#elif NTT_PLATFORM_WEB	   /* NTT_PLATFORM_UNIX */
+	NTT_UNUSED(info);
 #else
 #error "Unknown platform."
 #endif /* NTT_PLATFORM_UNIX */

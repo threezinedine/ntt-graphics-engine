@@ -85,7 +85,10 @@ function(ntt_validate_radio_options options)
 endfunction()
 
 macro(ntt_platform_detect)
-    if (WIN32)
+    if (EMSCRIPTEN)
+        set(NTT_PLATFORM_WEB ON)
+        list(APPEND NTT_OPTIONS "NTT_PLATFORM_WEB")
+    elseif (WIN32)
         set(NTT_PLATFORM_WINDOWS ON)
         list(APPEND NTT_OPTIONS "NTT_PLATFORM_WINDOWS")
         

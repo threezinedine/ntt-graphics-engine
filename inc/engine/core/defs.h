@@ -27,6 +27,8 @@
 #endif
 #elif NTT_PLATFORM_WINDOWS /* NTT_PLATFORM_UNIX */
 #define NTT_DEBUG_BREAK() __debugbreak()
+#elif NTT_PLATFORM_WEB /* NTT_PLATFORM_UNIX */
+#define NTT_DEBUG_BREAK()
 #else /* NTT_PLATFORM_UNIX*/
 #error "Unknown platform."
 #endif /* NTT_PLATFORM_UNIX */
