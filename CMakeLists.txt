@@ -45,6 +45,16 @@ target_link_libraries(
     ntt-glfw
 )
 
+if (NTT_PLATFORM_WEB)
+    add_custom_command(
+        TARGET ${NTT_PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_SOURCE_DIR}/assets/html/engine.html"
+            "${CMAKE_BINARY_DIR}/index.html"
+    )
+endif()
+
 if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${NTT_PROJECT_NAME})
 endif()
