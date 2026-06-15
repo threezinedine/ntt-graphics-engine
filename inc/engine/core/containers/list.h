@@ -1,0 +1,35 @@
+#ifndef _LIST_H_
+#define _LIST_H_
+
+#include "engine/core/memory/alloc.h"
+#include "engine/core/result.h"
+#include "engine/core/types.h"
+
+struct ntt_ListNode
+{
+	void*				 pData;
+	struct ntt_ListNode* pNext;
+	struct ntt_ListNode* pPrev;
+};
+
+/**
+ */
+struct ntt_List
+{
+	struct ntt_ListNode* pHead;
+	struct ntt_ListNode* pTail;
+	usize				 length;
+	ntt_Allocator*		 pAllocator;
+};
+
+typedef struct ntt_ListNode ntt_ListNode;
+typedef struct ntt_List		ntt_List;
+DEFINE_RETURN_RESULT_TYPE(ntt_List)
+
+ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator);
+
+ntt_Result ntt_ListAppend(ntt_List* pList, void* pData);
+
+ntt_Result ntt_ListDestroy(ntt_List* pList);
+
+#endif /* _LIST_H_ */

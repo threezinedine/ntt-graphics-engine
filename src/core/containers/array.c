@@ -11,7 +11,7 @@ ntt_ArrayResult ntt_ArrayCreate(usize elementSize, usize initialCapacity, ntt_Al
 	NTT_ASSERT(pFinalAllocator != NULL);
 	if (pFinalAllocator == NULL)
 	{
-		result.result = NTT_RESULT_INITIALZE_ARRAY_WITHOUT_ALLOCATOR;
+		result.result = NTT_RESULT_INITIALZE_WITHOUT_ALLOCATOR;
 		return result;
 	}
 
@@ -79,7 +79,7 @@ ntt_Result ntt_ArrayDestroy(ntt_Array* pArray)
 
 	NTT_ASSERT_IF(pArray->pAllocator == NULL)
 	{
-		return NTT_RESULT_INITIALZE_ARRAY_WITHOUT_ALLOCATOR;
+		return NTT_RESULT_INITIALZE_WITHOUT_ALLOCATOR;
 	}
 
 	NTT_ASSERT_IF(pArray->pData == NULL)

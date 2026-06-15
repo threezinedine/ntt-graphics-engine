@@ -69,7 +69,7 @@ TEST_CASE(DestroyMissingAllocator)
 	result.data.pAllocator = NULL;
 
 	ntt_Result destroyResult = ntt_ArrayDestroy(&result.data);
-	TEST_ASSERT(destroyResult == NTT_RESULT_INITIALZE_ARRAY_WITHOUT_ALLOCATOR);
+	TEST_ASSERT(destroyResult == NTT_RESULT_INITIALZE_WITHOUT_ALLOCATOR);
 
 	ntt_Result destroyGlobalsResult = ntt_MemoryGlobalsDestroy();
 	TEST_ASSERT(destroyGlobalsResult == NTT_RESULT_MEMORY_LEAK);
