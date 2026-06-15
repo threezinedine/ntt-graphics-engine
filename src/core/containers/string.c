@@ -27,8 +27,7 @@ ntt_StringResult ntt_StringFromCString(const char* cString)
 	}
 	else
 	{
-		voidPtrResult allocateResult =
-			g_memoryGlobals.mallocAllocator->allocate(g_memoryGlobals.mallocAllocator, length + 1);
+		voidPtrResult allocateResult = ntt_Allocate(g_memoryGlobals.mallocAllocator, length + 1);
 		if (allocateResult.result != NTT_RESULT_SUCCESS)
 		{
 			result.result = allocateResult.result;
@@ -70,8 +69,8 @@ ntt_Result ntt_StringDestroy(ntt_String* stringView)
 			return NTT_RESULT_INVALID_POINTER;
 		}
 
-		ntt_Result deallocateResult = g_memoryGlobals.mallocAllocator->deallocate(
-			g_memoryGlobals.mallocAllocator, stringView->pLongBuffer, stringView->length + 1);
+		ntt_Result deallocateResult =
+			ntt_Deallocate(g_memoryGlobals.mallocAllocator, stringView->pLongBuffer, stringView->length + 1);
 		NTT_SUCCESS_ASSERT(deallocateResult);
 	}
 

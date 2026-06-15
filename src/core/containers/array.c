@@ -30,7 +30,7 @@ ntt_ArrayResult ntt_ArrayCreate(usize elementSize, usize initialCapacity, ntt_Al
 	result.data.length		= 0;
 	result.data.capacity	= initialCapacity;
 
-	voidPtrResult allocateResult = pFinalAllocator->allocate(pFinalAllocator, elementSize * initialCapacity);
+	voidPtrResult allocateResult = ntt_Allocate(pFinalAllocator, elementSize * initialCapacity);
 	if (allocateResult.result != NTT_RESULT_SUCCESS)
 	{
 		result.result = allocateResult.result;
@@ -56,12 +56,12 @@ ntt_Result ntt_ArrayResize(ntt_Array* pArray, usize newCapacity)
 		return NTT_RESULT_SUCCESS;
 	}
 
-	voidPtrResult allocateResult = pArray->pAllocator->allocate(pArray->pAllocator, pArray->elementSize * newCapacity);
+	voidPtrResult allocateResult = ntt_Allocate(pArray->pAllocator, pArray->elementSize * newCapacity);
 	NTT_SUCCESS_ASSERT_VAR(allocateResult);
 
 	memcpy(allocateResult.pData, pArray->pData, pArray->elementSize * pArray->length);
 	ntt_Result deallocateResult =
-		pArray->pAllocator->deallocate(pArray->pAllocator, pArray->pData, pArray->elementSize * pArray->capacity);
+		ntt_Deallocate(pArray->pAllocator, pArray->pData, pArray->elementSize * pArray->capacity);
 	NTT_SUCCESS_ASSERT(deallocateResult);
 
 	pArray->pData	 = allocateResult.pData;
@@ -88,7 +88,7 @@ ntt_Result ntt_ArrayDestroy(ntt_Array* pArray)
 	}
 
 	ntt_Result deallocateResult =
-		pArray->pAllocator->deallocate(pArray->pAllocator, pArray->pData, pArray->elementSize * pArray->capacity);
+		ntt_Deallocate(pArray->pAllocator, pArray->pData, pArray->elementSize * pArray->capacity);
 	NTT_SUCCESS_ASSERT(deallocateResult);
 
 	pArray->pData		= NULL;

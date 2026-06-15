@@ -8,6 +8,7 @@
 struct ntt_ListNode
 {
 	void*				 pData;
+	usize				 dataSize;
 	struct ntt_ListNode* pNext;
 	struct ntt_ListNode* pPrev;
 };
@@ -28,7 +29,9 @@ DEFINE_RETURN_RESULT_TYPE(ntt_List)
 
 ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator);
 
-ntt_Result ntt_ListAppend(ntt_List* pList, void* pData);
+ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize);
+
+ntt_Result ntt_ListClear(ntt_List* pList);
 
 ntt_Result ntt_ListDestroy(ntt_List* pList);
 
