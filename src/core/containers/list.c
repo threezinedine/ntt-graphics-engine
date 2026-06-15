@@ -89,6 +89,10 @@ ntt_Result ntt_ListClear(ntt_List* pList)
 	{
 		ntt_ListNode* pNextNode = pCurrentNode->pNext;
 
+		ntt_Result deallocateDataResult =
+			ntt_Deallocate(pList->pAllocator, pCurrentNode->pData, pCurrentNode->dataSize);
+		NTT_SUCCESS_ASSERT(deallocateDataResult);
+
 		ntt_Result deallocateResult = ntt_Deallocate(pList->pAllocator, pCurrentNode, sizeof(ntt_ListNode));
 		NTT_SUCCESS_ASSERT(deallocateResult);
 
@@ -109,5 +113,12 @@ ntt_Result ntt_ListDestroy(ntt_List* pList)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	return ntt_ListClear(pList);
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	NTT_SUCCESS_ASSERT(ntt_ListClear(pList));
+
+	return NTT_RESULT_SUCCESS;
 }
