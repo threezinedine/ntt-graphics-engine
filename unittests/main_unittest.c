@@ -41,6 +41,7 @@ int main(i32 argc, char** argv)
 	RUN_TEST_SUITE(id);
 	RUN_TEST_SUITE(memory);
 	RUN_TEST_SUITE(string);
+	RUN_TEST_SUITE(array);
 
 	const char* testResultMessage		   = "************ TEST RESULT ***********";
 	i32			width					   = (i32)ntt_StrLen(testResultMessage);
