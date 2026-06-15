@@ -32,7 +32,7 @@ TEST_CASE(LongString)
 		"pLongBuffer.";
 	ntt_StringResult result = ntt_StringFromCString(longString);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
-	TEST_ASSERT(result.data.length == (usize)strlen(longString));
+	TEST_ASSERT(result.data.length == ntt_StrLen(longString));
 	TEST_ASSERT(result.data.pLongBuffer != NULL);
 	TEST_ASSERT(result.data.pBuffer[0] == '\0'); // The pBuffer should be empty for long strings
 
@@ -65,12 +65,20 @@ TEST_CASE(StringView)
 	TEST_ASSERT(memcmp(stringView.pBuffer, "Hello, World!", 13) == 0);
 }
 
+TEST_CASE(StrLen)
+{
+	const char* testString = "Hello, World!";
+	usize		length	   = ntt_StrLen(testString);
+	TEST_ASSERT(length == 13);
+}
+
 TEST_SUITE_DEFINE(string,
 				  string_tests_before_each,
 				  string_tests_after_each,
 				  TEST_CASE_DECLARE(ShortString),
 				  TEST_CASE_DECLARE(LongString),
 				  TEST_CASE_DECLARE(StringView),
+				  TEST_CASE_DECLARE(StrLen),
 				  TEST_CASE_DECLARE_WITHOUT_WRAPPER(StringViewMemoryLeak))
 
 #endif /* _STRING_TESTS_H_ */

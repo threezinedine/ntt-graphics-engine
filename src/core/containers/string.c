@@ -88,3 +88,8 @@ ntt_StringView ntt_stringToView(ntt_String* pStr)
 		.length	 = pStr->length,
 	};
 }
+
+usize ntt_StrLen(const char* cString)
+{
+	return strlen(cString);
+}

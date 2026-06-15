@@ -1,6 +1,5 @@
 #include "engine/engine.h"
 #include "tools/tools.h"
-#include <string.h> // TODO: use self-implemented string functions later
 
 int			g_argc;
 char**		g_argv;
@@ -44,7 +43,7 @@ int main(i32 argc, char** argv)
 	RUN_TEST_SUITE(string);
 
 	const char* testResultMessage		   = "************ TEST RESULT ***********";
-	i32			width					   = (i32)strlen(testResultMessage); // TODO: use self-implemented strlen later
+	i32			width					   = (i32)ntt_StrLen(testResultMessage);
 	char		resultMessage[256]		   = {0};
 	char		centeredResultMessage[512] = {0};
 
@@ -56,7 +55,7 @@ int main(i32 argc, char** argv)
 		centerContent(centeredResultMessage,
 					  sizeof(centeredResultMessage),
 					  resultMessage,
-					  (usize)strlen(resultMessage),
+					  ntt_StrLen(resultMessage),
 					  (usize)width - 2); // TODO: use self-implemented strlen later
 
 		ntt_ConsoleSetColor(NTT_COLOR_GREEN);
@@ -71,7 +70,7 @@ int main(i32 argc, char** argv)
 		centerContent(centeredResultMessage,
 					  sizeof(centeredResultMessage),
 					  resultMessage,
-					  (usize)strlen(resultMessage),
+					  ntt_StrLen(resultMessage),
 					  (usize)width - 2);
 
 		ntt_ConsoleSetColor(NTT_COLOR_RED);

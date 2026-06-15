@@ -68,4 +68,10 @@ ntt_Result ntt_StringDestroy(ntt_String* stringView);
 
 ntt_StringView ntt_stringToView(ntt_String* pStr);
 
+/**
+ * Raw string helpers
+ */
+
+usize ntt_StrLen(const char* cString);
+
 #endif /* _STRING_H_ */
