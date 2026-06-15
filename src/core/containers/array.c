@@ -72,20 +72,17 @@ ntt_Result ntt_ArrayResize(ntt_Array* pArray, usize newCapacity)
 
 ntt_Result ntt_ArrayDestroy(ntt_Array* pArray)
 {
-	NTT_ASSERT(pArray != NULL);
-	if (pArray == NULL)
+	NTT_ASSERT_IF(pArray == NULL)
 	{
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	NTT_ASSERT(pArray->pAllocator != NULL);
-	if (pArray->pAllocator == NULL)
+	NTT_ASSERT_IF(pArray->pAllocator == NULL)
 	{
 		return NTT_RESULT_INITIALZE_ARRAY_WITHOUT_ALLOCATOR;
 	}
 
-	NTT_ASSERT(pArray->pData != NULL);
-	if (pArray->pData == NULL)
+	NTT_ASSERT_IF(pArray->pData == NULL)
 	{
 		return NTT_RESULT_NULL_POINTER;
 	}
@@ -163,6 +160,18 @@ ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index)
 	}
 
 	pArray->length--;
+
+	return NTT_RESULT_SUCCESS;
+}
+
+ntt_Result ntt_ArrayClear(ntt_Array* pArray)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	pArray->length = 0;
 
 	return NTT_RESULT_SUCCESS;
 }

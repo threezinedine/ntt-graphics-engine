@@ -153,6 +153,32 @@ TEST_CASE(EraseElement)
 	ntt_ArrayDestroy(&result.data);
 }
 
+TEST_CASE(CleanArray)
+{
+	ntt_ArrayResult result = ntt_ArrayCreate(sizeof(i32), 2, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 value1 = 42;
+	i32 value2 = 84;
+
+	ntt_Result appendResult1 = ntt_ArrayAppend(&result.data, &value1);
+	TEST_ASSERT(appendResult1 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 1);
+
+	ntt_Result appendResult2 = ntt_ArrayAppend(&result.data, &value2);
+	TEST_ASSERT(appendResult2 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 2);
+
+	// Clean the array by setting the length to 0, this should not free the memory of the array
+	ntt_Result clearResult = ntt_ArrayClear(&result.data);
+	TEST_ASSERT(clearResult == NTT_RESULT_SUCCESS);
+
+	TEST_ASSERT(result.data.length == 0);
+	TEST_ASSERT(result.data.capacity == 2); // Capacity should remain unchanged
+
+	ntt_ArrayDestroy(&result.data);
+}
+
 TEST_SUITE_DEFINE(array,
 				  array_tests_before_each,
 				  array_tests_after_each,
@@ -163,6 +189,7 @@ TEST_SUITE_DEFINE(array,
 				  TEST_CASE_DECLARE(AppendAndGet),
 				  TEST_CASE_DECLARE(CreateArrayWithNegativeInitialCapacity),
 				  TEST_CASE_DECLARE(EraseElement),
+				  TEST_CASE_DECLARE(CleanArray),
 				  TEST_CASE_DECLARE(IsolatedAppend))
 
 #endif /* _ARRAY_TESTS_H_ */

@@ -73,6 +73,17 @@ void* ntt_ArrayGet(ntt_Array* pArray, usize index);
 ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index);
 
 /**
+ * Clears the array by setting the length to 0, but does not change the capacity or free the memory. This allows
+ *    	the array to be reused without the overhead of reallocating memory.
+ *
+ * @param pArray The array to be cleared, this should be a valid array created by ntt_ArrayCreate, and it should
+ * 		not be NULL.
+ * @return NTT_RESULT_SUCCESS if the array is successfully cleared, or an appropriate error code if the operation fails
+ * 		(such as NTT_RESULT_NULL_POINTER if pArray is NULL).
+ */
+ntt_Result ntt_ArrayClear(ntt_Array* pArray);
+
+/**
  * Destroys the array and frees the memory used by the array. After this function is called, the array should not be
  *     used anymore, and it should be set to NULL to avoid dangling pointer issues.
  *
