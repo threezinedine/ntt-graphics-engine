@@ -247,3 +247,39 @@ usize ntt_ArrayFind(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 
 	return NTT_ARRAY_INDEX_NOT_FOUND;
 }
+
+ntt_Result ntt_ArrayInsert(ntt_Array* pArray, usize index, void* pElement)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pElement == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(index > pArray->length)
+	{
+		return NTT_RESULT_INDEX_OUT_OF_BOUNDS;
+	}
+
+	if (pArray->length >= pArray->capacity)
+	{
+		ntt_Result resizeResult = ntt_ArrayResize(pArray, pArray->capacity * 2);
+		NTT_SUCCESS_ASSERT(resizeResult);
+	}
+
+	if (index < pArray->length)
+	{
+		memmove((char*)pArray->pData + ((index + 1) * pArray->elementSize),
+				(char*)pArray->pData + (index * pArray->elementSize),
+				(pArray->length - index) * pArray->elementSize);
+	}
+
+	memcpy((char*)pArray->pData + (index * pArray->elementSize), pElement, pArray->elementSize);
+	pArray->length++;
+
+	return NTT_RESULT_SUCCESS;
+}

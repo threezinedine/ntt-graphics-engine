@@ -284,6 +284,38 @@ TEST_CASE(FindIndex)
 	ntt_ArrayDestroy(&result.data);
 }
 
+TEST_CASE(InsertIntoArray)
+{
+	ntt_ArrayResult result = ntt_ArrayCreate(sizeof(i32), 2, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 value1 = 42;
+	i32 value2 = 84;
+	i32 value3 = 168;
+
+	ntt_Result insertResult1 = ntt_ArrayInsert(&result.data, 0, &value1);
+	TEST_ASSERT(insertResult1 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 1);
+
+	ntt_Result insertResult2 = ntt_ArrayInsert(&result.data, 0, &value2);
+	TEST_ASSERT(insertResult2 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 2);
+
+	ntt_Result insertResult3 = ntt_ArrayInsert(&result.data, 1, &value3);
+	TEST_ASSERT(insertResult3 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 3);
+
+	i32* pValue1 = (i32*)ntt_ArrayGet(&result.data, 0);
+	i32* pValue2 = (i32*)ntt_ArrayGet(&result.data, 1);
+	i32* pValue3 = (i32*)ntt_ArrayGet(&result.data, 2);
+
+	TEST_ASSERT(pValue1 != NULL && *pValue1 == value2);
+	TEST_ASSERT(pValue2 != NULL && *pValue2 == value3);
+	TEST_ASSERT(pValue3 != NULL && *pValue3 == value1);
+
+	ntt_ArrayDestroy(&result.data);
+}
+
 TEST_SUITE_DEFINE(array,
 				  array_tests_before_each,
 				  array_tests_after_each,
@@ -298,6 +330,7 @@ TEST_SUITE_DEFINE(array,
 				  TEST_CASE_DECLARE(AnyTest),
 				  TEST_CASE_DECLARE(AllTest),
 				  TEST_CASE_DECLARE(FindIndex),
+				  TEST_CASE_DECLARE(InsertIntoArray),
 				  TEST_CASE_DECLARE(IsolatedAppend))
 
 #endif /* _ARRAY_TESTS_H_ */

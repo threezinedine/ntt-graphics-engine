@@ -77,6 +77,22 @@ void* ntt_ArrayGet(ntt_Array* pArray, usize index);
 ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index);
 
 /**
+ * Inserts a new element at the specified index in the array, and shifts all the subsequent elements to make space
+ * 		for the new element.
+ *
+ * @param pArray The array to which the element will be inserted, this should be a valid array created by
+ * 		ntt_ArrayCreate, and it should not be NULL.
+ * @param index The index at which the new element will be inserted, this should be within the bounds of the array
+ * 		(0 <= index <= length), if the index is out of bounds, error will be returned or assertion failure will be
+ * triggered.
+ * @param pElement The element to be inserted, this should be a pointer to the element data, and it should not be NULL.
+ * @return NTT_RESULT_SUCCESS if the element is successfully inserted, or an appropriate error code if the operation
+ * fails (such as NTT_RESULT_NULL_POINTER if pArray or pElement is NULL, or NTT_RESULT_INDEX_OUT_OF_BOUNDS if index is
+ * out of bounds
+ */
+ntt_Result ntt_ArrayInsert(ntt_Array* pArray, usize index, void* pElement);
+
+/**
  * Clears the array by setting the length to 0, but does not change the capacity or free the memory. This allows
  *    	the array to be reused without the overhead of reallocating memory.
  *
