@@ -6,7 +6,7 @@ static ID* s_pBaseTypeID = NULL;
 ntt_Result ntt_ObjectRegisterType()
 {
 	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
-	NTT_SUCCESS_ASSERT_RETURN(result);
+	NTT_SUCCESS_ASSERT_VAR(result);
 	ntt_ObjectID = result.data;
 	return NTT_RESULT_SUCCESS;
 }
@@ -25,7 +25,7 @@ ntt_Result ntt_ObjectInitialize(ntt_Object* pObject, ntt_Allocator* pAllocator)
 	NTT_ASSERT_M(ntt_IsIDEqual(&ntt_ObjectID, &INVALID_ID) == FALSE, "The \"Object\" type is not registered.");
 
 	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
-	NTT_SUCCESS_ASSERT_RETURN(result);
+	NTT_SUCCESS_ASSERT_VAR(result);
 	pObject->id			= result.data;
 	pObject->type		= ntt_ObjectID;
 	pObject->pAllocator = pAllocator;

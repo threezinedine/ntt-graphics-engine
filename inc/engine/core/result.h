@@ -53,7 +53,7 @@ DEFINE_RETURN_RESULT_TYPE(usize)
 		NTT_ASSERT(result == NTT_RESULT_SUCCESS);                                                                      \
 	} while (0)
 
-#define NTT_SUCCESS_ASSERT_RETURN(res) NTT_ASSERT(res.result == NTT_RESULT_SUCCESS);
+#define NTT_SUCCESS_ASSERT_VAR(res) NTT_ASSERT(res.result == NTT_RESULT_SUCCESS);
 
 #else /* NTT_DEBUG */
 #define NTT_SUCCESS_ASSERT(express)                                                                                    \
@@ -66,7 +66,7 @@ DEFINE_RETURN_RESULT_TYPE(usize)
 		}                                                                                                              \
 	} while (0)
 
-#define NTT_SUCCESS_ASSERT_RETURN(res)                                                                                 \
+#define NTT_SUCCESS_ASSERT_VAR(res)                                                                                    \
 	do                                                                                                                 \
 	{                                                                                                                  \
 		if (res.result != NTT_RESULT_SUCCESS)                                                                          \
@@ -75,5 +75,13 @@ DEFINE_RETURN_RESULT_TYPE(usize)
 		}                                                                                                              \
 	} while (0)
 #endif /* NTT_DEBUG */
+
+#define NTT_ASSERT_IF(exp)                                                                                             \
+	NTT_ASSERT(!(exp));                                                                                                \
+	if ((exp))
+
+#define NTT_ASSERT_IF_M(exp, msg, ...)                                                                                 \
+	NTT_ASSERT_M(!(exp), msg, ##__VA_ARGS__);                                                                          \
+	if ((exp))
 
 #endif /* _RESULT_H_ */

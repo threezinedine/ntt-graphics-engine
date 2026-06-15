@@ -57,7 +57,7 @@ ntt_Result ntt_ArrayResize(ntt_Array* pArray, usize newCapacity)
 	}
 
 	voidPtrResult allocateResult = pArray->pAllocator->allocate(pArray->pAllocator, pArray->elementSize * newCapacity);
-	NTT_SUCCESS_ASSERT_RETURN(allocateResult);
+	NTT_SUCCESS_ASSERT_VAR(allocateResult);
 
 	memcpy(allocateResult.pData, pArray->pData, pArray->elementSize * pArray->length);
 	ntt_Result deallocateResult =
@@ -130,17 +130,39 @@ ntt_Result ntt_ArrayAppend(ntt_Array* pArray, void* pElement)
 
 void* ntt_ArrayGet(ntt_Array* pArray, usize index)
 {
-	NTT_ASSERT(pArray != NULL);
-	if (pArray == NULL)
+	NTT_ASSERT_IF(pArray == NULL)
 	{
 		return NULL;
 	}
 
-	NTT_ASSERT(index < pArray->length);
-	if (index >= pArray->length)
+	NTT_ASSERT_IF(index >= pArray->length)
 	{
 		return NULL;
 	}
 
 	return (char*)pArray->pData + (index * pArray->elementSize);
+}
+
+ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(index >= pArray->length)
+	{
+		return NTT_RESULT_INDEX_OUT_OF_BOUNDS;
+	}
+
+	if (index < pArray->length - 1)
+	{
+		memmove((char*)pArray->pData + (index * pArray->elementSize),
+				(char*)pArray->pData + ((index + 1) * pArray->elementSize),
+				(pArray->length - index - 1) * pArray->elementSize);
+	}
+
+	pArray->length--;
+
+	return NTT_RESULT_SUCCESS;
 }

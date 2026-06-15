@@ -36,14 +36,26 @@ AllocatorResult ntt_CreateMallocAllocator()
 {
 	AllocatorResult result;
 	ntt_Allocator*	allocator = (ntt_Allocator*)malloc(sizeof(ntt_Allocator));
-	NTT_ASSERT(allocator != NULL);
+	NTT_ASSERT_IF(allocator == NULL)
+	{
+		result.result	  = NTT_RESULT_ALLOCATION_FAILURE;
+		result.pAllocator = NULL;
+		return result;
+	}
 
 	allocator->allocate	  = allocate;
 	allocator->deallocate = deallocate;
 	allocator->destroy	  = destroy;
 
 	allocator->pInternalState = malloc(sizeof(ntt_MallocAllocator));
-	NTT_ASSERT(allocator->pInternalState != NULL);
+	NTT_ASSERT_IF(allocator->pInternalState == NULL)
+	{
+		free(allocator);
+		result.result	  = NTT_RESULT_ALLOCATION_FAILURE;
+		result.pAllocator = NULL;
+		return result;
+	}
+
 	ntt_MallocAllocator* pMallocState = (ntt_MallocAllocator*)allocator->pInternalState;
 
 	pMallocState->allocatedBytes = 0;
@@ -56,8 +68,14 @@ AllocatorResult ntt_CreateMallocAllocator()
 static voidPtrResult allocate(ntt_Allocator* allocator, usize size)
 {
 	voidPtrResult result;
-	NTT_ASSERT(allocator != NULL);
-	NTT_ASSERT(allocator->pInternalState != NULL);
+	NTT_ASSERT_IF(allocator == NULL)
+	{
+		return (voidPtrResult){.result = NTT_RESULT_NULL_POINTER, .pData = NULL};
+	}
+	NTT_ASSERT_IF(allocator->pInternalState == NULL)
+	{
+		return (voidPtrResult){.result = NTT_RESULT_NULL_POINTER, .pData = NULL};
+	}
 
 	ntt_MallocAllocator* pMallocState = (ntt_MallocAllocator*)allocator->pInternalState;
 	pMallocState->allocatedBytes += size;
@@ -77,9 +95,18 @@ static voidPtrResult allocate(ntt_Allocator* allocator, usize size)
 
 static ntt_Result deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 {
-	NTT_ASSERT(allocator != NULL);
-	NTT_ASSERT(allocator->pInternalState != NULL);
-	NTT_ASSERT(ptr != NULL);
+	NTT_ASSERT_IF(allocator == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+	NTT_ASSERT_IF(allocator->pInternalState == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+	NTT_ASSERT_IF(ptr == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
 
 	ntt_MallocBlockHeader* pHeader = (ntt_MallocBlockHeader*)((char*)ptr - sizeof(ntt_MallocBlockHeader));
 
@@ -153,21 +180,18 @@ static ntt_Result deallocate(ntt_Allocator* allocator, void* ptr, usize size)
 
 static ntt_Result destroy(ntt_Allocator* allocator)
 {
-	NTT_ASSERT(allocator != NULL);
-	if (allocator == NULL)
+	NTT_ASSERT_IF(allocator == NULL)
 	{
 		return NTT_RESULT_NULL_POINTER;
 	}
-	NTT_ASSERT(allocator->pInternalState != NULL);
-	if (allocator->pInternalState == NULL)
+	NTT_ASSERT_IF(allocator->pInternalState == NULL)
 	{
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	NTT_ASSERT_M(((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes == 0,
-				 "Memory leak detected: %zu bytes still allocated.",
-				 (((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes));
-	if (((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes != 0)
+	NTT_ASSERT_IF_M(((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes != 0,
+					"Memory leak detected: %zu bytes still allocated.",
+					(((ntt_MallocAllocator*)allocator->pInternalState)->allocatedBytes))
 	{
 		return NTT_RESULT_MEMORY_LEAK;
 	}

@@ -6,7 +6,7 @@ ntt_MemoryGlobals g_memoryGlobals;
 ntt_Result ntt_MemoryGlobalsInitialize()
 {
 	AllocatorResult result = ntt_CreateMallocAllocator();
-	NTT_SUCCESS_ASSERT_RETURN(result);
+	NTT_SUCCESS_ASSERT_VAR(result);
 	g_memoryGlobals.mallocAllocator = result.pAllocator;
 	return NTT_RESULT_SUCCESS;
 }

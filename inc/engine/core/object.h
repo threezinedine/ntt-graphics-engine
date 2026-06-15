@@ -40,7 +40,7 @@ struct ntt_Object
 	ntt_Result objectType##RegisterType()                                                                              \
 	{                                                                                                                  \
 		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);                                                        \
-		NTT_SUCCESS_ASSERT_RETURN(result);                                                                             \
+		NTT_SUCCESS_ASSERT_VAR(result);                                                                                \
 		objectType##ID = result.data;                                                                                  \
 		s_pBaseTypeID  = &baseType##ID;                                                                                \
 		return NTT_RESULT_SUCCESS;                                                                                     \

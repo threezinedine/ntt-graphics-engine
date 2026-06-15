@@ -64,6 +64,15 @@ ntt_Result ntt_ArrayAppend(ntt_Array* pArray, void* pElement);
 void* ntt_ArrayGet(ntt_Array* pArray, usize index);
 
 /**
+ * Erases the element at the specified index in the array, and shifts all the subsequent elements to fill the gap.
+ *
+ * @param pArray The array from which the element will be erased, this should be a valid array created by
+ *      ntt_ArrayCreate, and it should not be NULL.
+ * @param index if the index is out of bounds, error will be returned or assertion failure will be triggered.
+ */
+ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index);
+
+/**
  * Destroys the array and frees the memory used by the array. After this function is called, the array should not be
  *     used anymore, and it should be set to NULL to avoid dangling pointer issues.
  *

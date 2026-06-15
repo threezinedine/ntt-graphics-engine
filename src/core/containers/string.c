@@ -7,8 +7,7 @@
 
 ntt_StringResult ntt_StringFromCString(const char* cString)
 {
-	NTT_ASSERT_M(cString != NULL, "cString cannot be NULL");
-	if (cString == NULL)
+	NTT_ASSERT_IF(cString == NULL)
 	{
 		ntt_StringResult result = {.result = NTT_RESULT_NULL_POINTER};
 		return result;
@@ -66,9 +65,7 @@ ntt_Result ntt_StringDestroy(ntt_String* stringView)
 {
 	if (stringView->length >= NTT_SHORT_STRING_MAX_LENGTH)
 	{
-		NTT_ASSERT_M(stringView->pLongBuffer != NULL,
-					 "pLongBuffer cannot be NULL when length >= NTT_SHORT_STRING_MAX_LENGTH");
-		if (stringView->pLongBuffer == NULL)
+		NTT_ASSERT_IF(stringView->pLongBuffer == NULL)
 		{
 			return NTT_RESULT_INVALID_POINTER;
 		}
