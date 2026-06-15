@@ -175,3 +175,75 @@ ntt_Result ntt_ArrayClear(ntt_Array* pArray)
 
 	return NTT_RESULT_SUCCESS;
 }
+
+b8 ntt_ArrayAny(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return FALSE;
+	}
+
+	NTT_ASSERT_IF(predicate == NULL)
+	{
+		return FALSE;
+	}
+
+	for (usize i = 0; i < pArray->length; i++)
+	{
+		void* pElement = (char*)pArray->pData + (i * pArray->elementSize);
+		if (predicate(pElement))
+		{
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
+b8 ntt_ArrayAll(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return FALSE;
+	}
+
+	NTT_ASSERT_IF(predicate == NULL)
+	{
+		return FALSE;
+	}
+
+	for (usize i = 0; i < pArray->length; i++)
+	{
+		void* pElement = (char*)pArray->pData + (i * pArray->elementSize);
+		if (!predicate(pElement))
+		{
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
+usize ntt_ArrayFind(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return NTT_ARRAY_INDEX_NOT_FOUND;
+	}
+
+	NTT_ASSERT_IF(predicate == NULL)
+	{
+		return NTT_ARRAY_INDEX_NOT_FOUND;
+	}
+
+	for (usize i = 0; i < pArray->length; i++)
+	{
+		void* pElement = (char*)pArray->pData + (i * pArray->elementSize);
+		if (predicate(pElement))
+		{
+			return i;
+		}
+	}
+
+	return NTT_ARRAY_INDEX_NOT_FOUND;
+}

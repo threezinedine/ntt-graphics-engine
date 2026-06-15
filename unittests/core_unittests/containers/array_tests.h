@@ -179,6 +179,111 @@ TEST_CASE(CleanArray)
 	ntt_ArrayDestroy(&result.data);
 }
 
+b8 IsEven(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return (*pValue % 2) == 0;
+}
+
+b8 IsGreaterThan50(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue > 50;
+}
+
+b8 IsGreaterThan100(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue > 100;
+}
+
+TEST_CASE(AnyTest)
+{
+	ntt_ArrayResult result = ntt_ArrayCreate(sizeof(i32), 2, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 value1 = 42;
+	i32 value2 = 84;
+
+	ntt_Result appendResult1 = ntt_ArrayAppend(&result.data, &value1);
+	TEST_ASSERT(appendResult1 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 1);
+
+	ntt_Result appendResult2 = ntt_ArrayAppend(&result.data, &value2);
+	TEST_ASSERT(appendResult2 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 2);
+
+	TEST_ASSERT(ntt_ArrayAny(&result.data, IsEven) == TRUE);
+	TEST_ASSERT(ntt_ArrayAny(&result.data, IsGreaterThan50) == TRUE);
+	TEST_ASSERT(ntt_ArrayAny(&result.data, IsGreaterThan100) == FALSE);
+
+	ntt_ArrayDestroy(&result.data);
+}
+
+TEST_CASE(AllTest)
+{
+	ntt_ArrayResult result = ntt_ArrayCreate(sizeof(i32), 2, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 value1 = 42;
+	i32 value2 = 84;
+
+	ntt_Result appendResult1 = ntt_ArrayAppend(&result.data, &value1);
+	TEST_ASSERT(appendResult1 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 1);
+
+	ntt_Result appendResult2 = ntt_ArrayAppend(&result.data, &value2);
+	TEST_ASSERT(appendResult2 == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 2);
+
+	TEST_ASSERT(ntt_ArrayAll(&result.data, IsEven) == TRUE);
+	TEST_ASSERT(ntt_ArrayAll(&result.data, IsGreaterThan50) == FALSE);
+	TEST_ASSERT(ntt_ArrayAll(&result.data, IsGreaterThan100) == FALSE);
+
+	ntt_ArrayDestroy(&result.data);
+}
+
+b8 IsEqualTo42(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue == 42;
+}
+
+b8 IsEqualTo84(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue == 84;
+}
+
+b8 IsEqualTo168(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue == 168;
+}
+
+TEST_CASE(FindIndex)
+{
+	ntt_ArrayResult result = ntt_ArrayCreate(sizeof(i32), 2, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 value1 = 42;
+	i32 value2 = 84;
+
+	ntt_ArrayAppend(&result.data, &value1);
+	ntt_ArrayAppend(&result.data, &value2);
+
+	usize findIndexResult1 = ntt_ArrayFind(&result.data, IsEqualTo42);
+	TEST_ASSERT(findIndexResult1 == 0);
+
+	usize findIndexResult2 = ntt_ArrayFind(&result.data, IsEqualTo84);
+	TEST_ASSERT(findIndexResult2 == 1);
+
+	usize findIndexResult3 = ntt_ArrayFind(&result.data, IsEqualTo168);
+	TEST_ASSERT(findIndexResult3 == NTT_ARRAY_INDEX_NOT_FOUND);
+
+	ntt_ArrayDestroy(&result.data);
+}
+
 TEST_SUITE_DEFINE(array,
 				  array_tests_before_each,
 				  array_tests_after_each,
@@ -190,6 +295,9 @@ TEST_SUITE_DEFINE(array,
 				  TEST_CASE_DECLARE(CreateArrayWithNegativeInitialCapacity),
 				  TEST_CASE_DECLARE(EraseElement),
 				  TEST_CASE_DECLARE(CleanArray),
+				  TEST_CASE_DECLARE(AnyTest),
+				  TEST_CASE_DECLARE(AllTest),
+				  TEST_CASE_DECLARE(FindIndex),
 				  TEST_CASE_DECLARE(IsolatedAppend))
 
 #endif /* _ARRAY_TESTS_H_ */

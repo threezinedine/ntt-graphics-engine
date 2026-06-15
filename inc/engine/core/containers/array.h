@@ -6,6 +6,7 @@
 #include "engine/core/types.h"
 
 #define NTT_ARRAY_INITIAL_CAPACITY 2
+#define NTT_ARRAY_INDEX_NOT_FOUND  ((usize) - 1)
 
 /**
  * Internal structure for the array the size of the array is automatically assigned if the array append
@@ -24,6 +25,9 @@ struct ntt_Array
 
 typedef struct ntt_Array ntt_Array;
 DEFINE_RETURN_RESULT_TYPE(ntt_Array)
+
+typedef b8 (*ntt_ArrayElementComparator)(void* pElement1, void* pElement2);
+typedef b8 (*ntt_ArrayElementPredicate)(void* pElement);
 
 /**
  * Making a new array with all NULL values, the length at the beginning is 0
@@ -91,5 +95,42 @@ ntt_Result ntt_ArrayClear(ntt_Array* pArray);
  *      and it should not be NULL.
  */
 ntt_Result ntt_ArrayDestroy(ntt_Array* pArray);
+
+/**
+ * Checks if at least 1 element in the array satisfies the given predicate function.
+ *
+ * @param pArray The array to be checked, this should be a valid array created by
+ * 		ntt_ArrayCreate, and it should not be NULL.
+ * @param predicate The predicate function to be applied to each element in the array,
+ * 		this should not be NULL.
+ *
+ * @return true if at least 1 element in the array satisfies the given predicate function, false otherwise.
+ */
+b8 ntt_ArrayAny(ntt_Array* pArray, ntt_ArrayElementPredicate predicate);
+
+/**
+ * Checks if all elements in the array satisfy the given predicate function.
+ *
+ * @param pArray The array to be checked, this should be a valid array created by
+ * 		ntt_ArrayCreate, and it should not be NULL.
+ * @param predicate The predicate function to be applied to each element in the array,
+ * 		this should not be NULL.
+ *
+ * @return true if all elements in the array satisfy the given predicate function, false otherwise.
+ */
+b8 ntt_ArrayAll(ntt_Array* pArray, ntt_ArrayElementPredicate predicate);
+
+/**
+ * Finds the index of the first element in the array that satisfies the given predicate function.
+ *
+ * @param pArray The array to be searched, this should be a valid array created by
+ * 		ntt_ArrayCreate, and it should not be NULL.
+ * @param predicate The predicate function to be applied to each element in the array,
+ * 		this should not be NULL.
+ *
+ * @return The index of the first element that satisfies the predicate function, or
+ * 		NTT_ARRAY_INDEX_NOT_FOUND if no such element is found.
+ */
+usize ntt_ArrayFind(ntt_Array* pArray, ntt_ArrayElementPredicate predicate);
 
 #endif /* _ARRAY_H_ */
