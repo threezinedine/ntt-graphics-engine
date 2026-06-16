@@ -30,6 +30,8 @@ typedef struct ntt_ListNode ntt_ListNode;
 typedef struct ntt_List		ntt_List;
 DEFINE_RETURN_RESULT_TYPE(ntt_List)
 
+typedef b8 (*ntt_ListElementPredicate)(void* pElement);
+
 ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator);
 
 ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize);
@@ -41,6 +43,8 @@ ntt_Result ntt_ListInsert(ntt_List* pList, usize index, void* pData, usize dataS
 ntt_Result ntt_ListRemove(ntt_List* pList, usize index);
 
 voidPtrResult ntt_ListGet(ntt_List* pList, usize index);
+
+b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate);
 
 ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
 

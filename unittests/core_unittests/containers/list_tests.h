@@ -98,10 +98,90 @@ TEST_CASE(ListInsertWithPointer)
 
 	TEST_ASSERT(ntt_ListRemoveNode(&result.data, result.data.pHead->pNext) == NTT_RESULT_SUCCESS);
 
+	// insert random node -> return invalid node owner
+	ntt_ListNode fakeNode = {0};
+	TEST_ASSERT(ntt_ListInsertBeforeNode(&result.data, &fakeNode, &c, sizeof(c)) == NTT_RESULT_INVALID_NODE_OWNER);
+	TEST_ASSERT(ntt_ListInsertAfterNode(&result.data, &fakeNode, &c, sizeof(c)) == NTT_RESULT_INVALID_NODE_OWNER);
+
 	TEST_ASSERT(result.data.length == 3);
 	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 0).pData) == d);
 	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 1).pData) == c);
 	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 2).pData) == b);
+
+	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
+}
+
+b8 IsEqualTo42InList(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue == 42;
+}
+
+b8 IsEqualTo999InList(void* pElement)
+{
+	i32* pValue = (i32*)pElement;
+	return *pValue == 999;
+}
+
+TEST_CASE(ListContains)
+{
+	ntt_ListResult result = ntt_ListCreate(NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 a = 42;
+	i32 b = 84;
+
+	TEST_ASSERT(ntt_ListAppend(&result.data, &a, sizeof(a)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_ListAppend(&result.data, &b, sizeof(b)) == NTT_RESULT_SUCCESS);
+
+	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo42InList) == TRUE);
+	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo999InList) == FALSE);
+	TEST_ASSERT(ntt_ListContains(NULL, IsEqualTo42InList) == FALSE);
+	TEST_ASSERT(ntt_ListContains(&result.data, NULL) == FALSE);
+
+	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
+}
+
+TEST_CASE(ListRemoveByIndex)
+{
+	ntt_ListResult result = ntt_ListCreate(NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	i32 a = 10;
+	i32 b = 20;
+	i32 c = 30;
+	i32 d = 40;
+
+	TEST_ASSERT(ntt_ListAppend(&result.data, &a, sizeof(a)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_ListAppend(&result.data, &b, sizeof(b)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_ListAppend(&result.data, &c, sizeof(c)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_ListAppend(&result.data, &d, sizeof(d)) == NTT_RESULT_SUCCESS);
+
+	// Remove middle element (20)
+	TEST_ASSERT(ntt_ListRemove(&result.data, 1) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 3);
+	TEST_ASSERT(*(i32*)ntt_ListGet(&result.data, 0).pData == 10);
+	TEST_ASSERT(*(i32*)ntt_ListGet(&result.data, 1).pData == 30);
+	TEST_ASSERT(*(i32*)ntt_ListGet(&result.data, 2).pData == 40);
+
+	// Remove tail element (40)
+	TEST_ASSERT(ntt_ListRemove(&result.data, 2) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 2);
+	TEST_ASSERT(*(i32*)ntt_ListGet(&result.data, 1).pData == 30);
+
+	// Remove head element (10)
+	TEST_ASSERT(ntt_ListRemove(&result.data, 0) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 1);
+	TEST_ASSERT(*(i32*)ntt_ListGet(&result.data, 0).pData == 30);
+
+	// Index out of bounds
+	TEST_ASSERT(ntt_ListRemove(&result.data, 2) == NTT_RESULT_INDEX_OUT_OF_BOUNDS);
+	TEST_ASSERT(ntt_ListRemove(NULL, 0) == NTT_RESULT_NULL_POINTER);
+
+	ntt_Allocator* pAllocator = result.data.pAllocator;
+	result.data.pAllocator	  = NULL;
+	TEST_ASSERT(ntt_ListRemove(&result.data, 0) == NTT_RESULT_MISSING_ALLOCATOR);
+	result.data.pAllocator = pAllocator;
 
 	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
@@ -112,6 +192,8 @@ TEST_SUITE_DEFINE(list,
 				  TEST_CASE_DECLARE(ListCreateAndDestroy),
 				  TEST_CASE_DECLARE(ListAppendAndClear),
 				  TEST_CASE_DECLARE(ListInsertWithPointer),
+				  TEST_CASE_DECLARE(ListContains),
+				  TEST_CASE_DECLARE(ListRemoveByIndex),
 				  TEST_CASE_DECLARE_WITHOUT_WRAPPER(ListDestroyMissingAllocator))
 
 #endif /* _LIST_TESTS_H_ */

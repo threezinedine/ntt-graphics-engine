@@ -206,9 +206,36 @@ ntt_Result ntt_ListInsert(ntt_List* pList, usize index, void* pData, usize dataS
 
 ntt_Result ntt_ListRemove(ntt_List* pList, usize index)
 {
-	NTT_UNUSED(pList);
-	NTT_UNUSED(index);
-	return NTT_RESULT_SUCCESS;
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	NTT_ASSERT_IF(index >= pList->length)
+	{
+		return NTT_RESULT_INDEX_OUT_OF_BOUNDS;
+	}
+
+	ntt_ListNode* pCurrentNode = pList->pHead;
+	usize		  currentIndex = 0;
+
+	while (pCurrentNode != NULL && currentIndex < index)
+	{
+		pCurrentNode = pCurrentNode->pNext;
+		currentIndex++;
+	}
+
+	NTT_ASSERT_IF(pCurrentNode == NULL)
+	{
+		return NTT_RESULT_UNKNOWN_ERROR;
+	}
+
+	return ntt_ListRemoveNode(pList, pCurrentNode);
 }
 
 voidPtrResult ntt_ListGet(ntt_List* pList, usize index)
@@ -238,6 +265,33 @@ voidPtrResult ntt_ListGet(ntt_List* pList, usize index)
 	}
 
 	return (voidPtrResult){.result = NTT_RESULT_SUCCESS, .pData = pCurrentNode->pData};
+}
+
+b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return FALSE;
+	}
+
+	NTT_ASSERT_IF(predicate == NULL)
+	{
+		return FALSE;
+	}
+
+	ntt_ListNode* pCurrentNode = pList->pHead;
+
+	while (pCurrentNode != NULL)
+	{
+		if (predicate(pCurrentNode->pData))
+		{
+			return TRUE;
+		}
+
+		pCurrentNode = pCurrentNode->pNext;
+	}
+
+	return FALSE;
 }
 
 ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)

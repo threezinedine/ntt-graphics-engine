@@ -7,5 +7,8 @@
     }
   ],
   "liveServer.settings.port": 8000,
-  "liveServer.settings.root": "/build/web_debug"
+  "liveServer.settings.root": "/build/web_debug",
+  "chat.tools.terminal.autoApprove": {
+    "./build/tests_debug/ntt-graphics-tests": true
+  }
 }
