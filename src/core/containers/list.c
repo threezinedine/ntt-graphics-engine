@@ -3,7 +3,7 @@
 #include "engine/core/utils/utils.h"
 #include <string.h>
 
-ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator)
+ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator, ntt_ListNodeDestructor nodeDestructor)
 {
 	ntt_ListResult result;
 	result.result = NTT_RESULT_SUCCESS;
@@ -16,10 +16,11 @@ ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator)
 		return result;
 	}
 
-	result.data.pHead	   = NULL;
-	result.data.pTail	   = NULL;
-	result.data.length	   = 0;
-	result.data.pAllocator = pFinalAllocator;
+	result.data.pHead		   = NULL;
+	result.data.pTail		   = NULL;
+	result.data.length		   = 0;
+	result.data.pAllocator	   = pFinalAllocator;
+	result.data.nodeDestructor = nodeDestructor;
 
 	return result;
 }
@@ -133,6 +134,11 @@ ntt_Result ntt_ListClear(ntt_List* pList)
 	while (pCurrentNode != NULL)
 	{
 		ntt_ListNode* pNextNode = pCurrentNode->pNext;
+
+		if (pList->nodeDestructor != NULL)
+		{
+			NTT_SUCCESS_ASSERT(pList->nodeDestructor(pCurrentNode->pData, pCurrentNode->dataSize));
+		}
 
 		ntt_Result deallocateDataResult =
 			ntt_Deallocate(pList->pAllocator, pCurrentNode->pData, pCurrentNode->dataSize);
@@ -268,7 +274,7 @@ voidPtrResult ntt_ListGet(ntt_List* pList, usize index)
 	return (voidPtrResult){.result = NTT_RESULT_SUCCESS, .pData = pCurrentNode->pData};
 }
 
-b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate)
+b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -284,7 +290,7 @@ b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate)
 
 	while (pCurrentNode != NULL)
 	{
-		if (predicate(pCurrentNode->pData))
+		if (predicate(pCurrentNode->pData, pCurrentNode->dataSize, pUserData, userDataSize))
 		{
 			return TRUE;
 		}
@@ -447,6 +453,11 @@ ntt_Result ntt_ListRemoveNode(ntt_List* pList, ntt_ListNode* pNode)
 	}
 
 	pList->length--;
+
+	if (pList->nodeDestructor != NULL)
+	{
+		NTT_SUCCESS_ASSERT(pList->nodeDestructor(pNode->pData, pNode->dataSize));
+	}
 
 	// Deallocate the node's data and the node itself
 	ntt_Result deallocateDataResult = ntt_Deallocate(pList->pAllocator, pNode->pData, pNode->dataSize);

@@ -19,17 +19,19 @@ struct ntt_KeyValuePair
 typedef struct ntt_KeyValuePair ntt_KeyValuePair;
 DEFINE_RETURN_RESULT_TYPE(ntt_KeyValuePair)
 
+typedef u32 (*ntt_HashFunction)(void* pKey, usize keySize);
+
 struct ntt_Map
 {
-	ntt_List bucks;
-	usize	 bucketCount;
-	usize	 count;
+	ntt_List*		 bucks;
+	usize			 bucketCount;
+	usize			 count;
+	ntt_HashFunction hashFunction;
+	ntt_Allocator*	 pAllocator;
 };
 
 typedef struct ntt_Map ntt_Map;
 DEFINE_RETURN_RESULT_TYPE(ntt_Map)
-
-typedef u32 (*ntt_HashFunction)(void* pKey, usize keySize);
 
 /**
  * @param bucketCount Be default if <= 0

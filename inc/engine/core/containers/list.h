@@ -16,23 +16,25 @@ struct ntt_ListNode
 	struct ntt_List*	 pOwner;
 };
 
+typedef b8 (*ntt_ListElementPredicate)(void* pElement, usize elementSize, void* pUserData, usize userDataSize);
+typedef ntt_Result (*ntt_ListNodeDestructor)(void* pData, usize dataSize);
+
 /**
  */
 struct ntt_List
 {
-	struct ntt_ListNode* pHead;
-	struct ntt_ListNode* pTail;
-	usize				 length;
-	ntt_Allocator*		 pAllocator;
+	struct ntt_ListNode*   pHead;
+	struct ntt_ListNode*   pTail;
+	usize				   length;
+	ntt_Allocator*		   pAllocator;
+	ntt_ListNodeDestructor nodeDestructor;
 };
 
 typedef struct ntt_ListNode ntt_ListNode;
 typedef struct ntt_List		ntt_List;
 DEFINE_RETURN_RESULT_TYPE(ntt_List)
 
-typedef b8 (*ntt_ListElementPredicate)(void* pElement);
-
-ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator);
+ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator, ntt_ListNodeDestructor nodeDestructor);
 
 ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize);
 
@@ -44,7 +46,7 @@ ntt_Result ntt_ListRemove(ntt_List* pList, usize index);
 
 voidPtrResult ntt_ListGet(ntt_List* pList, usize index);
 
-b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate);
+b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
 
 ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
 

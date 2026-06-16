@@ -5,7 +5,7 @@ ntt_StackResult ntt_StackCreate(ntt_Allocator* pAllocator)
 	ntt_StackResult result;
 	result.result = NTT_RESULT_SUCCESS;
 
-	ntt_ListResult listResult = ntt_ListCreate(pAllocator);
+	ntt_ListResult listResult = ntt_ListCreate(pAllocator, NULL);
 	NTT_ASSERT_IF(listResult.result != NTT_RESULT_SUCCESS)
 	{
 		result.result = listResult.result;

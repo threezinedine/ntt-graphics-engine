@@ -18,7 +18,7 @@ void list_tests_after_each()
 
 TEST_CASE(ListCreateAndDestroy)
 {
-	ntt_ListResult result = ntt_ListCreate(NULL);
+	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	ntt_Result destroyResult = ntt_ListDestroy(&result.data);
@@ -29,7 +29,7 @@ TEST_CASE(ListDestroyMissingAllocator)
 {
 	TEST_ASSERT(ntt_MemoryGlobalsInitialize() == NTT_RESULT_SUCCESS);
 
-	ntt_ListResult result = ntt_ListCreate(NULL);
+	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	int i = 42;
@@ -48,7 +48,7 @@ TEST_CASE(ListDestroyMissingAllocator)
 
 TEST_CASE(ListAppendAndClear)
 {
-	ntt_ListResult result = ntt_ListCreate(NULL);
+	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	int i = 42;
@@ -71,7 +71,7 @@ TEST_CASE(ListAppendAndClear)
 
 TEST_CASE(ListInsertWithPointer)
 {
-	ntt_ListResult result = ntt_ListCreate(NULL);
+	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	int a = 42;
@@ -111,21 +111,16 @@ TEST_CASE(ListInsertWithPointer)
 	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
 
-b8 IsEqualTo42InList(void* pElement)
+b8 IsEqualTo(void* pElement, usize elementSize, void* pUserData, usize userDataSize)
 {
-	i32* pValue = (i32*)pElement;
-	return *pValue == 42;
-}
-
-b8 IsEqualTo999InList(void* pElement)
-{
-	i32* pValue = (i32*)pElement;
-	return *pValue == 999;
+	NTT_UNUSED(elementSize);
+	NTT_UNUSED(userDataSize);
+	return *(i32*)pElement == *(i32*)pUserData;
 }
 
 TEST_CASE(ListContains)
 {
-	ntt_ListResult result = ntt_ListCreate(NULL);
+	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	i32 a = 42;
@@ -134,17 +129,18 @@ TEST_CASE(ListContains)
 	TEST_ASSERT(ntt_ListAppend(&result.data, &a, sizeof(a)) == NTT_RESULT_SUCCESS);
 	TEST_ASSERT(ntt_ListAppend(&result.data, &b, sizeof(b)) == NTT_RESULT_SUCCESS);
 
-	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo42InList) == TRUE);
-	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo999InList) == FALSE);
-	TEST_ASSERT(ntt_ListContains(NULL, IsEqualTo42InList) == FALSE);
-	TEST_ASSERT(ntt_ListContains(&result.data, NULL) == FALSE);
+	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo, &a, sizeof(a)) == TRUE);
+	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo, &b, sizeof(b)) == TRUE);
+	TEST_ASSERT(ntt_ListContains(&result.data, IsEqualTo, &(i32){999}, sizeof(i32)) == FALSE);
+	TEST_ASSERT(ntt_ListContains(NULL, IsEqualTo, &a, sizeof(a)) == FALSE);
+	TEST_ASSERT(ntt_ListContains(&result.data, NULL, &a, sizeof(a)) == FALSE);
 
 	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
 
 TEST_CASE(ListRemoveByIndex)
 {
-	ntt_ListResult result = ntt_ListCreate(NULL);
+	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	i32 a = 10;
