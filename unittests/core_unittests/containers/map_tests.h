@@ -34,6 +34,11 @@ TEST_CASE(SimpleCase)
 	TEST_ASSERT(ntt_MapInsert(&result.data, &a, sizeof(a), (void*)aValue, sizeof(aValue)) == NTT_RESULT_SUCCESS);
 	TEST_ASSERT(ntt_MapContains(&result.data, &a, sizeof(a)) == TRUE);
 
+	ntt_KeyValuePairResult getResult = ntt_MapGet(&result.data, &a, sizeof(a));
+	TEST_ASSERT(getResult.result == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(*((i32*)getResult.data.pKey) == a);
+	TEST_ASSERT(ntt_StrEquals((const char*)getResult.data.pValue, aValue) == TRUE);
+
 	TEST_ASSERT(ntt_MapRemove(&result.data, &a, sizeof(a)) == NTT_RESULT_SUCCESS);
 	TEST_ASSERT(ntt_MapContains(&result.data, &a, sizeof(a)) == FALSE);
 

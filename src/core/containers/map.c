@@ -174,7 +174,20 @@ ntt_KeyValuePairResult ntt_MapGet(ntt_Map* pMap, void* pKey, usize keySize)
 		return result;
 	}
 
-	NTT_UNUSED(keySize);
+	u32			  hash		  = pMap->hashFunction(pKey, keySize);
+	u32			  bucketIndex = hash % pMap->bucketCount;
+	ntt_List*	  pBucket	  = &pMap->bucks[bucketIndex];
+	ntt_ListNode* pNode = ntt_ListFindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
+
+	NTT_ASSERT_IF(pNode == NULL)
+	{
+		result.result = NTT_RESULT_KEY_NOT_FOUND;
+		return result;
+	}
+
+	ntt_MapNodeData* pNodeData = (ntt_MapNodeData*)pNode->pData;
+	result.data.pKey		   = pNodeData->pKey;
+	result.data.pValue		   = pNodeData->pValue;
 
 	return result;
 }

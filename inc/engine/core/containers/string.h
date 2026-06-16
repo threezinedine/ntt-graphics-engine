@@ -74,4 +74,6 @@ ntt_StringView ntt_stringToView(ntt_String* pStr);
 
 usize ntt_StrLen(const char* cString);
 
+b8 ntt_StrEquals(const char* a, const char* b);
+
 #endif /* _STRING_H_ */

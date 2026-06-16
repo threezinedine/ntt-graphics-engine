@@ -89,3 +89,8 @@ usize ntt_StrLen(const char* cString)
 {
 	return (usize)strlen(cString);
 }
+
+b8 ntt_StrEquals(const char* a, const char* b)
+{
+	return strcmp(a, b) == 0;
+}
