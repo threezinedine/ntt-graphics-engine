@@ -45,6 +45,32 @@ TEST_CASE(SimpleCase)
 	TEST_ASSERT(ntt_MapDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
 
-TEST_SUITE_DEFINE(map, map_tests_before_each, map_tests_after_each, TEST_CASE_DECLARE(SimpleCase))
+TEST_CASE(RemapTheBuckets)
+{
+	ntt_MapResult result = ntt_MapCreate(intHashFunction, 2, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	for (i32 i = 0; i < 10; i++)
+	{
+		TEST_ASSERT(ntt_MapInsert(&result.data, &i, sizeof(i), &i, sizeof(i)) == NTT_RESULT_SUCCESS);
+	}
+
+	TEST_ASSERT(result.data.bucketCount >= 2);
+
+	for (i32 i = 0; i < 10; i++)
+	{
+		TEST_ASSERT(ntt_MapContains(&result.data, &i, sizeof(i)) == TRUE);
+
+		ntt_KeyValuePairResult getResult = ntt_MapGet(&result.data, &i, sizeof(i));
+		TEST_ASSERT(getResult.result == NTT_RESULT_SUCCESS);
+		TEST_ASSERT(*((i32*)getResult.data.pKey) == i);
+		TEST_ASSERT(*((i32*)getResult.data.pValue) == i);
+	}
+
+	TEST_ASSERT(ntt_MapDestroy(&result.data) == NTT_RESULT_SUCCESS);
+}
+
+TEST_SUITE_DEFINE(
+	map, map_tests_before_each, map_tests_after_each, TEST_CASE_DECLARE(SimpleCase), TEST_CASE_DECLARE(RemapTheBuckets))
 
 #endif /* _MAP_TESTS_H_ */

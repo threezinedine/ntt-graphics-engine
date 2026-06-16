@@ -11,7 +11,8 @@ struct ntt_MapNodeData
 };
 
 typedef struct ntt_MapNodeData ntt_MapNodeData;
-b8 _MapNodeDataKeyEquals(void* pElement, usize elementSize, void* pUserData, usize userDataSize);
+static b8		  _MapNodeDataKeyEquals(void* pElement, usize elementSize, void* pUserData, usize userDataSize);
+static ntt_Result _remap(ntt_Map* pMap);
 
 ntt_Result _destructorNodeData(void* pData, usize dataSize)
 {
@@ -100,6 +101,11 @@ ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue,
 		return NTT_RESULT_NULL_POINTER;
 	}
 
+	if (pMap->count >= pMap->bucketCount * 4)
+	{
+		NTT_SUCCESS_ASSERT(_remap(pMap));
+	}
+
 	u32		  hash		  = pMap->hashFunction(pKey, keySize);
 	u32		  bucketIndex = hash % pMap->bucketCount;
 	ntt_List* pBucket	  = &pMap->bucks[bucketIndex];
@@ -119,10 +125,7 @@ ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue,
 	nodeData.valueSize = valueSize;
 
 	ntt_ListAppend(pBucket, &nodeData, sizeof(ntt_MapNodeData));
-
-	NTT_UNUSED(keySize);
-
-	NTT_UNUSED(valueSize);
+	pMap->count++;
 
 	return NTT_RESULT_SUCCESS;
 }
@@ -247,5 +250,49 @@ ntt_Result ntt_MapDestroy(ntt_Map* pMap)
 
 	NTT_SUCCESS_ASSERT(ntt_Deallocate(pMap->pAllocator, pMap->bucks, sizeof(ntt_List) * pMap->bucketCount));
 
+	return NTT_RESULT_SUCCESS;
+}
+
+static ntt_Result _remap(ntt_Map* pMap)
+{
+	ntt_List* oldBucks		 = pMap->bucks;
+	usize	  oldBucketCount = pMap->bucketCount;
+
+	usize		  newBucketCount		 = oldBucketCount * 2;
+	voidPtrResult newBucksAllocateResult = ntt_Allocate(pMap->pAllocator, sizeof(ntt_List) * newBucketCount);
+	NTT_SUCCESS_ASSERT_VAR(newBucksAllocateResult);
+
+	ntt_List* newBucks = (ntt_List*)newBucksAllocateResult.pData;
+	pMap->bucks		   = newBucks;
+	pMap->count		   = 0;
+	pMap->bucketCount  = newBucketCount;
+
+	for (usize i = 0; i < newBucketCount; i++)
+	{
+		pMap->bucks[i].pHead		  = NULL;
+		pMap->bucks[i].pTail		  = NULL;
+		pMap->bucks[i].length		  = 0;
+		pMap->bucks[i].pAllocator	  = pMap->pAllocator;
+		pMap->bucks[i].nodeDestructor = _destructorNodeData;
+	}
+
+	for (usize i = 0; i < oldBucketCount; i++)
+	{
+		ntt_List*	  pOldBucket   = &oldBucks[i];
+		ntt_ListNode* pCurrentNode = pOldBucket->pHead;
+
+		while (pCurrentNode != NULL)
+		{
+			ntt_MapNodeData* pNodeData = (ntt_MapNodeData*)pCurrentNode->pData;
+			NTT_SUCCESS_ASSERT(
+				ntt_MapInsert(pMap, pNodeData->pKey, pNodeData->keySize, pNodeData->pValue, pNodeData->valueSize));
+
+			pCurrentNode = pCurrentNode->pNext;
+		}
+
+		NTT_SUCCESS_ASSERT(ntt_ListClear(pOldBucket));
+	}
+
+	NTT_SUCCESS_ASSERT(ntt_Deallocate(pMap->pAllocator, oldBucks, sizeof(ntt_List) * oldBucketCount));
 	return NTT_RESULT_SUCCESS;
 }
