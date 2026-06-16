@@ -22,6 +22,21 @@ u32 intHashFunction(void* pKey, usize keySize)
 	return (u32)(*(i32*)pKey);
 }
 
+u32 stringHashFunction(void* pKey, usize keySize)
+{
+	NTT_UNUSED(keySize);
+	const char* str	 = (const char*)pKey;
+	u32			hash = 5381;
+
+	while (*str != '\0')
+	{
+		hash = ((hash << 5) + hash) + (u32)(*str);
+		str++;
+	}
+
+	return hash;
+}
+
 TEST_CASE(SimpleCase)
 {
 	ntt_MapResult result = ntt_MapCreate(intHashFunction, 0, NULL);
@@ -209,6 +224,59 @@ TEST_CASE(MapContainsWithUpdate)
 	TEST_ASSERT(ntt_MapDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
 
+TEST_CASE(MapWithStringKeys)
+{
+	ntt_MapResult result = ntt_MapCreate(stringHashFunction, 0, NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	const char* key1 = "name";
+	const char* key2 = "age";
+	const char* key3 = "city";
+
+	const char* value1 = "Alice";
+	const char* value2 = "30";
+	const char* value3 = "New York";
+
+	usize key1Size = ntt_StrLen(key1) + 1;
+	usize key2Size = ntt_StrLen(key2) + 1;
+	usize key3Size = ntt_StrLen(key3) + 1;
+
+	usize value1Size = ntt_StrLen(value1) + 1;
+	usize value2Size = ntt_StrLen(value2) + 1;
+	usize value3Size = ntt_StrLen(value3) + 1;
+
+	TEST_ASSERT(ntt_MapInsert(&result.data, (void*)key1, key1Size, (void*)value1, value1Size) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_MapInsert(&result.data, (void*)key2, key2Size, (void*)value2, value2Size) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_MapInsert(&result.data, (void*)key3, key3Size, (void*)value3, value3Size) == NTT_RESULT_SUCCESS);
+
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)key1, key1Size) == TRUE);
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)key2, key2Size) == TRUE);
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)key3, key3Size) == TRUE);
+
+	ntt_KeyValuePairResult getResult = ntt_MapGet(&result.data, (void*)key1, key1Size);
+	TEST_ASSERT(getResult.result == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_StrEquals((const char*)getResult.data.pValue, value1) == TRUE);
+
+	getResult = ntt_MapGet(&result.data, (void*)key2, key2Size);
+	TEST_ASSERT(getResult.result == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_StrEquals((const char*)getResult.data.pValue, value2) == TRUE);
+
+	getResult = ntt_MapGet(&result.data, (void*)key3, key3Size);
+	TEST_ASSERT(getResult.result == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_StrEquals((const char*)getResult.data.pValue, value3) == TRUE);
+
+	const char* nonExistentKey	   = "email";
+	usize		nonExistentKeySize = ntt_StrLen(nonExistentKey) + 1;
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)nonExistentKey, nonExistentKeySize) == FALSE);
+
+	TEST_ASSERT(ntt_MapRemove(&result.data, (void*)key2, key2Size) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)key2, key2Size) == FALSE);
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)key1, key1Size) == TRUE);
+	TEST_ASSERT(ntt_MapContains(&result.data, (void*)key3, key3Size) == TRUE);
+
+	TEST_ASSERT(ntt_MapDestroy(&result.data) == NTT_RESULT_SUCCESS);
+}
+
 TEST_SUITE_DEFINE(map,
 				  map_tests_before_each,
 				  map_tests_after_each,
@@ -220,6 +288,7 @@ TEST_SUITE_DEFINE(map,
 				  TEST_CASE_DECLARE(MapContainsAfterRemoval),
 				  TEST_CASE_DECLARE(MapContainsNullPointer),
 				  TEST_CASE_DECLARE(MapContainsCollisionAndRemap),
-				  TEST_CASE_DECLARE(MapContainsWithUpdate))
+				  TEST_CASE_DECLARE(MapContainsWithUpdate),
+				  TEST_CASE_DECLARE(MapWithStringKeys))
 
 #endif /* _MAP_TESTS_H_ */
