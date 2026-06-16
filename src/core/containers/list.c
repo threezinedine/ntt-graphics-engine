@@ -97,6 +97,7 @@ ntt_Result ntt_ListHeadAppend(ntt_List* pList, void* pData, usize dataSize)
 	{
 		pList->pHead  = pNewNode;
 		pList->length = 1;
+		pList->pTail  = pNewNode;
 	}
 	else
 	{

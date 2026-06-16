@@ -3,6 +3,7 @@
 
 #include "array.h"
 #include "list.h"
+#include "stack.h"
 #include "string.h"
 
 #endif /* _CONTAINERS_H_ */

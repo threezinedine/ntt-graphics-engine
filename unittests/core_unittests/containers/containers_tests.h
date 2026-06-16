@@ -3,6 +3,7 @@
 
 #include "array_tests.h"
 #include "list_tests.h"
+#include "stack_tests.h"
 #include "string_tests.h"
 
 #endif /* _CONTAINERS_TESTS_H_ */
