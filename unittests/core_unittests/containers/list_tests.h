@@ -96,6 +96,13 @@ TEST_CASE(ListInsertWithPointer)
 	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 2).pData) == c);
 	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 3).pData) == b);
 
+	TEST_ASSERT(ntt_ListRemoveNode(&result.data, result.data.pHead->pNext) == NTT_RESULT_SUCCESS);
+
+	TEST_ASSERT(result.data.length == 3);
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 0).pData) == d);
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 1).pData) == c);
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 2).pData) == b);
+
 	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
 

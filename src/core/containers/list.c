@@ -393,5 +393,12 @@ ntt_Result ntt_ListRemoveNode(ntt_List* pList, ntt_ListNode* pNode)
 
 	pList->length--;
 
+	// Deallocate the node's data and the node itself
+	ntt_Result deallocateDataResult = ntt_Deallocate(pList->pAllocator, pNode->pData, pNode->dataSize);
+	NTT_SUCCESS_ASSERT(deallocateDataResult);
+
+	ntt_Result deallocateNodeResult = ntt_Deallocate(pList->pAllocator, pNode, sizeof(ntt_ListNode));
+	NTT_SUCCESS_ASSERT(deallocateNodeResult);
+
 	return NTT_RESULT_SUCCESS;
 }
