@@ -48,6 +48,7 @@ ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize)
 	pNewNode->dataSize = dataSize;
 	pNewNode->pNext	   = NULL;
 	pNewNode->pPrev	   = NULL;
+	pNewNode->pOwner   = pList;
 
 	if (pList->pHead == NULL)
 	{
@@ -62,6 +63,49 @@ ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize)
 	}
 
 	pList->pTail = pNewNode;
+
+	return NTT_RESULT_SUCCESS;
+}
+
+ntt_Result ntt_ListHeadAppend(ntt_List* pList, void* pData, usize dataSize)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	voidPtrResult allocateResult = ntt_Allocate(pList->pAllocator, sizeof(ntt_ListNode));
+	NTT_SUCCESS_ASSERT_VAR(allocateResult);
+	ntt_ListNode* pNewNode = (ntt_ListNode*)allocateResult.pData;
+
+	voidPtrResult allocateDataResult = ntt_Allocate(pList->pAllocator, dataSize);
+	NTT_SUCCESS_ASSERT_VAR(allocateDataResult);
+	pNewNode->pData = allocateDataResult.pData;
+
+	memcpy(pNewNode->pData, pData, dataSize);
+	pNewNode->dataSize = dataSize;
+	pNewNode->pNext	   = NULL;
+	pNewNode->pPrev	   = NULL;
+	pNewNode->pOwner   = pList;
+
+	if (pList->pHead == NULL)
+	{
+		pList->pHead  = pNewNode;
+		pList->length = 1;
+	}
+	else
+	{
+		pNewNode->pNext		= pList->pHead;
+		pList->pHead->pPrev = pNewNode;
+		pList->length++;
+	}
+
+	pList->pHead = pNewNode;
 
 	return NTT_RESULT_SUCCESS;
 }
@@ -119,6 +163,235 @@ ntt_Result ntt_ListDestroy(ntt_List* pList)
 	}
 
 	NTT_SUCCESS_ASSERT(ntt_ListClear(pList));
+
+	return NTT_RESULT_SUCCESS;
+}
+
+ntt_Result ntt_ListInsert(ntt_List* pList, usize index, void* pData, usize dataSize)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	NTT_ASSERT_IF(pData == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_UNUSED(dataSize);
+
+	usize		  currentIndex = 0;
+	ntt_ListNode* pCurrentNode = pList->pHead;
+
+	while (pCurrentNode != NULL)
+	{
+		if (currentIndex == index)
+		{
+			// Insert logic here
+			break;
+		}
+
+		pCurrentNode = pCurrentNode->pNext;
+		currentIndex++;
+	}
+
+	return NTT_RESULT_SUCCESS;
+}
+
+ntt_Result ntt_ListRemove(ntt_List* pList, usize index)
+{
+	NTT_UNUSED(pList);
+	NTT_UNUSED(index);
+	return NTT_RESULT_SUCCESS;
+}
+
+voidPtrResult ntt_ListGet(ntt_List* pList, usize index)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return (voidPtrResult){.result = NTT_RESULT_NULL_POINTER, .pData = NULL};
+	}
+
+	NTT_ASSERT_IF(index >= pList->length)
+	{
+		return (voidPtrResult){.result = NTT_RESULT_INDEX_OUT_OF_BOUNDS, .pData = NULL};
+	}
+
+	ntt_ListNode* pCurrentNode = pList->pHead;
+	usize		  currentIndex = 0;
+
+	while (currentIndex < index)
+	{
+		pCurrentNode = pCurrentNode->pNext;
+		currentIndex++;
+	}
+
+	NTT_ASSERT_IF(pCurrentNode == NULL)
+	{
+		return (voidPtrResult){.result = NTT_RESULT_UNKNOWN_ERROR, .pData = NULL};
+	}
+
+	return (voidPtrResult){.result = NTT_RESULT_SUCCESS, .pData = pCurrentNode->pData};
+}
+
+ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	if (pNode == NULL)
+	{
+		return ntt_ListAppend(pList, pData, dataSize);
+	}
+
+	NTT_ASSERT_IF(pNode->pOwner != pList)
+	{
+		return NTT_RESULT_INVALID_NODE_OWNER;
+	}
+
+	voidPtrResult allocateResult = ntt_Allocate(pList->pAllocator, sizeof(ntt_ListNode));
+	NTT_SUCCESS_ASSERT_VAR(allocateResult);
+	ntt_ListNode* pNewNode = (ntt_ListNode*)allocateResult.pData;
+
+	voidPtrResult allocateDataResult = ntt_Allocate(pList->pAllocator, dataSize);
+	NTT_SUCCESS_ASSERT_VAR(allocateDataResult);
+	pNewNode->pData = allocateDataResult.pData;
+	memcpy(pNewNode->pData, pData, dataSize);
+	pNewNode->dataSize = dataSize;
+	pNewNode->pOwner   = pList;
+
+	ntt_ListNode* pNextNode = pNode->pNext;
+
+	pNode->pNext	= pNewNode;
+	pNewNode->pPrev = pNode;
+	pNewNode->pNext = pNextNode;
+
+	if (pNextNode != NULL)
+	{
+		pNextNode->pPrev = pNewNode;
+	}
+	else
+	{
+		pList->pTail = pNewNode;
+	}
+
+	pList->length++;
+
+	return NTT_RESULT_SUCCESS;
+}
+
+ntt_Result ntt_ListInsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	if (pNode == NULL)
+	{
+		return ntt_ListHeadAppend(pList, pData, dataSize);
+	}
+
+	NTT_ASSERT_IF(pNode->pOwner != pList)
+	{
+		return NTT_RESULT_INVALID_NODE_OWNER;
+	}
+
+	voidPtrResult allocateResult = ntt_Allocate(pList->pAllocator, sizeof(ntt_ListNode));
+	NTT_SUCCESS_ASSERT_VAR(allocateResult);
+	ntt_ListNode* pNewNode = (ntt_ListNode*)allocateResult.pData;
+
+	voidPtrResult allocateDataResult = ntt_Allocate(pList->pAllocator, dataSize);
+	NTT_SUCCESS_ASSERT_VAR(allocateDataResult);
+	pNewNode->pData = allocateDataResult.pData;
+	memcpy(pNewNode->pData, pData, dataSize);
+	pNewNode->dataSize = dataSize;
+	pNewNode->pOwner   = pList;
+
+	ntt_ListNode* pPrevNode = pNode->pPrev;
+
+	pNode->pPrev	= pNewNode;
+	pNewNode->pNext = pNode;
+	pNewNode->pPrev = pPrevNode;
+
+	if (pPrevNode != NULL)
+	{
+		pPrevNode->pNext = pNewNode;
+	}
+	else
+	{
+		pList->pHead = pNewNode;
+	}
+
+	pList->length++;
+
+	return NTT_RESULT_SUCCESS;
+}
+
+ntt_Result ntt_ListRemoveNode(ntt_List* pList, ntt_ListNode* pNode)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pList->pAllocator == NULL)
+	{
+		return NTT_RESULT_MISSING_ALLOCATOR;
+	}
+
+	NTT_ASSERT_IF(pNode == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	NTT_ASSERT_IF(pNode->pOwner != pList)
+	{
+		return NTT_RESULT_INVALID_NODE_OWNER;
+	}
+
+	ntt_ListNode* pPrevNode = pNode->pPrev;
+	ntt_ListNode* pNextNode = pNode->pNext;
+
+	if (pPrevNode != NULL)
+	{
+		pPrevNode->pNext = pNextNode;
+	}
+
+	if (pNextNode != NULL)
+	{
+		pNextNode->pPrev = pPrevNode;
+	}
+
+	if (pNode == pList->pHead)
+	{
+		pList->pHead = pNextNode;
+	}
+
+	if (pNode == pList->pTail)
+	{
+		pList->pTail = pPrevNode;
+	}
+
+	pList->length--;
 
 	return NTT_RESULT_SUCCESS;
 }

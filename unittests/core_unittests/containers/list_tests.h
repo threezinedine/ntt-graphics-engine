@@ -69,11 +69,42 @@ TEST_CASE(ListAppendAndClear)
 	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
 
+TEST_CASE(ListInsertWithPointer)
+{
+	ntt_ListResult result = ntt_ListCreate(NULL);
+	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
+
+	int a = 42;
+	int b = 84;
+	int c = 168;
+	int d = 336;
+
+	TEST_ASSERT(ntt_ListInsertAfterNode(&result.data, NULL, &a, sizeof(a)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 1);
+
+	TEST_ASSERT(ntt_ListInsertAfterNode(&result.data, result.data.pHead, &b, sizeof(b)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 2);
+
+	TEST_ASSERT(ntt_ListInsertBeforeNode(&result.data, result.data.pHead->pNext, &c, sizeof(c)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 3);
+
+	TEST_ASSERT(ntt_ListInsertBeforeNode(&result.data, NULL, &d, sizeof(d)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(result.data.length == 4);
+
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 0).pData) == d);
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 1).pData) == a);
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 2).pData) == c);
+	TEST_ASSERT(*(int*)(ntt_ListGet(&result.data, 3).pData) == b);
+
+	TEST_ASSERT(ntt_ListDestroy(&result.data) == NTT_RESULT_SUCCESS);
+}
+
 TEST_SUITE_DEFINE(list,
 				  list_tests_before_each,
 				  list_tests_after_each,
 				  TEST_CASE_DECLARE(ListCreateAndDestroy),
 				  TEST_CASE_DECLARE(ListAppendAndClear),
+				  TEST_CASE_DECLARE(ListInsertWithPointer),
 				  TEST_CASE_DECLARE_WITHOUT_WRAPPER(ListDestroyMissingAllocator))
 
 #endif /* _LIST_TESTS_H_ */

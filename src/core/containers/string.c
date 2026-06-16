@@ -66,7 +66,7 @@ ntt_Result ntt_StringDestroy(ntt_String* stringView)
 	{
 		NTT_ASSERT_IF(stringView->pLongBuffer == NULL)
 		{
-			return NTT_RESULT_INVALID_POINTER;
+			return NTT_RESULT_NULL_POINTER;
 		}
 
 		ntt_Result deallocateResult =
