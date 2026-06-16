@@ -191,9 +191,17 @@ ntt_Result ntt_MapRemove(ntt_Map* pMap, void* pKey, usize keySize)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	NTT_UNUSED(keySize);
+	u32			  hash		  = pMap->hashFunction(pKey, keySize);
+	u32			  bucketIndex = hash % pMap->bucketCount;
+	ntt_List*	  pBucket	  = &pMap->bucks[bucketIndex];
+	ntt_ListNode* pNode = ntt_ListFindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
 
-	return NTT_RESULT_SUCCESS;
+	NTT_ASSERT_IF(pNode == NULL)
+	{
+		return NTT_RESULT_KEY_NOT_FOUND;
+	}
+
+	return ntt_ListRemoveNode(pBucket, pNode);
 }
 
 ntt_Result ntt_MapClear(ntt_Map* pMap)

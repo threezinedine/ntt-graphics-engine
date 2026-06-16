@@ -301,6 +301,32 @@ b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* p
 	return FALSE;
 }
 
+ntt_ListNode* ntt_ListFindNode(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize)
+{
+	NTT_ASSERT_IF(pList == NULL)
+	{
+		return NULL;
+	}
+
+	NTT_ASSERT_IF(predicate == NULL)
+	{
+		return NULL;
+	}
+
+	ntt_ListNode* pCurrentNode = pList->pHead;
+	while (pCurrentNode != NULL)
+	{
+		if (predicate(pCurrentNode->pData, pCurrentNode->dataSize, pUserData, userDataSize))
+		{
+			return pCurrentNode;
+		}
+
+		pCurrentNode = pCurrentNode->pNext;
+	}
+
+	return NULL;
+}
+
 ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)

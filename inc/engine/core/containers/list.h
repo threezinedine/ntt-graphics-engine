@@ -48,6 +48,9 @@ voidPtrResult ntt_ListGet(ntt_List* pList, usize index);
 
 b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
 
+ntt_ListNode*
+ntt_ListFindNode(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
+
 ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
 
 ntt_Result ntt_ListInsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);

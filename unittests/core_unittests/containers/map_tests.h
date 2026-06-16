@@ -31,10 +31,11 @@ TEST_CASE(SimpleCase)
 	const char* aValue = "ten";
 
 	TEST_ASSERT(ntt_MapContains(&result.data, &a, sizeof(a)) == FALSE);
-
 	TEST_ASSERT(ntt_MapInsert(&result.data, &a, sizeof(a), (void*)aValue, sizeof(aValue)) == NTT_RESULT_SUCCESS);
-
 	TEST_ASSERT(ntt_MapContains(&result.data, &a, sizeof(a)) == TRUE);
+
+	TEST_ASSERT(ntt_MapRemove(&result.data, &a, sizeof(a)) == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_MapContains(&result.data, &a, sizeof(a)) == FALSE);
 
 	TEST_ASSERT(ntt_MapDestroy(&result.data) == NTT_RESULT_SUCCESS);
 }
