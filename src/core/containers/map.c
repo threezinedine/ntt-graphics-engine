@@ -110,6 +110,23 @@ ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue,
 	u32		  bucketIndex = hash % pMap->bucketCount;
 	ntt_List* pBucket	  = &pMap->bucks[bucketIndex];
 
+	// check if the key already exists in the map, if so, update the value and return
+	ntt_ListNode* pNode = ntt_ListFindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
+	if (pNode != NULL)
+	{
+		ntt_MapNodeData* pNodeData		 = (ntt_MapNodeData*)pNode->pData;
+		ntt_Result deallocateValueResult = ntt_Deallocate(pMap->pAllocator, pNodeData->pValue, pNodeData->valueSize);
+		NTT_SUCCESS_ASSERT(deallocateValueResult);
+
+		voidPtrResult allocateValueResult = ntt_Allocate(pMap->pAllocator, valueSize);
+		NTT_SUCCESS_ASSERT_VAR(allocateValueResult);
+		pNodeData->pValue = allocateValueResult.pData;
+		memcpy(pNodeData->pValue, pValue, valueSize);
+		pNodeData->valueSize = valueSize;
+
+		return NTT_RESULT_SUCCESS;
+	}
+
 	ntt_MapNodeData nodeData;
 
 	voidPtrResult allocateKeyResult = ntt_Allocate(pMap->pAllocator, keySize);
