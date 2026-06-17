@@ -27,7 +27,7 @@ TEST_CASE(ObjectIsInstanceOfObject)
 	ntt_Object object;
 	ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_Object_HasInstance(&object) == TRUE);
+	TEST_ASSERT(ntt_Object_IsTypeOf(&object) == TRUE);
 
 	ntt_Object_Destroy(&object);
 }
@@ -37,7 +37,7 @@ TEST_CASE(ObjectIsDerivedFromObject)
 	ntt_Object object;
 	ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_Object_IsParentOf(&object) == TRUE);
+	TEST_ASSERT(ntt_Object_HasInstance(&object) == TRUE);
 
 	ntt_Object_Destroy(&object);
 }
@@ -47,7 +47,7 @@ TEST_CASE(ObjectIsNotInstanceOfSystem)
 	ntt_Object object;
 	ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_System_HasInstance((ntt_System*)&object) == FALSE);
+	TEST_ASSERT(ntt_System_IsTypeOf((ntt_System*)&object) == FALSE);
 
 	ntt_Object_Destroy(&object);
 }
@@ -57,7 +57,7 @@ TEST_CASE(ObjectIsNotDerivedFromSystem)
 	ntt_Object object;
 	ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_System_IsParentOf((ntt_System*)&object) == FALSE);
+	TEST_ASSERT(ntt_System_HasInstance((ntt_System*)&object) == FALSE);
 
 	ntt_Object_Destroy(&object);
 }
@@ -69,7 +69,7 @@ TEST_CASE(SystemIsInstanceOfSystem)
 	ntt_System system;
 	ntt_System_Initialize(&system, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_System_HasInstance(&system) == TRUE);
+	TEST_ASSERT(ntt_System_IsTypeOf(&system) == TRUE);
 
 	ntt_System_Destroy(&system);
 }
@@ -79,7 +79,7 @@ TEST_CASE(SystemIsDerivedFromSystem)
 	ntt_System system;
 	ntt_System_Initialize(&system, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_System_IsParentOf(&system) == TRUE);
+	TEST_ASSERT(ntt_System_HasInstance(&system) == TRUE);
 
 	ntt_System_Destroy(&system);
 }
@@ -89,7 +89,7 @@ TEST_CASE(SystemIsDerivedFromObject)
 	ntt_System system;
 	ntt_System_Initialize(&system, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_Object_IsParentOf((ntt_Object*)&system) == TRUE);
+	TEST_ASSERT(ntt_Object_HasInstance((ntt_Object*)&system) == TRUE);
 
 	ntt_System_Destroy(&system);
 }
@@ -99,7 +99,7 @@ TEST_CASE(SystemIsNotInstanceOfObject)
 	ntt_System system;
 	ntt_System_Initialize(&system, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_Object_HasInstance((ntt_Object*)&system) == FALSE);
+	TEST_ASSERT(ntt_Object_IsTypeOf((ntt_Object*)&system) == FALSE);
 
 	ntt_System_Destroy(&system);
 }
@@ -111,7 +111,7 @@ TEST_CASE(DisplaySystemIsInstanceOfDisplaySystem)
 	ntt_DisplaySystem displaySystem;
 	ntt_DisplaySystem_Initialize(&displaySystem, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_DisplaySystem_HasInstance(&displaySystem) == TRUE);
+	TEST_ASSERT(ntt_DisplaySystem_IsTypeOf(&displaySystem) == TRUE);
 
 	ntt_DisplaySystem_Destroy(&displaySystem);
 }
@@ -121,7 +121,7 @@ TEST_CASE(DisplaySystemIsDerivedFromDisplaySystem)
 	ntt_DisplaySystem displaySystem;
 	ntt_DisplaySystem_Initialize(&displaySystem, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_DisplaySystem_IsParentOf(&displaySystem) == TRUE);
+	TEST_ASSERT(ntt_DisplaySystem_HasInstance(&displaySystem) == TRUE);
 
 	ntt_DisplaySystem_Destroy(&displaySystem);
 }
@@ -131,7 +131,7 @@ TEST_CASE(DisplaySystemIsDerivedFromSystem)
 	ntt_DisplaySystem displaySystem;
 	ntt_DisplaySystem_Initialize(&displaySystem, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_System_IsParentOf((ntt_System*)&displaySystem) == TRUE);
+	TEST_ASSERT(ntt_System_HasInstance((ntt_System*)&displaySystem) == TRUE);
 
 	ntt_DisplaySystem_Destroy(&displaySystem);
 }
@@ -141,7 +141,7 @@ TEST_CASE(DisplaySystemIsDerivedFromObject)
 	ntt_DisplaySystem displaySystem;
 	ntt_DisplaySystem_Initialize(&displaySystem, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_Object_IsParentOf((ntt_Object*)&displaySystem) == TRUE);
+	TEST_ASSERT(ntt_Object_HasInstance((ntt_Object*)&displaySystem) == TRUE);
 
 	ntt_DisplaySystem_Destroy(&displaySystem);
 }
@@ -151,7 +151,7 @@ TEST_CASE(DisplaySystemIsNotInstanceOfSystem)
 	ntt_DisplaySystem displaySystem;
 	ntt_DisplaySystem_Initialize(&displaySystem, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_System_HasInstance((ntt_System*)&displaySystem) == FALSE);
+	TEST_ASSERT(ntt_System_IsTypeOf((ntt_System*)&displaySystem) == FALSE);
 
 	ntt_DisplaySystem_Destroy(&displaySystem);
 }
@@ -161,7 +161,7 @@ TEST_CASE(DisplaySystemIsNotInstanceOfObject)
 	ntt_DisplaySystem displaySystem;
 	ntt_DisplaySystem_Initialize(&displaySystem, g_memoryGlobals.mallocAllocator);
 
-	TEST_ASSERT(ntt_Object_HasInstance((ntt_Object*)&displaySystem) == FALSE);
+	TEST_ASSERT(ntt_Object_IsTypeOf((ntt_Object*)&displaySystem) == FALSE);
 
 	ntt_DisplaySystem_Destroy(&displaySystem);
 }

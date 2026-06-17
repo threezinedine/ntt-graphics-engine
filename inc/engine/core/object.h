@@ -57,20 +57,20 @@ struct ntt_Object
 	typedef struct type type;                                                                                          \
 	ntt_Result			type##_Initialize(type* pObject, ntt_Allocator* pAllocator);                                   \
 	ntt_Result			type##_Destroy(type*);                                                                         \
+	b8					type##_IsTypeOf(type* pObject);                                                                \
 	b8					type##_HasInstance(type* pObject);                                                             \
-	b8					type##_IsParentOf(type* pObject);                                                              \
 	OBJECT_ID_DECLARE(type)
 
 #define INHERIT_CHECKING(objType)                                                                                      \
-	b8 objType##_HasInstance(objType* pObject)                                                                         \
+	b8 objType##_IsTypeOf(objType* pObject)                                                                            \
 	{                                                                                                                  \
 		NTT_ASSERT(pObject != NULL);                                                                                   \
 		return ntt_IsIDEqual(&((ntt_Object*)pObject)->type, &objType##ID) ? TRUE : FALSE;                              \
 	}                                                                                                                  \
-	b8 objType##_IsParentOf(objType* pObject)                                                                          \
+	b8 objType##_HasInstance(objType* pObject)                                                                         \
 	{                                                                                                                  \
 		NTT_ASSERT(pObject != NULL);                                                                                   \
-		if (objType##_HasInstance(pObject))                                                                            \
+		if (objType##_IsTypeOf(pObject))                                                                               \
 		{                                                                                                              \
 			return TRUE;                                                                                               \
 		}                                                                                                              \
