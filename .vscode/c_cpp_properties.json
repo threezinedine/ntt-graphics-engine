@@ -15,6 +15,20 @@
       "cStandard": "c17",
       "cppStandard": "c++17",
       "intelliSenseMode": "linux-clang-x64"
+    },
+    {
+      "name": "Windows",
+      "includePath": ["${workspaceFolder}/**"],
+      "defines": [
+        "NTT_DEBUG",
+        "NTT_PLATFORM_WINDOWS",
+        "NTT_STRICT_MEMORY_MANAGEMENT",
+        "NTT_ENABLE_ASSERT"
+      ],
+      "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-msvc-x64"
     }
   ],
   "version": 4

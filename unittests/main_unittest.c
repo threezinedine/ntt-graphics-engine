@@ -87,6 +87,7 @@ int main(i32 argc, char** argv)
 		ntt_ConsolePrint("*%s*\n", centeredResultMessage);
 	}
 	ntt_ConsolePrint("************************************\n\n");
+	ntt_ConsoleResetColor();
 
 	return 0;
 }

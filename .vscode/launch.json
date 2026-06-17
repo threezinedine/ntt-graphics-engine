@@ -27,6 +27,15 @@
       "program": "${workspaceFolder}/build/tests_debug/ntt-graphics-tests",
       "cwd": "${workspaceFolder}/build/tests_debug",
       "preLaunchTask": "Build Tests (Debug)"
+    },
+    {
+      "name": "Tests (Windows)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/tests_debug/Debug/ntt-graphics-tests.exe",
+      "cwd": "${workspaceFolder}/build/tests_debug",
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build Tests (Debug)"
     }
   ]
 }
