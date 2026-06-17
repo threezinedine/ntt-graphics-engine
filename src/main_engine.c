@@ -13,7 +13,7 @@ int main(i32 argc, char** argv)
 	NTT_SUCCESS_ASSERT(ntt_MemoryGlobalsInitialize());
 
 	NTT_SUCCESS_ASSERT(ntt_ObjectRegisterType());
-	NTT_SUCCESS_ASSERT(ntt_SystemRegisterType());
+	NTT_SUCCESS_ASSERT(ntt_SystemsRegister());
 
 	ntt_Object object;
 	NTT_SUCCESS_ASSERT(ntt_ObjectInitialize(&object, g_memoryGlobals.mallocAllocator));
@@ -38,7 +38,7 @@ int main(i32 argc, char** argv)
 	ntt_ObjectDestroy(&object);
 	ntt_SystemDestroy(&system);
 
-	NTT_SUCCESS_ASSERT(ntt_SystemUnregisterType());
+	NTT_SUCCESS_ASSERT(ntt_SystemsUnregister());
 	NTT_SUCCESS_ASSERT(ntt_ObjectUnregisterType());
 
 	NTT_SUCCESS_ASSERT(ntt_MemoryGlobalsDestroy());

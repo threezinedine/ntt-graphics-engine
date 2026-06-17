@@ -4,4 +4,6 @@
 #include "display/display.h"
 #include "system.h"
 
+REGISTER_SYSTEM_DECLARE(Systems)
+
 #endif /* _SYSTEMS_H_ */

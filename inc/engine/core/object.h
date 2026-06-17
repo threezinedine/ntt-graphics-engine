@@ -95,4 +95,8 @@ struct ntt_Object
 
 OBJECT_DECLARE(ntt_Object)
 
+#define REGISTER_SYSTEM_DECLARE(system)                                                                                \
+	ntt_Result ntt_##system##Register();                                                                               \
+	ntt_Result ntt_##system##Unregister();
+
 #endif /* _OBJECT_H_ */
