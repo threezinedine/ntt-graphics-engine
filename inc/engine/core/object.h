@@ -2,6 +2,7 @@
 #define _OBJECT_H_
 
 #include "engine/core/defs.h"
+#include "engine/core/utils/utils.h"
 #include "id.h"
 #include "memory/alloc.h"
 #include "result.h"
@@ -31,24 +32,21 @@ struct ntt_Object
 
 #define OBJECT_ID_DECLARE(type)                                                                                        \
 	extern ID  type##ID;                                                                                               \
-	ntt_Result type##RegisterType();                                                                                   \
-	ntt_Result type##UnregisterType();
+	ntt_Result type##_RegisterType();                                                                                  \
+	ntt_Result type##_UnregisterType();
 
 #define OBJECT_ID_DEFINE(objectType, baseType)                                                                         \
 	ID		   objectType##ID = INVALID_ID_INIT;                                                                       \
-	static ID* s_pBaseTypeID  = NULL;                                                                                  \
-	ntt_Result objectType##RegisterType()                                                                              \
+	ntt_Result objectType##_RegisterType()                                                                             \
 	{                                                                                                                  \
-		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);                                                        \
+		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, &baseType##ID);                                         \
 		NTT_SUCCESS_ASSERT_VAR(result);                                                                                \
 		objectType##ID = result.data;                                                                                  \
-		s_pBaseTypeID  = &baseType##ID;                                                                                \
 		return NTT_RESULT_SUCCESS;                                                                                     \
 	}                                                                                                                  \
-	ntt_Result objectType##UnregisterType()                                                                            \
+	ntt_Result objectType##_UnregisterType()                                                                           \
 	{                                                                                                                  \
 		objectType##ID = INVALID_ID;                                                                                   \
-		s_pBaseTypeID  = NULL;                                                                                         \
 		return NTT_RESULT_SUCCESS;                                                                                     \
 	}
 
@@ -57,46 +55,68 @@ struct ntt_Object
  */
 #define OBJECT_DECLARE(type)                                                                                           \
 	typedef struct type type;                                                                                          \
-	ntt_Result			type##Initialize(type* pObject, ntt_Allocator* pAllocator);                                    \
-	ntt_Result			type##Destroy(type*);                                                                          \
-	b8					type##IsInstanceOf(type* pObject);                                                             \
-	b8					type##IsDerivedFrom(type* pObject);                                                            \
+	ntt_Result			type##_Initialize(type* pObject, ntt_Allocator* pAllocator);                                   \
+	ntt_Result			type##_Destroy(type*);                                                                         \
+	b8					type##_HasInstance(type* pObject);                                                             \
+	b8					type##_IsParentOf(type* pObject);                                                              \
 	OBJECT_ID_DECLARE(type)
 
-#define OBJECT_DEFINE(derivedType, baseType)                                                                           \
-	OBJECT_ID_DEFINE(derivedType, baseType)                                                                            \
-	b8 derivedType##IsInstanceOf(derivedType* pObject)                                                                 \
+#define INHERIT_CHECKING(objType)                                                                                      \
+	b8 objType##_HasInstance(objType* pObject)                                                                         \
 	{                                                                                                                  \
 		NTT_ASSERT(pObject != NULL);                                                                                   \
-		return ntt_IsIDEqual(&((ntt_Object*)pObject)->type, &derivedType##ID) ? TRUE : FALSE;                          \
+		return ntt_IsIDEqual(&((ntt_Object*)pObject)->type, &objType##ID) ? TRUE : FALSE;                              \
 	}                                                                                                                  \
-	b8 derivedType##IsDerivedFrom(derivedType* pObject)                                                                \
+	b8 objType##_IsParentOf(objType* pObject)                                                                          \
 	{                                                                                                                  \
 		NTT_ASSERT(pObject != NULL);                                                                                   \
-		if (derivedType##IsInstanceOf(pObject))                                                                        \
+		if (objType##_HasInstance(pObject))                                                                            \
 		{                                                                                                              \
 			return TRUE;                                                                                               \
 		}                                                                                                              \
-		if (ntt_IsIDEqual(s_pBaseTypeID, &INVALID_ID) == TRUE)                                                         \
-		{                                                                                                              \
-			return baseType##IsDerivedFrom((baseType*)pObject);                                                        \
-		}                                                                                                              \
-		else                                                                                                           \
+		ID* objBaseTypeID = ntt_Object_GetBaseTypeID((ntt_Object*)pObject);                                            \
+		if (objBaseTypeID == NULL)                                                                                     \
 		{                                                                                                              \
 			return FALSE;                                                                                              \
 		}                                                                                                              \
+		while (1)                                                                                                      \
+		{                                                                                                              \
+			if (ntt_IsIDEqual(objBaseTypeID, &objType##ID) == TRUE)                                                    \
+			{                                                                                                          \
+				return TRUE;                                                                                           \
+			}                                                                                                          \
+			ntt_ConsolePrint("is null: %d", objBaseTypeID == NULL); /* Debugging print, can be removed later */        \
+			objBaseTypeID = (ID*)(objBaseTypeID->pUserData); /* Assuming pUserData points to the base type ID */       \
+			if (objBaseTypeID == NULL)                                                                                 \
+			{                                                                                                          \
+				return FALSE;                                                                                          \
+			}                                                                                                          \
+			/* If the base type ID is NULL, break the loop */                                                          \
+			if (objBaseTypeID->type !=                                                                                 \
+				NTT_OBJECT_TYPE_OBJECT_ID) /* If the base type ID is not of type Object, break the loop */             \
+			{                                                                                                          \
+				break;                                                                                                 \
+			}                                                                                                          \
+		}                                                                                                              \
+		return FALSE;                                                                                                  \
 	}
 
+#define OBJECT_DEFINE(derivedType, baseType)                                                                           \
+	OBJECT_ID_DEFINE(derivedType, baseType)                                                                            \
+	INHERIT_CHECKING(derivedType)
+
 #define OBJECT_INITIALIZE(pObj, derivedType, baseType)                                                                 \
-	NTT_SUCCESS_ASSERT(baseType##Initialize(&(pObj->base), pAllocator));                                               \
+	NTT_SUCCESS_ASSERT(baseType##_Initialize(&(pObj->base), pAllocator));                                              \
 	((ntt_Object*)(pObj))->type = derivedType##ID;
 
-#define OBJECT_DESTROY(pObj, derivedType, baseType) NTT_SUCCESS_ASSERT(baseType##Destroy(&(pObj->base)));
+#define OBJECT_DESTROY(pObj, derivedType, baseType) NTT_SUCCESS_ASSERT(baseType##_Destroy(&(pObj->base)));
 
 OBJECT_DECLARE(ntt_Object)
 
 #define REGISTER_SYSTEM_DECLARE(system)                                                                                \
-	ntt_Result ntt_##system##Register();                                                                               \
-	ntt_Result ntt_##system##Unregister();
+	ntt_Result ntt_##system##_Register();                                                                              \
+	ntt_Result ntt_##system##_Unregister();
+
+ID* ntt_Object_GetBaseTypeID(ntt_Object* pObject);
 
 #endif /* _OBJECT_H_ */

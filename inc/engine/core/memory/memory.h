@@ -20,12 +20,12 @@ extern ntt_MemoryGlobals g_memoryGlobals;
 /**
  * Starting all needed global data, resources for the memory management.
  */
-ntt_Result ntt_MemoryGlobalsInitialize();
+ntt_Result ntt_MemoryGlobals_Initialize();
 
 /**
  * Cleaning up all the global data, resources for the memory management.
  */
-ntt_Result ntt_MemoryGlobalsDestroy();
+ntt_Result ntt_MemoryGlobals_Destroy();
 
 /**
  * Assign the specified value to the memory block pointed by dest, for size bytes. This is used for initializing or

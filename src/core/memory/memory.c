@@ -3,7 +3,7 @@
 
 ntt_MemoryGlobals g_memoryGlobals;
 
-ntt_Result ntt_MemoryGlobalsInitialize()
+ntt_Result ntt_MemoryGlobals_Initialize()
 {
 	AllocatorResult result = ntt_CreateMallocAllocator();
 	NTT_SUCCESS_ASSERT_VAR(result);
@@ -11,7 +11,7 @@ ntt_Result ntt_MemoryGlobalsInitialize()
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_MemoryGlobalsDestroy()
+ntt_Result ntt_MemoryGlobals_Destroy()
 {
 	NTT_SUCCESS_ASSERT(ntt_DestroyAllocator(g_memoryGlobals.mallocAllocator));
 	g_memoryGlobals.mallocAllocator = NULL;

@@ -2,13 +2,13 @@
 
 OBJECT_DEFINE(ntt_Component, ntt_Object)
 
-ntt_Result ntt_ComponentInitialize(ntt_Component* pComponent, ntt_Allocator* pAllocator)
+ntt_Result ntt_Component_Initialize(ntt_Component* pComponent, ntt_Allocator* pAllocator)
 {
 	OBJECT_INITIALIZE(pComponent, ntt_Component, ntt_Object);
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ComponentDestroy(ntt_Component* pComponent)
+ntt_Result ntt_Component_Destroy(ntt_Component* pComponent)
 {
 	OBJECT_DESTROY(pComponent, ntt_Component, ntt_Object);
 	return NTT_RESULT_SUCCESS;

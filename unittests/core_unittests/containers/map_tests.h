@@ -6,13 +6,13 @@
 
 void map_tests_before_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
 void map_tests_after_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsDestroy();
+	ntt_Result result = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 

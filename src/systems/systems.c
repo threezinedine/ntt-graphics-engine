@@ -1,17 +1,17 @@
 #include "engine/systems/systems.h"
 
-ntt_Result ntt_SystemsRegister()
+ntt_Result ntt_Systems_Register()
 {
-	NTT_SUCCESS_ASSERT(ntt_ComponentRegisterType());
-	NTT_SUCCESS_ASSERT(ntt_SystemRegisterType());
-	NTT_SUCCESS_ASSERT(ntt_DisplaySystemRegister());
+	NTT_SUCCESS_ASSERT(ntt_Component_RegisterType());
+	NTT_SUCCESS_ASSERT(ntt_System_RegisterType());
+	NTT_SUCCESS_ASSERT(ntt_DisplaySystem_Register());
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_SystemsUnregister()
+ntt_Result ntt_Systems_Unregister()
 {
-	NTT_SUCCESS_ASSERT(ntt_DisplaySystemUnregister());
-	NTT_SUCCESS_ASSERT(ntt_SystemUnregisterType());
-	NTT_SUCCESS_ASSERT(ntt_ComponentUnregisterType());
+	NTT_SUCCESS_ASSERT(ntt_DisplaySystem_Unregister());
+	NTT_SUCCESS_ASSERT(ntt_System_UnregisterType());
+	NTT_SUCCESS_ASSERT(ntt_Component_UnregisterType());
 	return NTT_RESULT_SUCCESS;
 }

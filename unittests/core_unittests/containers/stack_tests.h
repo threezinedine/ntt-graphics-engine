@@ -6,13 +6,13 @@
 
 void stack_tests_before_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
 void stack_tests_after_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsDestroy();
+	ntt_Result result = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
@@ -98,7 +98,7 @@ TEST_CASE(StackNullAndEmptyEdgeCases)
 
 TEST_CASE(StackDestroyMissingAllocator)
 {
-	TEST_ASSERT(ntt_MemoryGlobalsInitialize() == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_MemoryGlobals_Initialize() == NTT_RESULT_SUCCESS);
 
 	ntt_StackResult result = ntt_StackCreate(NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
@@ -110,7 +110,7 @@ TEST_CASE(StackDestroyMissingAllocator)
 
 	TEST_ASSERT(ntt_StackDestroy(&result.data) == NTT_RESULT_MISSING_ALLOCATOR);
 
-	ntt_Result destroyGlobalsResult = ntt_MemoryGlobalsDestroy();
+	ntt_Result destroyGlobalsResult = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(destroyGlobalsResult == NTT_RESULT_MEMORY_LEAK);
 }
 

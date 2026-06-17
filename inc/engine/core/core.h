@@ -9,5 +9,6 @@
 #include "memory/memory.h"
 #include "types.h"
 #include "utils/utils.h"
+#include "virtual_table.h"
 
 #endif /* _CORE_H_ */

@@ -16,7 +16,7 @@ void id_tests_after_each()
 
 TEST_CASE(CreateIDTest)
 {
-	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 	TEST_ASSERT(ntt_IsIDValid(&(result.data)) == TRUE);
 }
@@ -25,11 +25,11 @@ TEST_CASE(ExceedMaxObjectsTest)
 {
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
-		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+		IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
 		TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 	}
 
-	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_EXCEEDED_MAX_OBJECTS);
 }
 
@@ -41,7 +41,7 @@ TEST_CASE(InvalidIDTest)
 
 TEST_CASE(UpdateIDTest)
 {
-	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	ID clone = result.data;
@@ -63,7 +63,7 @@ TEST_CASE(UpdateIDWithInvalidIDTest)
 
 TEST_CASE(UpdateOutdatedID)
 {
-	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
 
 	ID clone = result.data;
@@ -78,8 +78,8 @@ TEST_CASE(UpdateOutdatedID)
 
 TEST_CASE(CheckingEqualityOfIDs)
 {
-	IDResult result1 = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
-	IDResult result2 = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID);
+	IDResult result1 = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
+	IDResult result2 = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
 
 	TEST_ASSERT(ntt_IsIDValid(&result1.data) == TRUE);
 	TEST_ASSERT(ntt_IsIDValid(&result2.data) == TRUE);

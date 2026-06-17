@@ -30,7 +30,7 @@ ntt_Result ntt_DestroyIDSystem()
 	return NTT_RESULT_SUCCESS;
 }
 
-IDResult ntt_NewID(ntt_ObjectType type)
+IDResult ntt_NewID(ntt_ObjectType type, void* pUserData)
 {
 	NTT_ASSERT_IF(s_currentIndex >= MAX_OBJECTS)
 	{
@@ -43,7 +43,7 @@ IDResult ntt_NewID(ntt_ObjectType type)
 	s_IDMetas[index] = META_FROM_TYPE_AND_VERSION(type, 0);
 
 	return (IDResult){
-		.result = NTT_RESULT_SUCCESS, .data = {.type = type, .version = 0, .index = index}
+		.result = NTT_RESULT_SUCCESS, .data = {.type = type, .version = 0, .index = index, .pUserData = pUserData}
 	  };
 }
 
@@ -104,8 +104,11 @@ IDResult ntt_GetIDByID(ID* pId)
 
 	return (IDResult){
 		.result = NTT_RESULT_SUCCESS,
-		.data	= {.type = TYPE_FROM_META(meta), .version = VERSION_FROM_META(meta), .index = pId->index}
-	 };
+		.data	= {.type	  = TYPE_FROM_META(meta),
+				   .version	  = VERSION_FROM_META(meta),
+				   .index	  = pId->index,
+				   .pUserData = pId->pUserData}
+	   };
 }
 
 b8 ntt_IsIDEqual(ID* a, ID* b)
@@ -115,5 +118,10 @@ b8 ntt_IsIDEqual(ID* a, ID* b)
 		return FALSE;
 	}
 
-	return a->type == b->type && a->version == b->version && a->index == b->index;
+	if (a->type == b->type && a->version == b->version && a->index == b->index)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
 }

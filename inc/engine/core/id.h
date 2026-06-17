@@ -31,6 +31,11 @@ struct ID
 	 * The index of the object which is used for identifying the object.
 	 */
 	u64 index;
+
+	/**
+	 * Placeholder for the future use, like the parent ID of the type ID.
+	 */
+	void* pUserData;
 };
 
 typedef struct ID ID;
@@ -59,7 +64,7 @@ ntt_Result ntt_DestroyIDSystem();
  * @param type The type of the object which is used for identifying the object.
  * @return A new, unique ID for the object.
  */
-IDResult ntt_NewID(ntt_ObjectType type);
+IDResult ntt_NewID(ntt_ObjectType type, void* pUserData);
 
 /**
  * Check if the ID is valid or not (the version of the ID is the same as the version at the ID manager).

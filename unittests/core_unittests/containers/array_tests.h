@@ -6,13 +6,13 @@
 
 void array_tests_before_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
 void array_tests_after_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsDestroy();
+	ntt_Result result = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
@@ -61,7 +61,7 @@ TEST_CASE(CreateArrayWithoutAllocator)
 
 TEST_CASE(DestroyMissingAllocator)
 {
-	ntt_MemoryGlobalsInitialize();
+	ntt_MemoryGlobals_Initialize();
 
 	ntt_ArrayResult result = ntt_ArrayCreate(sizeof(i32), 4, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
@@ -71,7 +71,7 @@ TEST_CASE(DestroyMissingAllocator)
 	ntt_Result destroyResult = ntt_ArrayDestroy(&result.data);
 	TEST_ASSERT(destroyResult == NTT_RESULT_INITIALZE_WITHOUT_ALLOCATOR);
 
-	ntt_Result destroyGlobalsResult = ntt_MemoryGlobalsDestroy();
+	ntt_Result destroyGlobalsResult = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(destroyGlobalsResult == NTT_RESULT_MEMORY_LEAK);
 }
 

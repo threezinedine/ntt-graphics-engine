@@ -6,13 +6,13 @@
 
 void list_tests_before_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
 void list_tests_after_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsDestroy();
+	ntt_Result result = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
@@ -27,7 +27,7 @@ TEST_CASE(ListCreateAndDestroy)
 
 TEST_CASE(ListDestroyMissingAllocator)
 {
-	TEST_ASSERT(ntt_MemoryGlobalsInitialize() == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(ntt_MemoryGlobals_Initialize() == NTT_RESULT_SUCCESS);
 
 	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
 	TEST_ASSERT(result.result == NTT_RESULT_SUCCESS);
@@ -42,7 +42,7 @@ TEST_CASE(ListDestroyMissingAllocator)
 	ntt_Result destroyResult = ntt_ListDestroy(&result.data);
 	TEST_ASSERT(destroyResult == NTT_RESULT_MISSING_ALLOCATOR);
 
-	ntt_Result destroyGlobalsResult = ntt_MemoryGlobalsDestroy();
+	ntt_Result destroyGlobalsResult = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(destroyGlobalsResult == NTT_RESULT_MEMORY_LEAK);
 }
 

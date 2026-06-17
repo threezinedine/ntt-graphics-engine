@@ -6,13 +6,13 @@
 
 void memory_tests_before_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
 void memory_tests_after_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsDestroy();
+	ntt_Result result = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
@@ -27,7 +27,7 @@ TEST_CASE(AllocateAndDeallocate)
 
 TEST_CASE(MemoryLeak)
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 
 	voidPtrResult allocateResult = g_memoryGlobals.mallocAllocator->allocate(g_memoryGlobals.mallocAllocator, 128);
@@ -36,7 +36,7 @@ TEST_CASE(MemoryLeak)
 		g_memoryGlobals.mallocAllocator->deallocate(g_memoryGlobals.mallocAllocator, allocateResult.pData, 100);
 	TEST_ASSERT(deallocateResult == NTT_RESULT_FREE_MISMATCH_SIZE);
 
-	ntt_Result destroyResult = ntt_MemoryGlobalsDestroy();
+	ntt_Result destroyResult = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(destroyResult == NTT_RESULT_MEMORY_LEAK);
 }
 

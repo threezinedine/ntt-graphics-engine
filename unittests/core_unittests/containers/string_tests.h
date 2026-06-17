@@ -7,13 +7,13 @@
 
 void string_tests_before_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsInitialize();
+	ntt_Result result = ntt_MemoryGlobals_Initialize();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
 void string_tests_after_each()
 {
-	ntt_Result result = ntt_MemoryGlobalsDestroy();
+	ntt_Result result = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(result == NTT_RESULT_SUCCESS);
 }
 
@@ -42,7 +42,7 @@ TEST_CASE(LongString)
 
 TEST_CASE(StringViewMemoryLeak)
 {
-	ntt_MemoryGlobalsInitialize();
+	ntt_MemoryGlobals_Initialize();
 
 	const char* longString =
 		"This is a long string that exceeds the short string optimization threshold. It should be stored in the "
@@ -50,7 +50,7 @@ TEST_CASE(StringViewMemoryLeak)
 
 	ntt_StringFromCString(longString);
 
-	ntt_Result destroyResult = ntt_MemoryGlobalsDestroy();
+	ntt_Result destroyResult = ntt_MemoryGlobals_Destroy();
 	TEST_ASSERT(destroyResult == NTT_RESULT_MEMORY_LEAK);
 }
 
