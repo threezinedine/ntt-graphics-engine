@@ -32,6 +32,7 @@ ntt_Result ntt_GLFW_Register()
 	g_GLFW_DisplayDriver->CreateWindow	= ntt_GLFW_CreateWindow;
 	g_GLFW_DisplayDriver->DestroyWindow = ntt_GLFW_DestroyWindow;
 
+#if 0
 	// Always needa create a window to initialize the OpenGL context, so we create a hidden window here.
 	NTT_SUCCESS_ASSERT(ntt_GLFW_CreateWindow("Hidden Window", 600, 800, (void**)&g_GLFW_HiddenWindow));
 	// glfwHideWindow(g_GLFW_HiddenWindow);
@@ -41,6 +42,7 @@ ntt_Result ntt_GLFW_Register()
 	{
 		glfwPollEvents();
 	}
+#endif /* 0 */
 
 	NTT_DRIVER_INFO("GLFW Driver registered successfully.");
 	return NTT_RESULT_SUCCESS;
@@ -53,8 +55,10 @@ ntt_Result ntt_GLFW_Unregister()
 		return NTT_RESULT_NULL_POINTER;
 	}
 
+#if 0
 	// Terminate GLFW and clean up resources
 	ntt_GLFW_DestroyWindow(g_GLFW_HiddenWindow);
+#endif /* 0 */
 
 	glfwTerminate();
 
