@@ -6,6 +6,7 @@
 #include "containers/containers.h"
 #include "defs.h"
 #include "id.h"
+#include "logging/logging.h"
 #include "memory/memory.h"
 #include "types.h"
 #include "utils/utils.h"

@@ -12,7 +12,7 @@ ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator, ntt_ListNodeDestructor 
 
 	NTT_ASSERT_IF(pFinalAllocator == NULL)
 	{
-		result.result = NTT_RESULT_INITIALZE_WITHOUT_ALLOCATOR;
+		result.result = NTT_RESULT_INITIALIZE_WITHOUT_ALLOCATOR;
 		return result;
 	}
 

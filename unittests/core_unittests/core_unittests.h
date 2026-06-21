@@ -3,6 +3,7 @@
 
 #include "containers/containers_tests.h"
 #include "id_tests.h"
+#include "logging_unittest.h"
 #include "memory_tests.h"
 #include "object_tests.h"
 

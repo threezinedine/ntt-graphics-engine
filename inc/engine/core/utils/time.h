@@ -16,6 +16,8 @@ struct ntt_Time
 	u8	second; ///< Format like ss (example: 00, 01, ..., 59)
 };
 
+typedef struct ntt_Time ntt_Time;
+
 /**
  * Get the current time information and save it into the provided time structure. The behavior of this function depends
  * on the specific time implementation, but it generally retrieves the current time information from the system and
@@ -24,6 +26,6 @@ struct ntt_Time
  * @param pTime The pointer to the time structure where the current time information will be saved. This parameter can
  *      not be NULL or trigger an assertion failure.
  */
-void ntt_GetCurrentTime(struct ntt_Time* pTime);
+void ntt_GetCurrentTime(ntt_Time* pTime);
 
 #endif /* _NTT_TIME_H */
