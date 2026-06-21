@@ -21,7 +21,7 @@ int main(i32 argc, char** argv)
 	NTT_SUCCESS_ASSERT(ntt_Systems_Register());
 
 	ntt_Object object;
-	NTT_SUCCESS_ASSERT(ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator));
+	NTT_SUCCESS_ASSERT(ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator, NULL));
 
 	ntt_Object_Destroy(&object);
 

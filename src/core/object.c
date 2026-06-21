@@ -16,8 +16,9 @@ ntt_Result ntt_Object_UnregisterType()
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_Object_Initialize(ntt_Object* pObject, ntt_Allocator* pAllocator)
+ntt_Result ntt_Object_Initialize(ntt_Object* pObject, ntt_Allocator* pAllocator, void* pUserData)
 {
+	NTT_UNUSED(pUserData);
 	NTT_ASSERT(pObject != NULL);
 	NTT_ASSERT(pAllocator != NULL);
 	NTT_ASSERT_M(ntt_IsIDEqual(&ntt_ObjectID, &INVALID_ID) == FALSE, "The \"Object\" type is not registered.");

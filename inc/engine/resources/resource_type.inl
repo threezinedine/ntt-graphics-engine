@@ -1,0 +1,10 @@
+#ifndef RESOURCE_TYPE
+#define RESOURCE_TYPE(option)
+#endif
+
+#ifndef RESOURCE_TYPE_END
+#define RESOURCE_TYPE_END()
+#endif
+
+RESOURCE_TYPE(WINDOW)
+RESOURCE_TYPE_END()

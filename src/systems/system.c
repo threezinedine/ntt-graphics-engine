@@ -2,9 +2,10 @@
 
 OBJECT_DEFINE(ntt_System, ntt_Object)
 
-ntt_Result ntt_System_Initialize(ntt_System* pSystem, ntt_Allocator* pAllocator)
+ntt_Result ntt_System_Initialize(ntt_System* pSystem, ntt_Allocator* pAllocator, void* pUserData)
 {
-	OBJECT_INITIALIZE(pSystem, ntt_System, ntt_Object);
+	NTT_UNUSED(pUserData);
+	OBJECT_INITIALIZE(pSystem, ntt_System, ntt_Object, NULL);
 	return NTT_RESULT_SUCCESS;
 }
 

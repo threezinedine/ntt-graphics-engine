@@ -2,9 +2,11 @@
 
 OBJECT_DEFINE(ntt_DisplayComponent, ntt_Component)
 
-ntt_Result ntt_DisplayComponent_Initialize(ntt_DisplayComponent* pDisplayComponent, ntt_Allocator* pAllocator)
+ntt_Result
+ntt_DisplayComponent_Initialize(ntt_DisplayComponent* pDisplayComponent, ntt_Allocator* pAllocator, void* pUserData)
 {
-	OBJECT_INITIALIZE(pDisplayComponent, ntt_DisplayComponent, ntt_Component);
+	NTT_UNUSED(pUserData);
+	OBJECT_INITIALIZE(pDisplayComponent, ntt_DisplayComponent, ntt_Component, NULL);
 	return NTT_RESULT_SUCCESS;
 }
 

@@ -55,7 +55,7 @@ struct ntt_Object
  */
 #define OBJECT_DECLARE(type)                                                                                           \
 	typedef struct type type;                                                                                          \
-	ntt_Result			type##_Initialize(type* pObject, ntt_Allocator* pAllocator);                                   \
+	ntt_Result			type##_Initialize(type* pObject, ntt_Allocator* pAllocator, void* pUserData);                  \
 	ntt_Result			type##_Destroy(type*);                                                                         \
 	b8					type##_IsTypeOf(type* pObject);                                                                \
 	b8					type##_HasInstance(type* pObject);                                                             \
@@ -105,11 +105,16 @@ struct ntt_Object
 	OBJECT_ID_DEFINE(derivedType, baseType)                                                                            \
 	INHERIT_CHECKING(derivedType)
 
-#define OBJECT_INITIALIZE(pObj, derivedType, baseType)                                                                 \
-	NTT_SUCCESS_ASSERT(baseType##_Initialize(&(pObj->base), pAllocator));                                              \
+#define OBJECT_INITIALIZE(pObj, derivedType, baseType, pUserData)                                                      \
+	NTT_SUCCESS_ASSERT(baseType##_Initialize(&(pObj->base), pAllocator, pUserData));                                   \
 	((ntt_Object*)(pObj))->type = derivedType##ID;
 
-#define OBJECT_DESTROY(pObj, derivedType, baseType) NTT_SUCCESS_ASSERT(baseType##_Destroy(&(pObj->base)));
+#define OBJECT_DESTROY(pObj, derivedType, baseType)                                                                    \
+	NTT_ASSERT_IF(!derivedType##_HasInstance(pObj))                                                                    \
+	{                                                                                                                  \
+		return NTT_RESULT_INVALID_OBJECT_TYPE;                                                                         \
+	}                                                                                                                  \
+	NTT_SUCCESS_ASSERT(baseType##_Destroy(&(pObj->base)));
 
 OBJECT_DECLARE(ntt_Object)
 
