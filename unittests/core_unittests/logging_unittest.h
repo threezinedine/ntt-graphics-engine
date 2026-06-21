@@ -33,13 +33,13 @@ TEST_CASE(FormatMessage_Level)
 TEST_CASE(FormatMessage_Type)
 {
 	ntt_LoggingMessage_FormatMessage(&s_testMessage, "[%(type)]");
-	TEST_ASSERT(strcmp(s_testMessage.finalMessage, "[CORE  ]") == 0);
+	TEST_ASSERT(strcmp(s_testMessage.finalMessage, "[CORE    ]") == 0);
 }
 
 TEST_CASE(FormatMessage_File)
 {
 	ntt_LoggingMessage_FormatMessage(&s_testMessage, "%(file):%(line)");
-	TEST_ASSERT(strcmp(s_testMessage.finalMessage, "            test_file.cpp:42  ") == 0);
+	TEST_ASSERT(strcmp(s_testMessage.finalMessage, "                           test_file.cpp:42  ") == 0);
 }
 
 TEST_SUITE_DEFINE(logging,

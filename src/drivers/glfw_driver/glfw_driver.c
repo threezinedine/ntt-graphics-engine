@@ -131,8 +131,14 @@ static IDResult ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height)
 		return result;
 	}
 
-	NTT_SUCCESS_ASSERT(
-		ntt_MapInsert(&g_GLFW_WindowMap, &newIDResult.data, sizeof(ID), &windowData, sizeof(ntt_GLFW_WindowData)));
+	NTT_ASSERT_IF(
+		ntt_MapInsert(&g_GLFW_WindowMap, &newIDResult.data, sizeof(ID), &windowData, sizeof(ntt_GLFW_WindowData)) !=
+		NTT_RESULT_SUCCESS)
+	{
+		glfwDestroyWindow(pWindow);
+		result.result = NTT_RESULT_GLFW_WINDOW_CREATION_FAILURE;
+		return result;
+	}
 
 	result.data = newIDResult.data;
 

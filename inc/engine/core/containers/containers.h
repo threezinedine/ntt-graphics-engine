@@ -7,5 +7,6 @@
 #include "queue.h"
 #include "stack.h"
 #include "string.h"
+#include "vec.h"
 
 #endif /* _CONTAINERS_H_ */
