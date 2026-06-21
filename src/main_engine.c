@@ -18,14 +18,26 @@ int main(i32 argc, char** argv)
 	NTT_ENGINE_INFO("Engine initialized successfully!");
 
 	NTT_SUCCESS_ASSERT(ntt_Object_RegisterType());
+	NTT_SUCCESS_ASSERT(ntt_Resources_Register());
 	NTT_SUCCESS_ASSERT(ntt_Systems_Register());
 
-	ntt_Object object;
-	NTT_SUCCESS_ASSERT(ntt_Object_Initialize(&object, g_memoryGlobals.mallocAllocator, NULL));
+	ntt_WindowResourceCreateInfo windowCreateInfo = {"Main Window", 800, 600};
+	ntt_WindowResource			 windowResource;
+	NTT_SUCCESS_ASSERT(
+		ntt_WindowResource_Initialize(&windowResource, g_memoryGlobals.mallocAllocator, &windowCreateInfo));
 
-	ntt_Object_Destroy(&object);
+	ntt_Resource_Load((ntt_Resource*)&windowResource);
+
+	while (ntt_Resource_IsLoading((ntt_Resource*)&windowResource));
+
+	ntt_Resource_Unload((ntt_Resource*)&windowResource);
+
+	while (ntt_Resource_IsUnloading((ntt_Resource*)&windowResource));
+
+	ntt_WindowResource_Destroy(&windowResource);
 
 	NTT_SUCCESS_ASSERT(ntt_Systems_Unregister());
+	NTT_SUCCESS_ASSERT(ntt_Resources_Unregister());
 	NTT_SUCCESS_ASSERT(ntt_Object_UnregisterType());
 
 	NTT_SUCCESS_ASSERT(ntt_Drivers_Unregister());

@@ -12,6 +12,7 @@ struct ntt_Resource
 	ntt_ResourceType resourceType;
 	b8				 isLoading;
 	b8				 isLoaded;
+	b8				 isUnloading;
 
 	ntt_Result (*pfnLoad)(struct ntt_Resource* pResource);
 	ntt_Result (*pfnUnload)(struct ntt_Resource* pResource);
@@ -22,6 +23,7 @@ OBJECT_DECLARE(ntt_Resource)
 ntt_Result ntt_Resource_Load(ntt_Resource* pResource);
 b8		   ntt_Resource_IsLoading(ntt_Resource* pResource);
 b8		   ntt_Resource_IsLoaded(ntt_Resource* pResource);
+b8		   ntt_Resource_IsUnloading(ntt_Resource* pResource);
 ntt_Result ntt_Resource_Unload(ntt_Resource* pResource);
 
 #endif /** _RESOURCE_H_ */

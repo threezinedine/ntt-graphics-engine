@@ -3,6 +3,7 @@
 
 #include "core/core.h"
 #include "drivers/drivers.h"
+#include "resources/resources.h"
 #include "systems/systems.h"
 
 #endif /* _ENGINE_H_ */

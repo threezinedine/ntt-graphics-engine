@@ -1,4 +1,5 @@
 #include "engine/resources/resource.h"
+#include "engine/core/logging/logging.h"
 
 OBJECT_DEFINE(ntt_Resource, ntt_Object)
 
@@ -41,6 +42,8 @@ ntt_Result ntt_Resource_Load(ntt_Resource* pResource)
 		return NTT_RESULT_RESOURCE_ALREADY_LOADED;
 	}
 
+	pResource->isLoading = TRUE;
+
 	if (pResource->pfnLoad != NULL)
 	{
 		pResource->pfnLoad(pResource);
@@ -69,6 +72,16 @@ b8 ntt_Resource_IsLoaded(ntt_Resource* pResource)
 	return pResource->isLoaded;
 }
 
+b8 ntt_Resource_IsUnloading(ntt_Resource* pResource)
+{
+	NTT_ASSERT_IF(pResource == NULL)
+	{
+		return FALSE;
+	}
+
+	return pResource->isUnloading;
+}
+
 ntt_Result ntt_Resource_Unload(ntt_Resource* pResource)
 {
 	NTT_ASSERT_IF(pResource == NULL)
@@ -93,6 +106,7 @@ ntt_Result ntt_Resource_Unload(ntt_Resource* pResource)
 
 	if (pResource->pfnUnload != NULL)
 	{
+		pResource->isUnloading = TRUE;
 		pResource->pfnUnload(pResource);
 	}
 

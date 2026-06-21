@@ -1,4 +1,5 @@
 #include "engine/resources/window/window_resource.h"
+#include "engine/core/logging/logging.h"
 
 OBJECT_DEFINE(ntt_WindowResource, ntt_Resource)
 
@@ -25,12 +26,17 @@ ntt_Result ntt_WindowResource_Destroy(ntt_WindowResource* pWindowResource)
 
 static ntt_Result WindowResource_Load(ntt_Resource* pResource)
 {
-	NTT_UNUSED(pResource);
+	NTT_RESOURCE_DEBUG("Loading new window");
+	pResource->isLoading = FALSE;
+	pResource->isLoaded	 = TRUE;
 	return NTT_RESULT_SUCCESS;
 }
 
 static ntt_Result WindowResource_Unload(ntt_Resource* pResource)
 {
-	NTT_UNUSED(pResource);
+	NTT_RESOURCE_DEBUG("Unloading window");
+	pResource->isLoading   = FALSE;
+	pResource->isLoaded	   = FALSE;
+	pResource->isUnloading = FALSE;
 	return NTT_RESULT_SUCCESS;
 }
