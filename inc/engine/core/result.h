@@ -3,20 +3,7 @@
 
 #include "defs.h"
 #include "engine/core/types.h"
-
-/**
- * The methods inside the engine should return a result code to indicate the function status.
- */
-enum ntt_Result
-{
-#define ENUM_OPTION(name)	  name,
-#define ENUM_OPTION_END(name) name
-#include "result.inl"
-#undef ENUM_OPTION
-#undef ENUM_OPTION_END
-};
-
-typedef enum ntt_Result ntt_Result;
+#include "result_type.h"
 
 const char* ntt_ResultToString(ntt_Result result);
 

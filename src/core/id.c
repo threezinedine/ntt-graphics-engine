@@ -1,5 +1,6 @@
 #include "engine/core/id.h"
 #include "engine/core/defs.h"
+#include "engine/core/logging/logging.h"
 
 static u64 s_currentIndex = 0;
 static u64 s_IDMetas[MAX_OBJECTS];
@@ -11,6 +12,7 @@ static u64 s_IDMetas[MAX_OBJECTS];
 
 ntt_Result ntt_InitializeIDSystem()
 {
+	NTT_CORE_INFO("Initializing ID System...");
 	s_currentIndex = 0;
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
@@ -21,6 +23,7 @@ ntt_Result ntt_InitializeIDSystem()
 
 ntt_Result ntt_DestroyIDSystem()
 {
+	NTT_CORE_INFO("Destroying ID System...");
 	s_currentIndex = 0;
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
@@ -41,6 +44,8 @@ IDResult ntt_NewID(ntt_ObjectType type, void* pUserData)
 	s_currentIndex++;
 
 	s_IDMetas[index] = META_FROM_TYPE_AND_VERSION(type, 0);
+
+	NTT_CORE_TRACE("Created new ID: type=%s, index=%u", ntt_ObjectType_ToString(type), index);
 
 	return (IDResult){
 		.result = NTT_RESULT_SUCCESS, .data = {.type = type, .version = 0, .index = index, .pUserData = pUserData}

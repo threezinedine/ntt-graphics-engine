@@ -1,6 +1,7 @@
 #ifndef _NTT_TIME_H
 #define _NTT_TIME_H
 
+#include "engine/core/result_type.h"
 #include "engine/core/types.h"
 
 /**
@@ -26,6 +27,6 @@ typedef struct ntt_Time ntt_Time;
  * @param pTime The pointer to the time structure where the current time information will be saved. This parameter can
  *      not be NULL or trigger an assertion failure.
  */
-void ntt_GetCurrentTime(ntt_Time* pTime);
+ntt_Result ntt_GetCurrentTime(ntt_Time* pTime);
 
 #endif /* _NTT_TIME_H */

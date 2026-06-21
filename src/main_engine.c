@@ -9,8 +9,10 @@ int main(i32 argc, char** argv)
 	g_argc = argc;
 	g_argv = argv;
 
-	NTT_SUCCESS_ASSERT(ntt_InitializeIDSystem());
 	NTT_SUCCESS_ASSERT(ntt_MemoryGlobals_Initialize());
+	NTT_SUCCESS_ASSERT(ntt_Logging_Initialize(LOGGING_HANDLER_TYPE_CONSOLE, NULL));
+	NTT_SUCCESS_ASSERT(ntt_Logging_SetLevel(LOGGING_HANDLER_TYPE_CONSOLE, LOGGING_LEVEL_DEBUG));
+	NTT_SUCCESS_ASSERT(ntt_InitializeIDSystem());
 	NTT_SUCCESS_ASSERT(ntt_Drivers_Register());
 
 	NTT_SUCCESS_ASSERT(ntt_Object_RegisterType());
@@ -25,8 +27,9 @@ int main(i32 argc, char** argv)
 	NTT_SUCCESS_ASSERT(ntt_Object_UnregisterType());
 
 	NTT_SUCCESS_ASSERT(ntt_Drivers_Unregister());
-	NTT_SUCCESS_ASSERT(ntt_MemoryGlobals_Destroy());
 	NTT_SUCCESS_ASSERT(ntt_DestroyIDSystem());
+	NTT_SUCCESS_ASSERT(ntt_Logging_Shutdown());
+	NTT_SUCCESS_ASSERT(ntt_MemoryGlobals_Destroy());
 
 	return 0;
 }

@@ -3,7 +3,7 @@
 #include "engine/core/utils/console.h"
 #include <string.h>
 
-typedef ntt_Result (*ReplacementFunction)(ntt_LoggingMessage* pMessage, char* pBuffer, u32* pIndex, u32 bufferSize);
+typedef ntt_Result (*ReplacementFunction)(ntt_LoggingMessage* pMessage, u32* pIndex, void* pUserData);
 
 struct KeyWordReplacement
 {
@@ -13,44 +13,39 @@ struct KeyWordReplacement
 
 typedef struct KeyWordReplacement KeyWordReplacement;
 
+struct ntt_LoggingMessageUserData
+{
+	char finalFile[128];
+	char strLine[7];
+};
+
+typedef struct ntt_LoggingMessageUserData ntt_LoggingMessageUserData;
+
 #define REPLACE_FUNCTION(name, getStr)                                                                                 \
-	ntt_Result name(ntt_LoggingMessage* pMessage, char* pBuffer, u32* pIndex, u32 bufferSize)                          \
+	ntt_Result name(ntt_LoggingMessage* pMessage, u32* pIndex, void* pUserData)                                        \
 	{                                                                                                                  \
-		const char* str = getStr;                                                                                      \
-		usize		len = strlen(str);                                                                                 \
+		NTT_UNUSED(pUserData);                                                                                         \
+		const char* str		   = getStr;                                                                               \
+		usize		len		   = strlen(str);                                                                          \
+		usize		bufferSize = (u32)sizeof(pMessage->finalMessage);                                                  \
                                                                                                                        \
 		if (*pIndex + len >= bufferSize)                                                                               \
 		{                                                                                                              \
 			return NTT_RESULT_BUFFER_OVERFLOW;                                                                         \
 		}                                                                                                              \
                                                                                                                        \
-		strncpy(&pBuffer[*pIndex], str, len);                                                                          \
+		strncpy(&pMessage->finalMessage[*pIndex], str, len);                                                           \
 		*pIndex += (u32)len;                                                                                           \
+		pMessage->finalMessage[*pIndex] = '\0';                                                                        \
                                                                                                                        \
 		return NTT_RESULT_SUCCESS;                                                                                     \
 	}
 
 REPLACE_FUNCTION(ReplaceLevel, ntt_LoggingLevel_ToString(pMessage->level))
 REPLACE_FUNCTION(ReplaceType, ntt_LoggingType_ToString(pMessage->type))
-REPLACE_FUNCTION(ReplaceFile, pMessage->file)
+REPLACE_FUNCTION(ReplaceFile, ((ntt_LoggingMessageUserData*)pUserData)->finalFile)
+REPLACE_FUNCTION(ReplaceLine, ((ntt_LoggingMessageUserData*)pUserData)->strLine)
 REPLACE_FUNCTION(ReplaceMessage, pMessage->message)
-
-ntt_Result ReplaceLine(ntt_LoggingMessage* pMessage, char* pBuffer, u32* pIndex, u32 bufferSize)
-{
-	char lineBuffer[7];
-
-	// Format the line number as a string
-	ntt_FormatMessage(lineBuffer, sizeof(lineBuffer), "%u", pMessage->line);
-
-	if (*pIndex + (i32)ntt_StrLen(lineBuffer) >= bufferSize)
-	{
-		return NTT_RESULT_BUFFER_OVERFLOW;
-	}
-
-	strncpy(&pBuffer[*pIndex], lineBuffer, ntt_StrLen(lineBuffer));
-	*pIndex += (u32)ntt_StrLen(lineBuffer);
-	return NTT_RESULT_SUCCESS;
-}
 
 static KeyWordReplacement s_keyWordReplacements[] = {
 	// clang-format off
@@ -67,6 +62,15 @@ ntt_Result ntt_LoggingMessage_FormatMessage(ntt_LoggingMessage* pMessage, const 
 	u32 keyWordCount	= (u32)(sizeof(s_keyWordReplacements) / sizeof(KeyWordReplacement));
 	i32 formatCharIndex = 0;
 
+	ntt_LoggingMessageUserData userData;
+	ntt_FormatMessage(userData.strLine, sizeof(userData.strLine), "%u", pMessage->line);
+
+	// Extract the file name from the full file path
+	usize baseDirectoryLength = ntt_StrLen(STRINGIFY(NTT_GRAPHICS_ENGINE_DIRECTORY)) - 1;
+	usize filePathLength	  = ntt_StrLen(pMessage->file);
+	memcpy(userData.finalFile, pMessage->file + baseDirectoryLength, sizeof(userData.finalFile) - filePathLength - 1);
+	userData.finalFile[sizeof(userData.finalFile) - 1] = '\0';
+
 	while (formatCharIndex < (i32)strlen(pFormat))
 	{
 		if (pFormat[formatCharIndex] == '%')
@@ -80,10 +84,9 @@ ntt_Result ntt_LoggingMessage_FormatMessage(ntt_LoggingMessage* pMessage, const 
 					// Call the replacement function for the matched keyword
 					if (s_keyWordReplacements[i].replacementFunction != NULL)
 					{
-						u32 bufferSize = sizeof(pMessage->finalMessage) - strlen(pMessage->finalMessage) - 1;
-						u32 index	   = (u32)strlen(pMessage->finalMessage);
-						NTT_SUCCESS_ASSERT(s_keyWordReplacements[i].replacementFunction(
-							pMessage, pMessage->finalMessage, &index, bufferSize));
+						u32 index = (u32)strlen(pMessage->finalMessage);
+						NTT_SUCCESS_ASSERT(
+							s_keyWordReplacements[i].replacementFunction(pMessage, &index, (void*)&userData));
 					}
 
 					// Move the formatCharIndex past the matched keyword

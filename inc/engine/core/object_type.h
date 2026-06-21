@@ -12,6 +12,6 @@ enum ntt_ObjectType
 
 typedef enum ntt_ObjectType ntt_ObjectType;
 
-const char* ntt_ObjectTypeToString(ntt_ObjectType type);
+const char* ntt_ObjectType_ToString(ntt_ObjectType type);
 
 #endif /* _OBJECT_TYPE_H_ */

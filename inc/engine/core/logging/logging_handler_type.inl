@@ -1,0 +1,12 @@
+#ifndef ENUM_OPTION
+#define ENUM_OPTION(name, value)
+#endif
+
+#ifndef ENUM_OPTION_END
+#define ENUM_OPTION_END()
+#endif
+
+ENUM_OPTION(NONE, 0x00)
+ENUM_OPTION(CONSOLE, 0x01)
+ENUM_OPTION(FILE, 0x01 << 1)
+ENUM_OPTION_END()

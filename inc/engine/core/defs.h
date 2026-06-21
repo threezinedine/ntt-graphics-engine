@@ -74,9 +74,23 @@
 		}                                                                                                              \
 	} while (0)
 
+#define NTT_UNREACHABLE()                                                                                              \
+	do                                                                                                                 \
+	{                                                                                                                  \
+		ntt_ConsoleSetColor(NTT_COLOR_RED);                                                                            \
+		ntt_ConsolePrint("Unreachable code reached: file: %s, line: %d\n", __FILE__, __LINE__);                        \
+		ntt_PrintCallStack(NULL);                                                                                      \
+		ntt_ConsoleResetColor();                                                                                       \
+		NTT_DEBUG_BREAK();                                                                                             \
+	} while (0)
+
 #else /* NTT_DEBUG */
 #define NTT_ASSERT(cond)				 ((void)0)
 #define NTT_ASSERT_M(cond, message, ...) ((void)0)
+#define NTT_UNREACHABLE()				 ((void)0)
 #endif /* NTT_DEBUG */
+
+#define _STRINGIFY(x) #x
+#define STRINGIFY(x)  _STRINGIFY(x)
 
 #endif /* _DEFS_H_ */

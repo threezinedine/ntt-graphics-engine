@@ -3,6 +3,8 @@ macro(ntt_setup)
     set(NTT_COMPILE_FLAGS)
     set(NTT_LINK_FLAGS)
     ntt_platform_detect()
+    set(NTT_GRAPHICS_ENGINE_DIRECTORY "${CMAKE_SOURCE_DIR}")
+    list(APPEND NTT_OPTIONS "NTT_GRAPHICS_ENGINE_DIRECTORY=${NTT_GRAPHICS_ENGINE_DIRECTORY}")
 
     # build profile options
     option(CMAKE_BUILD_TYPE "Choose the type of build." "Debug")

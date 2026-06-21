@@ -1,7 +1,7 @@
 #include "engine/core/utils/time.h"
 #include <time.h>
 
-void ntt_GetCurrentTime(ntt_Time* pTime)
+ntt_Result ntt_GetCurrentTime(ntt_Time* pTime)
 {
 #if NTT_PLATFORM_UNIX || NTT_PLATFORM_WEB
 	time_t	   rawTime;
@@ -30,4 +30,5 @@ void ntt_GetCurrentTime(ntt_Time* pTime)
 #else
 #error "Unsupported platform"
 #endif /* NTT_PLATFORM_UNIX */
+	return NTT_RESULT_SUCCESS;
 }

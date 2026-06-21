@@ -12,13 +12,13 @@
  */
 struct ntt_LoggingMessage
 {
-	LoggingType	 type;
-	LoggingLevel level;
-	char		 file[512];
-	u32			 line;
-	ntt_Time	 timestamp;
-	char		 message[512];
-	char		 finalMessage[1024]; /// The output message that is going to be printed.
+	ntt_LoggingType	 type;
+	ntt_LoggingLevel level;
+	char			 file[512];
+	u32				 line;
+	ntt_Time		 timestamp;
+	char			 message[512];
+	char			 finalMessage[1024]; /// The output message that is going to be printed.
 };
 
 typedef struct ntt_LoggingMessage ntt_LoggingMessage;

@@ -1,6 +1,6 @@
 #include "engine/core/object_type.h"
 
-const char* ntt_ObjectTypeToString(ntt_ObjectType type)
+const char* ntt_ObjectType_ToString(ntt_ObjectType type)
 {
 	switch (type)
 	{
