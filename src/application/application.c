@@ -4,6 +4,8 @@
 #include "engine/resources/resources.h"
 #include "engine/systems/systems.h"
 
+ntt_Entity g_rootEntity;
+
 ntt_Result ntt_Application_Initialize(ntt_Application* pApplication)
 {
 	NTT_ASSERT_IF(pApplication == NULL)

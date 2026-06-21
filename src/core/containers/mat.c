@@ -1,5 +1,7 @@
 #include "engine/core/containers/mat.h"
 
+// TODO: Implement SIMD optimizations for matrix operations
+
 #define MAT_DEFINE(rows, cols, type, abbrev)                                                                           \
 	ntt_Mat##rows##x##cols##abbrev ntt_Mat##rows##x##cols##abbrev##_Add(ntt_Mat##rows##x##cols##abbrev a,              \
 																		ntt_Mat##rows##x##cols##abbrev b)              \
