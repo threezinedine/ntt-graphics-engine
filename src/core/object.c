@@ -23,7 +23,7 @@ ntt_Result ntt_Object_Initialize(ntt_Object* pObject, ntt_Allocator* pAllocator,
 	NTT_ASSERT(pAllocator != NULL);
 	NTT_ASSERT_M(ntt_IsIDEqual(&ntt_ObjectID, &INVALID_ID) == FALSE, "The \"Object\" type is not registered.");
 
-	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT_ID, NULL);
+	IDResult result = ntt_NewID(NTT_OBJECT_TYPE_OBJECT, NULL);
 	NTT_SUCCESS_ASSERT_VAR(result);
 	pObject->id			= result.data;
 	pObject->type		= ntt_ObjectID;

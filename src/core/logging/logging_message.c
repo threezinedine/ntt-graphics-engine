@@ -91,7 +91,7 @@ static KeyWordReplacement s_keyWordReplacements[] = {
 	// clang-format off
 	{"%(level)"  , 7 , TRUE , ReplaceLevel  },
 	{"%(type)"   , 6 , TRUE , ReplaceType   },
-	{"%(file)"   , 25, FALSE, ReplaceFile   },
+	{"%(file)"   , 40, FALSE, ReplaceFile   },
 	{"%(line)"   , 4 , TRUE , ReplaceLine   },
 	{"%(message)", -1, TRUE , ReplaceMessage},
 	// clang-format on

@@ -2,6 +2,7 @@
 #define _DISPLAY_DRIVER_H_
 
 #include "display_driver_type.h"
+#include "engine/core/id.h"
 #include "engine/core/result.h"
 #include "engine/core/types.h"
 
@@ -10,8 +11,8 @@
  */
 struct ntt_DisplayDriver
 {
-	ntt_Result (*CreateWindow)(const char* title, i32 width, i32 height, void** ppWindow);
-	ntt_Result (*DestroyWindow)(void* pWindow);
+	IDResult (*CreateWindow)(const char* title, i32 width, i32 height);
+	ntt_Result (*DestroyWindow)(ID windowID);
 };
 
 typedef struct ntt_DisplayDriver ntt_DisplayDriver;

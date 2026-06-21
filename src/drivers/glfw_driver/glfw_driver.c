@@ -1,18 +1,35 @@
 #include "engine/drivers/glfw_driver/glfw_driver.h"
+#include "engine/core/containers/map.h"
+#include "engine/core/id.h"
 #include "engine/core/logging/logging.h"
 #include "engine/core/memory/memory.h"
 #include "engine/core/types.h"
 #include <stddef.h>
+#include <string.h>
 
 #include <GLFW/glfw3.h>
 
 ntt_DisplayDriver* g_GLFW_DisplayDriver = NULL;
-GLFWwindow*		   g_GLFW_HiddenWindow	= NULL;
 
 #if NTT_GRAPHICS_DRIVER_GLFW
 
-static ntt_Result ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height, void** ppWindow);
-static ntt_Result ntt_GLFW_DestroyWindow(void* pWindow);
+struct ntt_GLFW_WindowData
+{
+	char		title[256];
+	i32			width;
+	i32			height;
+	GLFWwindow* pWindow;
+};
+
+typedef struct ntt_GLFW_WindowData ntt_GLFW_WindowData;
+
+static ID	   g_defaultWindowID = INVALID_ID_INIT;
+static ntt_Map g_GLFW_WindowMap; /// Map from window ID to GLFWwindow*
+
+static IDResult	   ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height);
+static ntt_Result  ntt_GLFW_DestroyWindow(ID windowID);
+static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID);
+static u32		   ntt_WindowIDHashFunction(void* pKey, usize keySize);
 
 ntt_Result ntt_GLFW_Register()
 {
@@ -21,6 +38,14 @@ ntt_Result ntt_GLFW_Register()
 	{
 		return result.result;
 	}
+
+	ntt_MapResult mapResult = ntt_MapCreate(ntt_WindowIDHashFunction, 16, g_memoryGlobals.mallocAllocator);
+	NTT_ASSERT_IF(mapResult.result != NTT_RESULT_SUCCESS)
+	{
+		ntt_Deallocate(g_memoryGlobals.mallocAllocator, result.pData, sizeof(ntt_DisplayDriver));
+		return mapResult.result;
+	}
+	g_GLFW_WindowMap = mapResult.data;
 
 	if (glfwInit() != GLFW_TRUE)
 	{
@@ -32,17 +57,18 @@ ntt_Result ntt_GLFW_Register()
 	g_GLFW_DisplayDriver->CreateWindow	= ntt_GLFW_CreateWindow;
 	g_GLFW_DisplayDriver->DestroyWindow = ntt_GLFW_DestroyWindow;
 
-#if 0
-	// Always needa create a window to initialize the OpenGL context, so we create a hidden window here.
-	NTT_SUCCESS_ASSERT(ntt_GLFW_CreateWindow("Hidden Window", 600, 800, (void**)&g_GLFW_HiddenWindow));
-	// glfwHideWindow(g_GLFW_HiddenWindow);
+	IDResult defaultWindowIDResult = ntt_GLFW_CreateWindow("Default Window", 800, 600);
+	NTT_SUCCESS_ASSERT_VAR(defaultWindowIDResult);
+	g_defaultWindowID = defaultWindowIDResult.data;
 
-	// TODO: remove later
-	while (!glfwWindowShouldClose(g_GLFW_HiddenWindow))
+	GLFWwindow* pDefaultWindow = ntt_GLFW_GetWindowByID(g_defaultWindowID);
+
+	NTT_ASSERT_IF(pDefaultWindow == NULL)
 	{
-		glfwPollEvents();
+		return NTT_RESULT_GLFW_WINDOW_NOT_FOUND;
 	}
-#endif /* 0 */
+
+	glfwHideWindow(pDefaultWindow);
 
 	NTT_DRIVER_INFO("GLFW Driver registered successfully.");
 	return NTT_RESULT_SUCCESS;
@@ -55,10 +81,15 @@ ntt_Result ntt_GLFW_Unregister()
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-#if 0
 	// Terminate GLFW and clean up resources
-	ntt_GLFW_DestroyWindow(g_GLFW_HiddenWindow);
-#endif /* 0 */
+	NTT_ASSERT_IF(ntt_IsIDEqual(&g_defaultWindowID, &INVALID_ID) == TRUE)
+	{
+		return NTT_RESULT_GLFW_WINDOW_NOT_FOUND;
+	}
+
+	ntt_GLFW_DestroyWindow(g_defaultWindowID);
+
+	NTT_SUCCESS_ASSERT(ntt_MapDestroy(&g_GLFW_WindowMap));
 
 	glfwTerminate();
 
@@ -70,27 +101,109 @@ ntt_Result ntt_GLFW_Unregister()
 	return NTT_RESULT_SUCCESS;
 }
 
-static ntt_Result ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height, void** ppWindow)
+static IDResult ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height)
 {
+	IDResult result = {
+		.result = NTT_RESULT_SUCCESS,
+		.data	= INVALID_ID_INIT,
+	};
+
 	GLFWwindow* pWindow = glfwCreateWindow(width, height, title, NULL, NULL);
 	NTT_ASSERT_IF(pWindow == NULL)
 	{
 		NTT_DRIVER_ERROR("Failed to create GLFW window.");
-		return NTT_RESULT_GLFW_WINDOW_CREATION_FAILURE;
+		result.result = NTT_RESULT_GLFW_WINDOW_CREATION_FAILURE;
+		return result;
 	}
+
+	ntt_GLFW_WindowData windowData = {
+		.pWindow = pWindow,
+		.width	 = width,
+		.height	 = height,
+	};
+
+	strncpy(windowData.title, title, sizeof(windowData.title) - 1);
+
+	IDResult newIDResult = ntt_NewID(NTT_OBJECT_TYPE_WINDOW, NULL);
+	NTT_ASSERT_IF(newIDResult.result != NTT_RESULT_SUCCESS)
+	{
+		glfwDestroyWindow(pWindow);
+		result.result = newIDResult.result;
+		return result;
+	}
+
+	NTT_SUCCESS_ASSERT(
+		ntt_MapInsert(&g_GLFW_WindowMap, &newIDResult.data, sizeof(ID), &windowData, sizeof(ntt_GLFW_WindowData)));
+
+	result.data = newIDResult.data;
+
 	glfwMakeContextCurrent(pWindow);
-	*ppWindow = pWindow;
-	return NTT_RESULT_SUCCESS;
+	return result;
 }
 
-static ntt_Result ntt_GLFW_DestroyWindow(void* pWindow)
+static ntt_Result ntt_GLFW_DestroyWindow(ID windowID)
 {
-	NTT_ASSERT_IF(pWindow == NULL)
+	NTT_ASSERT_IF(ntt_IsIDEqual(&windowID, &INVALID_ID) == TRUE)
 	{
 		return NTT_RESULT_NULL_POINTER;
 	}
-	glfwDestroyWindow((GLFWwindow*)pWindow);
+
+	ntt_KeyValuePairResult result = ntt_MapGet(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID));
+	NTT_ASSERT_IF(result.result != NTT_RESULT_SUCCESS)
+	{
+		return NTT_RESULT_GLFW_WINDOW_NOT_FOUND;
+	}
+
+	ntt_GLFW_WindowData* pWindowData = (ntt_GLFW_WindowData*)result.data.pValue;
+
+	glfwDestroyWindow(pWindowData->pWindow);
+
+	NTT_SUCCESS_ASSERT(ntt_MapRemove(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID)));
+
 	return NTT_RESULT_SUCCESS;
+}
+
+static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID)
+{
+	NTT_ASSERT_IF(ntt_IsIDEqual(&windowID, &INVALID_ID) == TRUE)
+	{
+		return NULL;
+	}
+
+	ntt_KeyValuePairResult result = ntt_MapGet(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID));
+	NTT_ASSERT_IF(result.result != NTT_RESULT_SUCCESS)
+	{
+		return NULL;
+	}
+
+	ntt_GLFW_WindowData* pWindowData = (ntt_GLFW_WindowData*)result.data.pValue;
+	return pWindowData->pWindow;
+}
+
+static u32 ntt_WindowIDHashFunction(void* pKey, usize keySize)
+{
+	NTT_ASSERT_IF(pKey == NULL)
+	{
+		return 0;
+	}
+
+	NTT_ASSERT_IF(keySize != sizeof(ID))
+	{
+		return 0;
+	}
+
+	ID* pID = (ID*)pKey;
+
+	u32 hash = 2166136261u; // FNV-1a hash initial value
+
+	for (usize i = 0; i < (usize)sizeof(ID); i++)
+	{
+		u8 byte = ((u8*)pID)[i];
+		hash ^= byte;
+		hash *= 16777619u; // FNV-1a prime
+	}
+
+	return hash;
 }
 
 #endif /* NTT_GRAPHICS_DRIVER_GLFW */

@@ -8,6 +8,7 @@
 struct ntt_WindowResource
 {
 	ntt_Resource base;
+	ID			 windowID;
 };
 
 OBJECT_DECLARE(ntt_WindowResource)
