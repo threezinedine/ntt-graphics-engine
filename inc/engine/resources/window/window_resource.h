@@ -23,4 +23,6 @@ struct ntt_WindowResource
 
 OBJECT_DECLARE(ntt_WindowResource)
 
+extern ntt_WindowResource g_defaultWindowResource;
+
 #endif /** _WINDOW_RESOURCE_H_ */

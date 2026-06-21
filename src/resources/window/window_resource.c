@@ -8,6 +8,8 @@ OBJECT_DEFINE(ntt_WindowResource, ntt_Resource)
 static ntt_Result WindowResource_Load(ntt_Resource* pResource);
 static ntt_Result WindowResource_Unload(ntt_Resource* pResource);
 
+ntt_WindowResource g_defaultWindowResource;
+
 ntt_Result
 ntt_WindowResource_Initialize(ntt_WindowResource* pWindowResource, ntt_Allocator* pAllocator, void* pUserData)
 {

@@ -26,14 +26,15 @@ typedef struct ntt_GLFW_WindowData ntt_GLFW_WindowData;
 
 static ntt_Map g_GLFW_WindowMap; /// Map from window ID to GLFWwindow*
 
-static ntt_Result ntt_GLFW_Initialize();
-static IDResult	  ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height);
-static ntt_Result ntt_GLFW_DestroyWindow(ID windowID);
-static ntt_Result ntt_GLFW_Destroy();
-static u32		  ntt_WindowIDHashFunction(void* pKey, usize keySize);
-// static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID);
-
-ntt_WindowResource g_defaultWindowResource;
+static ntt_Result  ntt_GLFW_Initialize();
+static IDResult	   ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height);
+static ntt_Result  ntt_GLFW_DestroyWindow(ID windowID);
+static ntt_Result  ntt_GLFW_Destroy();
+static b8		   ntt_GLFW_ShouldCloseWindow(ID windowID);
+static ntt_Result  ntt_GLFW_StartFrame();
+static ntt_Result  ntt_GLFW_EndFrame();
+static u32		   ntt_WindowIDHashFunction(void* pKey, usize keySize);
+static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID);
 
 ntt_Result ntt_GLFW_Register()
 {
@@ -51,11 +52,14 @@ ntt_Result ntt_GLFW_Register()
 	}
 	g_GLFW_WindowMap = mapResult.data;
 
-	g_GLFW_DisplayDriver				= (ntt_DisplayDriver*)result.pData;
-	g_GLFW_DisplayDriver->Initialize	= ntt_GLFW_Initialize;
-	g_GLFW_DisplayDriver->CreateWindow	= ntt_GLFW_CreateWindow;
-	g_GLFW_DisplayDriver->DestroyWindow = ntt_GLFW_DestroyWindow;
-	g_GLFW_DisplayDriver->Shutdown		= ntt_GLFW_Destroy;
+	g_GLFW_DisplayDriver					= (ntt_DisplayDriver*)result.pData;
+	g_GLFW_DisplayDriver->Initialize		= ntt_GLFW_Initialize;
+	g_GLFW_DisplayDriver->CreateWindow		= ntt_GLFW_CreateWindow;
+	g_GLFW_DisplayDriver->DestroyWindow		= ntt_GLFW_DestroyWindow;
+	g_GLFW_DisplayDriver->Shutdown			= ntt_GLFW_Destroy;
+	g_GLFW_DisplayDriver->ShouldCloseWindow = ntt_GLFW_ShouldCloseWindow;
+	g_GLFW_DisplayDriver->StartFrame		= ntt_GLFW_StartFrame;
+	g_GLFW_DisplayDriver->EndFrame			= ntt_GLFW_EndFrame;
 
 	NTT_DRIVER_INFO("GLFW Driver registered successfully.");
 	return NTT_RESULT_SUCCESS;
@@ -158,7 +162,6 @@ static ntt_Result ntt_GLFW_DestroyWindow(ID windowID)
 	return NTT_RESULT_SUCCESS;
 }
 
-#if 0
 static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID)
 {
 	NTT_ASSERT_IF(ntt_IsIDEqual(&windowID, &INVALID_ID) == TRUE)
@@ -175,7 +178,6 @@ static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID)
 	ntt_GLFW_WindowData* pWindowData = (ntt_GLFW_WindowData*)result.data.pValue;
 	return pWindowData->pWindow;
 }
-#endif
 
 static ntt_Result ntt_GLFW_Destroy()
 {
@@ -219,6 +221,36 @@ static u32 ntt_WindowIDHashFunction(void* pKey, usize keySize)
 	}
 
 	return hash;
+}
+
+static b8 ntt_GLFW_ShouldCloseWindow(ID windowID)
+{
+	GLFWwindow* pWindow = ntt_GLFW_GetWindowByID(windowID);
+	if (pWindow == NULL)
+	{
+		return TRUE; // If the window is not found, we can consider it should be closed
+	}
+
+	return glfwWindowShouldClose(pWindow) == GLFW_TRUE;
+}
+
+static ntt_Result ntt_GLFW_StartFrame()
+{
+	GLFWwindow* pWindow = ntt_GLFW_GetWindowByID(g_defaultWindowResource.windowID);
+	glfwMakeContextCurrent(pWindow);
+
+	glfwPollEvents();
+	return NTT_RESULT_SUCCESS;
+}
+
+static ntt_Result ntt_GLFW_EndFrame()
+{
+	GLFWwindow* pWindow = ntt_GLFW_GetWindowByID(g_defaultWindowResource.windowID);
+	if (pWindow != NULL)
+	{
+		glfwSwapBuffers(pWindow);
+	}
+	return NTT_RESULT_SUCCESS;
 }
 
 #endif /* NTT_GRAPHICS_DRIVER_GLFW */

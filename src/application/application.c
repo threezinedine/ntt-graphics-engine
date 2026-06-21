@@ -12,7 +12,7 @@ ntt_Result ntt_Application_Initialize(ntt_Application* pApplication)
 	}
 
 	NTT_SUCCESS_ASSERT(ntt_MemoryGlobals_Initialize());
-	NTT_SUCCESS_ASSERT(ntt_Logging_Initialize(LOGGING_HANDLER_TYPE_CONSOLE, NULL));
+	NTT_SUCCESS_ASSERT(ntt_Logging_Initialize(LOGGING_HANDLER_TYPE_CONSOLE, "[%(type)] %(message)"));
 	NTT_SUCCESS_ASSERT(ntt_Logging_SetLevel(LOGGING_HANDLER_TYPE_CONSOLE, LOGGING_LEVEL_DEBUG));
 	NTT_SUCCESS_ASSERT(ntt_InitializeIDSystem());
 	NTT_SUCCESS_ASSERT(ntt_Drivers_Register());
@@ -38,6 +38,28 @@ ntt_Result ntt_Application_Run(ntt_Application* pApplication)
 	NTT_ASSERT_IF(pApplication == NULL)
 	{
 		return NTT_RESULT_NULL_POINTER;
+	}
+
+	while (TRUE)
+	{
+		NTT_ASSERT_IF(g_DisplayDriver->StartFrame == NULL)
+		{
+			return NTT_RESULT_NULL_POINTER;
+		}
+
+		g_DisplayDriver->StartFrame();
+
+		if (g_DisplayDriver->ShouldCloseWindow(g_defaultWindowResource.windowID))
+		{
+			break;
+		}
+
+		NTT_ASSERT_IF(g_DisplayDriver->EndFrame == NULL)
+		{
+			return NTT_RESULT_NULL_POINTER;
+		}
+
+		g_DisplayDriver->EndFrame();
 	}
 
 	return NTT_RESULT_SUCCESS;
