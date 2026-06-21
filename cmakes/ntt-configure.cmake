@@ -11,6 +11,8 @@ macro(ntt_setup)
     ntt_option_with_value(NTT_EDITOR OFF)
     ntt_option_with_value(NTT_TESTS OFF)
 
+    ntt_option_with_value(NTT_GRAPHICS_DRIVER_GLFW ON)
+
     ntt_option_with_value(NTT_ENABLE_ASSERT ON)
 
     if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "")
