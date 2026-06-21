@@ -30,6 +30,12 @@ ntt_Result ntt_Logging_Shutdown();
 #define NTT_LOG_ERROR(type, message, ...) NTT_LOG(type, LOGGING_LEVEL_ERROR, message, ##__VA_ARGS__)
 #define NTT_LOG_FATAL(type, message, ...) NTT_LOG(type, LOGGING_LEVEL_FATAL, message, ##__VA_ARGS__)
 
+#define NTT_ENGINE_TRACE(message, ...) NTT_LOG_TRACE(LOGGING_TYPE_ENGINE, message, ##__VA_ARGS__)
+#define NTT_ENGINE_DEBUG(message, ...) NTT_LOG_DEBUG(LOGGING_TYPE_ENGINE, message, ##__VA_ARGS__)
+#define NTT_ENGINE_INFO(message, ...)  NTT_LOG_INFO(LOGGING_TYPE_ENGINE, message, ##__VA_ARGS__)
+#define NTT_ENGINE_WARN(message, ...)  NTT_LOG_WARN(LOGGING_TYPE_ENGINE, message, ##__VA_ARGS__)
+#define NTT_ENGINE_ERROR(message, ...) NTT_LOG_ERROR(LOGGING_TYPE_ENGINE, message, ##__VA_ARGS__)
+
 #define NTT_CORE_TRACE(message, ...) NTT_LOG_TRACE(LOGGING_TYPE_CORE, message, ##__VA_ARGS__)
 #define NTT_CORE_DEBUG(message, ...) NTT_LOG_DEBUG(LOGGING_TYPE_CORE, message, ##__VA_ARGS__)
 #define NTT_CORE_INFO(message, ...)	 NTT_LOG_INFO(LOGGING_TYPE_CORE, message, ##__VA_ARGS__)

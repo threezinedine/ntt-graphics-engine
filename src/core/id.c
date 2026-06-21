@@ -12,12 +12,13 @@ static u64 s_IDMetas[MAX_OBJECTS];
 
 ntt_Result ntt_InitializeIDSystem()
 {
-	NTT_CORE_INFO("Initializing ID System...");
 	s_currentIndex = 0;
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
 		s_IDMetas[i] = INVALID_META;
 	}
+
+	NTT_CORE_INFO("ID System initialized successfully.");
 	return NTT_RESULT_SUCCESS;
 }
 
