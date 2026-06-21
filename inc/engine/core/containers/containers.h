@@ -4,6 +4,7 @@
 #include "array.h"
 #include "list.h"
 #include "map.h"
+#include "mat.h"
 #include "queue.h"
 #include "stack.h"
 #include "string.h"

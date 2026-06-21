@@ -49,6 +49,7 @@ int main(i32 argc, char** argv)
 	RUN_TEST_SUITE(object);
 	RUN_TEST_SUITE(logging);
 	RUN_TEST_SUITE(vec);
+	RUN_TEST_SUITE(mat);
 
 	const char* testResultMessage		   = "************ TEST RESULT ***********";
 	i32			width					   = (i32)ntt_StrLen(testResultMessage);

@@ -4,6 +4,7 @@
 #include "array_tests.h"
 #include "list_tests.h"
 #include "map_tests.h"
+#include "mat_tests.h"
 #include "queue_tests.h"
 #include "stack_tests.h"
 #include "string_tests.h"
