@@ -37,4 +37,11 @@ ntt_Result ntt_Logging_Shutdown();
 #define NTT_CORE_ERROR(message, ...) NTT_LOG_ERROR(LOGGING_TYPE_CORE, message, ##__VA_ARGS__)
 #define NTT_CORE_FATAL(message, ...) NTT_LOG_FATAL(LOGGING_TYPE_CORE, message, ##__VA_ARGS__)
 
+#define NTT_DRIVER_TRACE(message, ...) NTT_LOG_TRACE(LOGGING_TYPE_DRIVER, message, ##__VA_ARGS__)
+#define NTT_DRIVER_DEBUG(message, ...) NTT_LOG_DEBUG(LOGGING_TYPE_DRIVER, message, ##__VA_ARGS__)
+#define NTT_DRIVER_INFO(message, ...)  NTT_LOG_INFO(LOGGING_TYPE_DRIVER, message, ##__VA_ARGS__)
+#define NTT_DRIVER_WARN(message, ...)  NTT_LOG_WARN(LOGGING_TYPE_DRIVER, message, ##__VA_ARGS__)
+#define NTT_DRIVER_ERROR(message, ...) NTT_LOG_ERROR(LOGGING_TYPE_DRIVER, message, ##__VA_ARGS__)
+#define NTT_DRIVER_FATAL(message, ...) NTT_LOG_FATAL(LOGGING_TYPE_DRIVER, message, ##__VA_ARGS__)
+
 #endif // _LOGGING_H_

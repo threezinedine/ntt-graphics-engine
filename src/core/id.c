@@ -23,12 +23,13 @@ ntt_Result ntt_InitializeIDSystem()
 
 ntt_Result ntt_DestroyIDSystem()
 {
-	NTT_CORE_INFO("Destroying ID System...");
 	s_currentIndex = 0;
 	for (u64 i = 0; i < MAX_OBJECTS; i++)
 	{
 		s_IDMetas[i] = INVALID_META;
 	}
+
+	NTT_CORE_INFO("ID System destroyed.");
 
 	return NTT_RESULT_SUCCESS;
 }

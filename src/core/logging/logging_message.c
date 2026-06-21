@@ -3,11 +3,20 @@
 #include "engine/core/utils/console.h"
 #include <string.h>
 
-typedef ntt_Result (*ReplacementFunction)(ntt_LoggingMessage* pMessage, u32* pIndex, void* pUserData);
+struct KeyWordReplacement;
+
+typedef ntt_Result (*ReplacementFunction)(ntt_LoggingMessage*		 pMessage,
+										  u32*						 pIndex,
+										  struct KeyWordReplacement* pReplacement,
+										  void*						 pUserData);
 
 struct KeyWordReplacement
 {
-	const char*			keyword;
+	const char* keyword;
+	i32 keywordLength; /// -1 -> no precomputed length, otherwise the length of the keyword string. This is used to
+					   /// optimize the search for keywords in the format string.
+	b8 leftAlign;	   /// Whether to left align the replacement string in the final message. If false, it will be right
+					   /// aligned. This is used when the keyword is shorter than the precomputed keyword length.
 	ReplacementFunction replacementFunction;
 };
 
@@ -22,19 +31,50 @@ struct ntt_LoggingMessageUserData
 typedef struct ntt_LoggingMessageUserData ntt_LoggingMessageUserData;
 
 #define REPLACE_FUNCTION(name, getStr)                                                                                 \
-	ntt_Result name(ntt_LoggingMessage* pMessage, u32* pIndex, void* pUserData)                                        \
+	ntt_Result name(ntt_LoggingMessage* pMessage, u32* pIndex, KeyWordReplacement* pReplacement, void* pUserData)      \
 	{                                                                                                                  \
 		NTT_UNUSED(pUserData);                                                                                         \
-		const char* str		   = getStr;                                                                               \
-		usize		len		   = strlen(str);                                                                          \
-		usize		bufferSize = (u32)sizeof(pMessage->finalMessage);                                                  \
+		i32			keywordLength = pReplacement->keywordLength;                                                       \
+		const char* str			  = getStr;                                                                            \
+		char		buffer[128]	  = {0};                                                                               \
+		strncpy(buffer, str, sizeof(buffer) - 1);                                                                      \
+		if (keywordLength > 0)                                                                                         \
+		{                                                                                                              \
+			if ((i32)strlen(buffer) < keywordLength)                                                                   \
+			{                                                                                                          \
+				if (pReplacement->leftAlign)                                                                           \
+				{                                                                                                      \
+					while (strlen(buffer) < (size_t)keywordLength)                                                     \
+					{                                                                                                  \
+						char temp[128] = {0};                                                                          \
+						strncpy(temp, buffer, sizeof(temp) - 1);                                                       \
+						ntt_FormatMessage(buffer, sizeof(buffer), "%s ", temp);                                        \
+					}                                                                                                  \
+				}                                                                                                      \
+				else                                                                                                   \
+				{                                                                                                      \
+					while (strlen(buffer) < (size_t)keywordLength)                                                     \
+					{                                                                                                  \
+						char temp[128] = {0};                                                                          \
+						strncpy(temp, buffer, sizeof(temp) - 1);                                                       \
+						ntt_FormatMessage(buffer, sizeof(buffer), " %s", temp);                                        \
+					}                                                                                                  \
+				}                                                                                                      \
+			}                                                                                                          \
+			else                                                                                                       \
+			{                                                                                                          \
+				buffer[keywordLength] = '\0';                                                                          \
+			}                                                                                                          \
+		}                                                                                                              \
                                                                                                                        \
+		usize len		 = strlen(buffer);                                                                             \
+		usize bufferSize = (u32)sizeof(pMessage->finalMessage);                                                        \
 		if (*pIndex + len >= bufferSize)                                                                               \
 		{                                                                                                              \
 			return NTT_RESULT_BUFFER_OVERFLOW;                                                                         \
 		}                                                                                                              \
                                                                                                                        \
-		strncpy(&pMessage->finalMessage[*pIndex], str, len);                                                           \
+		strncpy(&pMessage->finalMessage[*pIndex], buffer, len);                                                        \
 		*pIndex += (u32)len;                                                                                           \
 		pMessage->finalMessage[*pIndex] = '\0';                                                                        \
                                                                                                                        \
@@ -49,11 +89,11 @@ REPLACE_FUNCTION(ReplaceMessage, pMessage->message)
 
 static KeyWordReplacement s_keyWordReplacements[] = {
 	// clang-format off
-	{"%(level)",   ReplaceLevel},
-	{"%(type)",	   ReplaceType},
-	{"%(file)",	   ReplaceFile},
-	{"%(line)",	   ReplaceLine},
-	{"%(message)", ReplaceMessage},
+	{"%(level)"  , 7 , TRUE , ReplaceLevel  },
+	{"%(type)"   , 6 , TRUE , ReplaceType   },
+	{"%(file)"   , 25, FALSE, ReplaceFile   },
+	{"%(line)"   , 4 , TRUE , ReplaceLine   },
+	{"%(message)", -1, TRUE , ReplaceMessage},
 	// clang-format on
 };
 
@@ -85,8 +125,8 @@ ntt_Result ntt_LoggingMessage_FormatMessage(ntt_LoggingMessage* pMessage, const 
 					if (s_keyWordReplacements[i].replacementFunction != NULL)
 					{
 						u32 index = (u32)strlen(pMessage->finalMessage);
-						NTT_SUCCESS_ASSERT(
-							s_keyWordReplacements[i].replacementFunction(pMessage, &index, (void*)&userData));
+						NTT_SUCCESS_ASSERT(s_keyWordReplacements[i].replacementFunction(
+							pMessage, &index, &s_keyWordReplacements[i], (void*)&userData));
 					}
 
 					// Move the formatCharIndex past the matched keyword
