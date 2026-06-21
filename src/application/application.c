@@ -23,18 +23,12 @@ ntt_Result ntt_Application_Initialize(ntt_Application* pApplication)
 	NTT_SUCCESS_ASSERT(ntt_Resources_Register());
 	NTT_SUCCESS_ASSERT(ntt_Systems_Register());
 
+	NTT_SUCCESS_ASSERT(ntt_Drivers_Initialize());
+
 	if (pApplication->pfn_Initialize != NULL)
 	{
 		pApplication->pfn_Initialize(pApplication);
 	}
-
-	ntt_WindowResourceCreateInfo windowCreateInfo = {"Main Window", 800, 600};
-	NTT_SUCCESS_ASSERT(ntt_WindowResource_Initialize(
-		&pApplication->defaultWindowResource, g_memoryGlobals.mallocAllocator, &windowCreateInfo));
-
-	ntt_Resource_Load((ntt_Resource*)&pApplication->defaultWindowResource);
-
-	while (ntt_Resource_IsLoading((ntt_Resource*)&pApplication->defaultWindowResource));
 
 	return NTT_RESULT_SUCCESS;
 }
@@ -56,16 +50,12 @@ ntt_Result ntt_Application_Shutdown(ntt_Application* pApplication)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	ntt_Resource_Unload((ntt_Resource*)&pApplication->defaultWindowResource);
-
-	while (ntt_Resource_IsUnloading((ntt_Resource*)&pApplication->defaultWindowResource));
-
-	ntt_WindowResource_Destroy(&pApplication->defaultWindowResource);
-
 	if (pApplication->pfn_Shutdown != NULL)
 	{
 		pApplication->pfn_Shutdown(pApplication);
 	}
+
+	NTT_SUCCESS_ASSERT(ntt_Drivers_Destroy());
 
 	NTT_SUCCESS_ASSERT(ntt_Systems_Unregister());
 	NTT_SUCCESS_ASSERT(ntt_Resources_Unregister());

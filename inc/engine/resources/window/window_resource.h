@@ -16,8 +16,9 @@ typedef struct ntt_WindowResourceCreateInfo ntt_WindowResourceCreateInfo;
 
 struct ntt_WindowResource
 {
-	ntt_Resource base;
-	ID			 windowID;
+	ntt_Resource				 base;
+	ID							 windowID;
+	ntt_WindowResourceCreateInfo createInfo;
 };
 
 OBJECT_DECLARE(ntt_WindowResource)

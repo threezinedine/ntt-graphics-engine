@@ -4,12 +4,13 @@
 #include "engine/core/logging/logging.h"
 #include "engine/core/memory/memory.h"
 #include "engine/core/types.h"
+#include "engine/resources/resources.h"
 #include <stddef.h>
 #include <string.h>
 
 #include <GLFW/glfw3.h>
 
-ntt_DisplayDriver* g_GLFW_DisplayDriver = NULL;
+ntt_DisplayDriver* g_GLFW_DisplayDriver;
 
 #if NTT_GRAPHICS_DRIVER_GLFW
 
@@ -23,13 +24,16 @@ struct ntt_GLFW_WindowData
 
 typedef struct ntt_GLFW_WindowData ntt_GLFW_WindowData;
 
-static ID	   g_defaultWindowID = INVALID_ID_INIT;
 static ntt_Map g_GLFW_WindowMap; /// Map from window ID to GLFWwindow*
 
-static IDResult	   ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height);
-static ntt_Result  ntt_GLFW_DestroyWindow(ID windowID);
-static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID);
-static u32		   ntt_WindowIDHashFunction(void* pKey, usize keySize);
+static ntt_Result ntt_GLFW_Initialize();
+static IDResult	  ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height);
+static ntt_Result ntt_GLFW_DestroyWindow(ID windowID);
+static ntt_Result ntt_GLFW_Destroy();
+static u32		  ntt_WindowIDHashFunction(void* pKey, usize keySize);
+// static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID);
+
+ntt_WindowResource g_defaultWindowResource;
 
 ntt_Result ntt_GLFW_Register()
 {
@@ -47,28 +51,11 @@ ntt_Result ntt_GLFW_Register()
 	}
 	g_GLFW_WindowMap = mapResult.data;
 
-	if (glfwInit() != GLFW_TRUE)
-	{
-		NTT_DRIVER_ERROR("Failed to initialize GLFW.");
-		return NTT_RESULT_GLFW_INITIALIZATION_FAILURE;
-	}
-
 	g_GLFW_DisplayDriver				= (ntt_DisplayDriver*)result.pData;
+	g_GLFW_DisplayDriver->Initialize	= ntt_GLFW_Initialize;
 	g_GLFW_DisplayDriver->CreateWindow	= ntt_GLFW_CreateWindow;
 	g_GLFW_DisplayDriver->DestroyWindow = ntt_GLFW_DestroyWindow;
-
-	IDResult defaultWindowIDResult = ntt_GLFW_CreateWindow("Default Window", 800, 600);
-	NTT_SUCCESS_ASSERT_VAR(defaultWindowIDResult);
-	g_defaultWindowID = defaultWindowIDResult.data;
-
-	GLFWwindow* pDefaultWindow = ntt_GLFW_GetWindowByID(g_defaultWindowID);
-
-	NTT_ASSERT_IF(pDefaultWindow == NULL)
-	{
-		return NTT_RESULT_GLFW_WINDOW_NOT_FOUND;
-	}
-
-	glfwHideWindow(pDefaultWindow);
+	g_GLFW_DisplayDriver->Shutdown		= ntt_GLFW_Destroy;
 
 	NTT_DRIVER_INFO("GLFW Driver registered successfully.");
 	return NTT_RESULT_SUCCESS;
@@ -81,23 +68,31 @@ ntt_Result ntt_GLFW_Unregister()
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	// Terminate GLFW and clean up resources
-	NTT_ASSERT_IF(ntt_IsIDEqual(&g_defaultWindowID, &INVALID_ID) == TRUE)
-	{
-		return NTT_RESULT_GLFW_WINDOW_NOT_FOUND;
-	}
-
-	ntt_GLFW_DestroyWindow(g_defaultWindowID);
-
-	NTT_SUCCESS_ASSERT(ntt_MapDestroy(&g_GLFW_WindowMap));
-
-	glfwTerminate();
-
 	NTT_SUCCESS_ASSERT(
 		ntt_Deallocate(g_memoryGlobals.mallocAllocator, g_GLFW_DisplayDriver, sizeof(ntt_DisplayDriver)));
 	g_GLFW_DisplayDriver = NULL;
 
 	NTT_DRIVER_INFO("GLFW Driver unregistered successfully.");
+	return NTT_RESULT_SUCCESS;
+}
+
+static ntt_Result ntt_GLFW_Initialize()
+{
+	// GLFW is already initialized in ntt_GLFW_Register, so we can just return success here.
+	if (glfwInit() != GLFW_TRUE)
+	{
+		NTT_DRIVER_ERROR("Failed to initialize GLFW.");
+		return NTT_RESULT_GLFW_INITIALIZATION_FAILURE;
+	}
+
+	ntt_WindowResourceCreateInfo windowCreateInfo = {"Default Window", 800, 600};
+	NTT_SUCCESS_ASSERT(
+		ntt_WindowResource_Initialize(&g_defaultWindowResource, g_memoryGlobals.mallocAllocator, &windowCreateInfo));
+
+	NTT_SUCCESS_ASSERT(ntt_Resource_Load((ntt_Resource*)&g_defaultWindowResource));
+
+	while (ntt_Resource_IsLoading((ntt_Resource*)&g_defaultWindowResource));
+
 	return NTT_RESULT_SUCCESS;
 }
 
@@ -163,6 +158,7 @@ static ntt_Result ntt_GLFW_DestroyWindow(ID windowID)
 	return NTT_RESULT_SUCCESS;
 }
 
+#if 0
 static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID)
 {
 	NTT_ASSERT_IF(ntt_IsIDEqual(&windowID, &INVALID_ID) == TRUE)
@@ -178,6 +174,25 @@ static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID)
 
 	ntt_GLFW_WindowData* pWindowData = (ntt_GLFW_WindowData*)result.data.pValue;
 	return pWindowData->pWindow;
+}
+#endif
+
+static ntt_Result ntt_GLFW_Destroy()
+{
+	NTT_ASSERT_IF(g_GLFW_DisplayDriver == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	// Terminate GLFW and clean up resources
+	NTT_SUCCESS_ASSERT(ntt_Resource_Unload((ntt_Resource*)&g_defaultWindowResource));
+
+	while (ntt_Resource_IsUnloading((ntt_Resource*)&g_defaultWindowResource));
+
+	NTT_SUCCESS_ASSERT(ntt_MapDestroy(&g_GLFW_WindowMap));
+
+	glfwTerminate();
+	return NTT_RESULT_SUCCESS;
 }
 
 static u32 ntt_WindowIDHashFunction(void* pKey, usize keySize)

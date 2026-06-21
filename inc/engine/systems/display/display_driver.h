@@ -11,8 +11,10 @@
  */
 struct ntt_DisplayDriver
 {
+	ntt_Result (*Initialize)();
 	IDResult (*CreateWindow)(const char* title, i32 width, i32 height);
 	ntt_Result (*DestroyWindow)(ID windowID);
+	ntt_Result (*Shutdown)();
 };
 
 typedef struct ntt_DisplayDriver ntt_DisplayDriver;
