@@ -7,7 +7,8 @@
         "NTT_DEBUG",
         "NTT_PLATFORM_UNIX",
         "NTT_STRICT_MEMORY_MANAGEMENT",
-        "NTT_ENABLE_ASSERT"
+        "NTT_ENABLE_ASSERT",
+        "NTT_GRAPHICS_DRIVER_GLFW"
       ],
       "compilerPath": "/usr/bin/clang",
       "cStandard": "c17",

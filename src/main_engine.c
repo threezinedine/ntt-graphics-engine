@@ -11,6 +11,7 @@ int main(i32 argc, char** argv)
 
 	NTT_SUCCESS_ASSERT(ntt_InitializeIDSystem());
 	NTT_SUCCESS_ASSERT(ntt_MemoryGlobals_Initialize());
+	NTT_SUCCESS_ASSERT(ntt_Drivers_Register());
 
 	NTT_SUCCESS_ASSERT(ntt_Object_RegisterType());
 	NTT_SUCCESS_ASSERT(ntt_Systems_Register());
@@ -23,6 +24,7 @@ int main(i32 argc, char** argv)
 	NTT_SUCCESS_ASSERT(ntt_Systems_Unregister());
 	NTT_SUCCESS_ASSERT(ntt_Object_UnregisterType());
 
+	NTT_SUCCESS_ASSERT(ntt_Drivers_Unregister());
 	NTT_SUCCESS_ASSERT(ntt_MemoryGlobals_Destroy());
 	NTT_SUCCESS_ASSERT(ntt_DestroyIDSystem());
 

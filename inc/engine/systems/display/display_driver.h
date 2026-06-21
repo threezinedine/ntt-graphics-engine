@@ -1,6 +1,7 @@
 #ifndef _DISPLAY_DRIVER_H_
 #define _DISPLAY_DRIVER_H_
 
+#include "display_driver_type.h"
 #include "engine/core/result.h"
 #include "engine/core/types.h"
 
@@ -14,5 +15,10 @@ struct ntt_DisplayDriver
 	ntt_Result (*DestroyWindow)(void* pWindow);
 	ntt_Result (*Destroy)(void);
 };
+
+typedef struct ntt_DisplayDriver ntt_DisplayDriver;
+DEFINE_RETURN_RESULT_TYPE(ntt_DisplayDriver)
+
+ntt_DisplayDriverPtrResult ntt_DisplayDriver_Register(ntt_DisplayDriverType driverType);
 
 #endif /* _DISPLAY_DRIVER_H_ */
