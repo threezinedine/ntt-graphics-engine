@@ -32,7 +32,7 @@ ntt_Result ntt_Logging_Initialize(u32 loggingTypes, const char* format)
 		ntt_FormatMessage(g_loggingFormat, sizeof(g_loggingFormat), "[%(type)] %(file):%(line) %(message)");
 	}
 
-	ntt_ListResult result = ntt_ListCreate(NULL, NULL);
+	ntt_ListResult result = ntt_List_Create(NULL, NULL);
 	NTT_SUCCESS_ASSERT_VAR(result);
 	g_loggingHandlers = result.data;
 
@@ -45,7 +45,7 @@ ntt_Result ntt_Logging_Initialize(u32 loggingTypes, const char* format)
 									  ntt_LoggingHandler_##name##_Initialize,                                          \
 									  ntt_LoggingHandler_##name##_HandleMessage,                                       \
 									  ntt_LoggingHandler_##name##_Shutdown};                                           \
-		ntt_Result		   res	   = ntt_ListAppend(&g_loggingHandlers, &handler, sizeof(handler));                    \
+		ntt_Result		   res	   = ntt_List_Append(&g_loggingHandlers, &handler, sizeof(handler));                   \
 		NTT_SUCCESS_ASSERT(res);                                                                                       \
 	}
 #define ENUM_OPTION_END()
@@ -139,7 +139,7 @@ ntt_Result ntt_Logging_Shutdown()
 		pCurrentHandlerNode = pCurrentHandlerNode->pNext;
 	}
 
-	NTT_SUCCESS_ASSERT(ntt_ListClear(&g_loggingHandlers));
+	NTT_SUCCESS_ASSERT(ntt_List_Clear(&g_loggingHandlers));
 
 	return NTT_RESULT_SUCCESS;
 }

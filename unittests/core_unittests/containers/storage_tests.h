@@ -212,9 +212,11 @@ TEST_CASE(FreeAndRefillStorage)
 	// Fill again — should work since the free stack has 2 entries
 	IDResult newResult3 = ntt_Storage_New(&storage);
 	TEST_ASSERT(newResult3.result == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(newResult3.data.index == newResult2.data.index); // Should reuse the last freed ID
 
 	IDResult newResult4 = ntt_Storage_New(&storage);
 	TEST_ASSERT(newResult4.result == NTT_RESULT_SUCCESS);
+	TEST_ASSERT(newResult4.data.index == newResult1.data.index); // Should reuse the first freed ID
 
 	// Now it should be full again
 	IDResult newResult5 = ntt_Storage_New(&storage);

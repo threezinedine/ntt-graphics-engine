@@ -3,7 +3,7 @@
 #include "engine/core/utils/utils.h"
 #include <string.h>
 
-ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator, ntt_ListNodeDestructor nodeDestructor)
+ntt_ListResult ntt_List_Create(ntt_Allocator* pAllocator, ntt_ListNodeDestructor nodeDestructor)
 {
 	ntt_ListResult result;
 	result.result = NTT_RESULT_SUCCESS;
@@ -25,7 +25,7 @@ ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator, ntt_ListNodeDestructor 
 	return result;
 }
 
-ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize)
+ntt_Result ntt_List_Append(ntt_List* pList, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -68,7 +68,7 @@ ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListHeadAppend(ntt_List* pList, void* pData, usize dataSize)
+ntt_Result ntt_List_HeadAppend(ntt_List* pList, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -112,7 +112,7 @@ ntt_Result ntt_ListHeadAppend(ntt_List* pList, void* pData, usize dataSize)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListClear(ntt_List* pList)
+ntt_Result ntt_List_Clear(ntt_List* pList)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -157,7 +157,7 @@ ntt_Result ntt_ListClear(ntt_List* pList)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListDestroy(ntt_List* pList)
+ntt_Result ntt_List_Destroy(ntt_List* pList)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -169,12 +169,12 @@ ntt_Result ntt_ListDestroy(ntt_List* pList)
 		return NTT_RESULT_MISSING_ALLOCATOR;
 	}
 
-	NTT_SUCCESS_ASSERT(ntt_ListClear(pList));
+	NTT_SUCCESS_ASSERT(ntt_List_Clear(pList));
 
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListInsert(ntt_List* pList, usize index, void* pData, usize dataSize)
+ntt_Result ntt_List_Insert(ntt_List* pList, usize index, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -211,7 +211,7 @@ ntt_Result ntt_ListInsert(ntt_List* pList, usize index, void* pData, usize dataS
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListRemove(ntt_List* pList, usize index)
+ntt_Result ntt_List_Remove(ntt_List* pList, usize index)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -242,10 +242,10 @@ ntt_Result ntt_ListRemove(ntt_List* pList, usize index)
 		return NTT_RESULT_UNKNOWN_ERROR;
 	}
 
-	return ntt_ListRemoveNode(pList, pCurrentNode);
+	return ntt_List_RemoveNode(pList, pCurrentNode);
 }
 
-voidPtrResult ntt_ListGet(ntt_List* pList, usize index)
+voidPtrResult ntt_List_Get(ntt_List* pList, usize index)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -274,7 +274,7 @@ voidPtrResult ntt_ListGet(ntt_List* pList, usize index)
 	return (voidPtrResult){.result = NTT_RESULT_SUCCESS, .pData = pCurrentNode->pData};
 }
 
-b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize)
+b8 ntt_List_Contains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -301,7 +301,8 @@ b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* p
 	return FALSE;
 }
 
-ntt_ListNode* ntt_ListFindNode(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize)
+ntt_ListNode*
+ntt_List_FindNode(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -327,7 +328,7 @@ ntt_ListNode* ntt_ListFindNode(ntt_List* pList, ntt_ListElementPredicate predica
 	return NULL;
 }
 
-ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
+ntt_Result ntt_List_InsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -341,7 +342,7 @@ ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* p
 
 	if (pNode == NULL)
 	{
-		return ntt_ListAppend(pList, pData, dataSize);
+		return ntt_List_Append(pList, pData, dataSize);
 	}
 
 	NTT_ASSERT_IF(pNode->pOwner != pList)
@@ -380,7 +381,7 @@ ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* p
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListInsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
+ntt_Result ntt_List_InsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{
@@ -394,7 +395,7 @@ ntt_Result ntt_ListInsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* 
 
 	if (pNode == NULL)
 	{
-		return ntt_ListHeadAppend(pList, pData, dataSize);
+		return ntt_List_HeadAppend(pList, pData, dataSize);
 	}
 
 	NTT_ASSERT_IF(pNode->pOwner != pList)
@@ -433,7 +434,7 @@ ntt_Result ntt_ListInsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* 
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ListRemoveNode(ntt_List* pList, ntt_ListNode* pNode)
+ntt_Result ntt_List_RemoveNode(ntt_List* pList, ntt_ListNode* pNode)
 {
 	NTT_ASSERT_IF(pList == NULL)
 	{

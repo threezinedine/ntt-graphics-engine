@@ -5,7 +5,7 @@ ntt_StackResult ntt_Stack_Create(ntt_Allocator* pAllocator)
 	ntt_StackResult result;
 	result.result = NTT_RESULT_SUCCESS;
 
-	ntt_ListResult listResult = ntt_ListCreate(pAllocator, NULL);
+	ntt_ListResult listResult = ntt_List_Create(pAllocator, NULL);
 	NTT_ASSERT_IF(listResult.result != NTT_RESULT_SUCCESS)
 	{
 		result.result = listResult.result;
@@ -23,7 +23,7 @@ ntt_Result ntt_Stack_Push(ntt_Stack* pStack, void* pData, usize dataSize)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	return ntt_ListHeadAppend(&pStack->list, pData, dataSize);
+	return ntt_List_Append(&pStack->list, pData, dataSize);
 }
 
 voidPtrResult ntt_Stack_Top(ntt_Stack* pStack)
@@ -48,7 +48,7 @@ ntt_Result ntt_Stack_Pop(ntt_Stack* pStack)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	return ntt_ListRemoveNode(&pStack->list, pStack->list.pTail);
+	return ntt_List_RemoveNode(&pStack->list, pStack->list.pTail);
 }
 
 b8 ntt_Stack_IsEmpty(ntt_Stack* pStack)
@@ -68,7 +68,7 @@ ntt_Result ntt_Stack_Clear(ntt_Stack* pStack)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	return ntt_ListClear(&pStack->list);
+	return ntt_List_Clear(&pStack->list);
 }
 
 ntt_Result ntt_Stack_Destroy(ntt_Stack* pStack)
@@ -78,5 +78,5 @@ ntt_Result ntt_Stack_Destroy(ntt_Stack* pStack)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	return ntt_ListDestroy(&pStack->list);
+	return ntt_List_Destroy(&pStack->list);
 }

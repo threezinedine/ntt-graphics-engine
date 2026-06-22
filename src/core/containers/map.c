@@ -111,7 +111,7 @@ ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue,
 	ntt_List* pBucket	  = &pMap->bucks[bucketIndex];
 
 	// check if the key already exists in the map, if so, update the value and return
-	ntt_ListNode* pNode = ntt_ListFindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
+	ntt_ListNode* pNode = ntt_List_FindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
 	if (pNode != NULL)
 	{
 		ntt_MapNodeData* pNodeData		 = (ntt_MapNodeData*)pNode->pData;
@@ -141,7 +141,7 @@ ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue,
 	memcpy(nodeData.pValue, pValue, valueSize);
 	nodeData.valueSize = valueSize;
 
-	ntt_ListAppend(pBucket, &nodeData, sizeof(ntt_MapNodeData));
+	ntt_List_Append(pBucket, &nodeData, sizeof(ntt_MapNodeData));
 	pMap->count++;
 
 	return NTT_RESULT_SUCCESS;
@@ -163,7 +163,7 @@ b8 ntt_MapContains(ntt_Map* pMap, void* pKey, usize keySize)
 	u32		  bucketIndex = hash % pMap->bucketCount;
 	ntt_List* pBucket	  = &pMap->bucks[bucketIndex];
 
-	return ntt_ListContains(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
+	return ntt_List_Contains(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
 }
 
 b8 _MapNodeDataKeyEquals(void* pElement, usize elementSize, void* pUserData, usize userDataSize)
@@ -197,7 +197,7 @@ ntt_KeyValuePairResult ntt_MapGet(ntt_Map* pMap, void* pKey, usize keySize)
 	u32			  hash		  = pMap->hashFunction(pKey, keySize);
 	u32			  bucketIndex = hash % pMap->bucketCount;
 	ntt_List*	  pBucket	  = &pMap->bucks[bucketIndex];
-	ntt_ListNode* pNode = ntt_ListFindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
+	ntt_ListNode* pNode = ntt_List_FindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
 
 	NTT_ASSERT_IF(pNode == NULL)
 	{
@@ -227,14 +227,14 @@ ntt_Result ntt_MapRemove(ntt_Map* pMap, void* pKey, usize keySize)
 	u32			  hash		  = pMap->hashFunction(pKey, keySize);
 	u32			  bucketIndex = hash % pMap->bucketCount;
 	ntt_List*	  pBucket	  = &pMap->bucks[bucketIndex];
-	ntt_ListNode* pNode = ntt_ListFindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
+	ntt_ListNode* pNode = ntt_List_FindNode(pBucket, (ntt_ListElementPredicate)_MapNodeDataKeyEquals, pKey, keySize);
 
 	NTT_ASSERT_IF(pNode == NULL)
 	{
 		return NTT_RESULT_KEY_NOT_FOUND;
 	}
 
-	return ntt_ListRemoveNode(pBucket, pNode);
+	return ntt_List_RemoveNode(pBucket, pNode);
 }
 
 ntt_Result ntt_MapClear(ntt_Map* pMap)
@@ -262,7 +262,7 @@ ntt_Result ntt_MapDestroy(ntt_Map* pMap)
 	for (usize i = 0; i < pMap->bucketCount; i++)
 	{
 		ntt_List* pBucket = &pMap->bucks[i];
-		NTT_SUCCESS_ASSERT(ntt_ListClear(pBucket));
+		NTT_SUCCESS_ASSERT(ntt_List_Clear(pBucket));
 	}
 
 	NTT_SUCCESS_ASSERT(ntt_Deallocate(pMap->pAllocator, pMap->bucks, sizeof(ntt_List) * pMap->bucketCount));
@@ -307,7 +307,7 @@ static ntt_Result _remap(ntt_Map* pMap)
 			pCurrentNode = pCurrentNode->pNext;
 		}
 
-		NTT_SUCCESS_ASSERT(ntt_ListClear(pOldBucket));
+		NTT_SUCCESS_ASSERT(ntt_List_Clear(pOldBucket));
 	}
 
 	NTT_SUCCESS_ASSERT(ntt_Deallocate(pMap->pAllocator, oldBucks, sizeof(ntt_List) * oldBucketCount));

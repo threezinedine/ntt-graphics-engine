@@ -34,31 +34,31 @@ typedef struct ntt_ListNode ntt_ListNode;
 typedef struct ntt_List		ntt_List;
 DEFINE_RETURN_RESULT_TYPE(ntt_List)
 
-ntt_ListResult ntt_ListCreate(ntt_Allocator* pAllocator, ntt_ListNodeDestructor nodeDestructor);
+ntt_ListResult ntt_List_Create(ntt_Allocator* pAllocator, ntt_ListNodeDestructor nodeDestructor);
 
-ntt_Result ntt_ListAppend(ntt_List* pList, void* pData, usize dataSize);
+ntt_Result ntt_List_Append(ntt_List* pList, void* pData, usize dataSize);
 
-ntt_Result ntt_ListHeadAppend(ntt_List* pList, void* pData, usize dataSize);
+ntt_Result ntt_List_HeadAppend(ntt_List* pList, void* pData, usize dataSize);
 
-ntt_Result ntt_ListInsert(ntt_List* pList, usize index, void* pData, usize dataSize);
+ntt_Result ntt_List_Insert(ntt_List* pList, usize index, void* pData, usize dataSize);
 
-ntt_Result ntt_ListRemove(ntt_List* pList, usize index);
+ntt_Result ntt_List_Remove(ntt_List* pList, usize index);
 
-voidPtrResult ntt_ListGet(ntt_List* pList, usize index);
+voidPtrResult ntt_List_Get(ntt_List* pList, usize index);
 
-b8 ntt_ListContains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
+b8 ntt_List_Contains(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
 
 ntt_ListNode*
-ntt_ListFindNode(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
+ntt_List_FindNode(ntt_List* pList, ntt_ListElementPredicate predicate, void* pUserData, usize userDataSize);
 
-ntt_Result ntt_ListInsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
+ntt_Result ntt_List_InsertAfterNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
 
-ntt_Result ntt_ListInsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
+ntt_Result ntt_List_InsertBeforeNode(ntt_List* pList, ntt_ListNode* pNode, void* pData, usize dataSize);
 
-ntt_Result ntt_ListRemoveNode(ntt_List* pList, ntt_ListNode* pNode);
+ntt_Result ntt_List_RemoveNode(ntt_List* pList, ntt_ListNode* pNode);
 
-ntt_Result ntt_ListClear(ntt_List* pList);
+ntt_Result ntt_List_Clear(ntt_List* pList);
 
-ntt_Result ntt_ListDestroy(ntt_List* pList);
+ntt_Result ntt_List_Destroy(ntt_List* pList);
 
 #endif /* _LIST_H_ */

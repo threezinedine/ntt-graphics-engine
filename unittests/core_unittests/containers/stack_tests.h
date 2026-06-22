@@ -31,7 +31,7 @@ TEST_CASE(StackHappyPath)
 
 	voidPtrResult topResult = ntt_Stack_Top(&result.data);
 	TEST_ASSERT(topResult.result == NTT_RESULT_SUCCESS);
-	TEST_ASSERT(*(i32*)topResult.pData == 10);
+	TEST_ASSERT(*(i32*)topResult.pData == 30);
 
 	TEST_ASSERT(ntt_Stack_Pop(&result.data) == NTT_RESULT_SUCCESS);
 
@@ -43,7 +43,7 @@ TEST_CASE(StackHappyPath)
 
 	topResult = ntt_Stack_Top(&result.data);
 	TEST_ASSERT(topResult.result == NTT_RESULT_SUCCESS);
-	TEST_ASSERT(*(i32*)topResult.pData == 30);
+	TEST_ASSERT(*(i32*)topResult.pData == 10);
 
 	TEST_ASSERT(ntt_Stack_Pop(&result.data) == NTT_RESULT_SUCCESS);
 
