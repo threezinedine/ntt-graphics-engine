@@ -45,6 +45,7 @@ int main(i32 argc, char** argv)
 	RUN_TEST_SUITE(list);
 	RUN_TEST_SUITE(queue);
 	RUN_TEST_SUITE(stack);
+	RUN_TEST_SUITE(storage);
 	RUN_TEST_SUITE(map);
 	RUN_TEST_SUITE(object);
 	RUN_TEST_SUITE(logging);

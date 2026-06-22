@@ -7,6 +7,7 @@
 #include "mat_tests.h"
 #include "queue_tests.h"
 #include "stack_tests.h"
+#include "storage_tests.h"
 #include "string_tests.h"
 #include "vec_tests.h"
 

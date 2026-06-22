@@ -41,7 +41,7 @@ ntt_Result ntt_Storage_Initialize(ntt_Storage*			  pStorage,
 	{
 		IDResult newIDRes = ntt_NewID(NTT_OBJECT_TYPE_OBJECT, NULL);
 		NTT_SUCCESS_ASSERT_VAR(newIDRes);
-		ntt_Array_Set(&pStorage->ids, i, &newIDRes.data);
+		ntt_Array_Append(&pStorage->ids, &newIDRes.data);
 	}
 
 	ntt_StackResult freeBlocksResult = ntt_Stack_Create(pFinalAllocator);
@@ -80,6 +80,12 @@ IDResult ntt_Storage_New(ntt_Storage* pStorage)
 	IDResult result;
 	result.result = NTT_RESULT_SUCCESS;
 
+	NTT_ASSERT_IF(pStorage == NULL)
+	{
+		result.result = NTT_RESULT_NULL_POINTER;
+		return result;
+	}
+
 	if (pStorage->m_blockIndexCounter >= pStorage->blockCount && ntt_Stack_IsEmpty(&pStorage->freeBlocks))
 	{
 		result.result = NTT_RESULT_STORAGE_IS_FULL;
@@ -89,13 +95,27 @@ IDResult ntt_Storage_New(ntt_Storage* pStorage)
 	if (!ntt_Stack_IsEmpty(&pStorage->freeBlocks))
 	{
 		voidPtrResult topResult = ntt_Stack_Top(&pStorage->freeBlocks);
-		NTT_SUCCESS_ASSERT_VAR(topResult);
-		result.data = *(ID*)topResult.pData;
-		NTT_SUCCESS_ASSERT(ntt_Stack_Pop(&pStorage->freeBlocks));
+		if (topResult.result != NTT_RESULT_SUCCESS)
+		{
+			result.result = topResult.result;
+			return result;
+		}
+		result.data			 = *(ID*)topResult.pData;
+		ntt_Result popResult = ntt_Stack_Pop(&pStorage->freeBlocks);
+		if (popResult != NTT_RESULT_SUCCESS)
+		{
+			result.result = popResult;
+			return result;
+		}
 	}
 	else
 	{
-		void* pID	= ntt_Array_Get(&pStorage->ids, pStorage->m_blockIndexCounter);
+		void* pID = ntt_Array_Get(&pStorage->ids, pStorage->m_blockIndexCounter);
+		NTT_ASSERT_IF(pID == NULL)
+		{
+			result.result = NTT_RESULT_NULL_POINTER;
+			return result;
+		}
 		result.data = *(ID*)pID;
 		pStorage->m_blockIndexCounter++;
 	}
