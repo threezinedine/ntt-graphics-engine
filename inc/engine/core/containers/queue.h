@@ -14,18 +14,18 @@ struct ntt_Queue
 typedef struct ntt_Queue ntt_Queue;
 DEFINE_RETURN_RESULT_TYPE(ntt_Queue)
 
-ntt_QueueResult ntt_QueueCreate(ntt_Allocator* pAllocator);
+ntt_QueueResult ntt_Queue_Create(ntt_Allocator* pAllocator);
 
-ntt_Result ntt_QueueEnqueue(ntt_Queue* pQueue, void* pData, usize dataSize);
+ntt_Result ntt_Queue_Enqueue(ntt_Queue* pQueue, void* pData, usize dataSize);
 
-voidPtrResult ntt_QueueFront(ntt_Queue* pQueue);
+voidPtrResult ntt_Queue_Front(ntt_Queue* pQueue);
 
-ntt_Result ntt_QueueDequeue(ntt_Queue* pQueue);
+ntt_Result ntt_Queue_Dequeue(ntt_Queue* pQueue);
 
-b8 ntt_QueueIsEmpty(ntt_Queue* pQueue);
+b8 ntt_Queue_IsEmpty(ntt_Queue* pQueue);
 
-ntt_Result ntt_QueueClear(ntt_Queue* pQueue);
+ntt_Result ntt_Queue_Clear(ntt_Queue* pQueue);
 
-ntt_Result ntt_QueueDestroy(ntt_Queue* pQueue);
+ntt_Result ntt_Queue_Destroy(ntt_Queue* pQueue);
 
 #endif /* _QUEUE_H_ */

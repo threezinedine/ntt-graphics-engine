@@ -1,6 +1,6 @@
 #include "engine/core/containers/queue.h"
 
-ntt_QueueResult ntt_QueueCreate(ntt_Allocator* pAllocator)
+ntt_QueueResult ntt_Queue_Create(ntt_Allocator* pAllocator)
 {
 	ntt_QueueResult result;
 	result.result = NTT_RESULT_SUCCESS;
@@ -16,7 +16,7 @@ ntt_QueueResult ntt_QueueCreate(ntt_Allocator* pAllocator)
 	return result;
 }
 
-ntt_Result ntt_QueueEnqueue(ntt_Queue* pQueue, void* pData, usize dataSize)
+ntt_Result ntt_Queue_Enqueue(ntt_Queue* pQueue, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pQueue == NULL)
 	{
@@ -26,7 +26,7 @@ ntt_Result ntt_QueueEnqueue(ntt_Queue* pQueue, void* pData, usize dataSize)
 	return ntt_List_Append(&pQueue->list, pData, dataSize);
 }
 
-voidPtrResult ntt_QueueFront(ntt_Queue* pQueue)
+voidPtrResult ntt_Queue_Front(ntt_Queue* pQueue)
 {
 	NTT_ASSERT_IF(pQueue == NULL)
 	{
@@ -41,7 +41,7 @@ voidPtrResult ntt_QueueFront(ntt_Queue* pQueue)
 	return (voidPtrResult){.result = NTT_RESULT_SUCCESS, .pData = pQueue->list.pHead->pData};
 }
 
-ntt_Result ntt_QueueDequeue(ntt_Queue* pQueue)
+ntt_Result ntt_Queue_Dequeue(ntt_Queue* pQueue)
 {
 	NTT_ASSERT_IF(pQueue == NULL)
 	{
@@ -51,7 +51,7 @@ ntt_Result ntt_QueueDequeue(ntt_Queue* pQueue)
 	return ntt_List_RemoveNode(&pQueue->list, pQueue->list.pHead);
 }
 
-b8 ntt_QueueIsEmpty(ntt_Queue* pQueue)
+b8 ntt_Queue_IsEmpty(ntt_Queue* pQueue)
 {
 	NTT_ASSERT_IF(pQueue == NULL)
 	{
@@ -61,7 +61,7 @@ b8 ntt_QueueIsEmpty(ntt_Queue* pQueue)
 	return pQueue->list.length == 0;
 }
 
-ntt_Result ntt_QueueClear(ntt_Queue* pQueue)
+ntt_Result ntt_Queue_Clear(ntt_Queue* pQueue)
 {
 	NTT_ASSERT_IF(pQueue == NULL)
 	{
@@ -71,7 +71,7 @@ ntt_Result ntt_QueueClear(ntt_Queue* pQueue)
 	return ntt_List_Clear(&pQueue->list);
 }
 
-ntt_Result ntt_QueueDestroy(ntt_Queue* pQueue)
+ntt_Result ntt_Queue_Destroy(ntt_Queue* pQueue)
 {
 	NTT_ASSERT_IF(pQueue == NULL)
 	{
