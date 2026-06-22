@@ -71,6 +71,8 @@ ntt_Result ntt_Array_Append(ntt_Array* pArray, void* pElement);
  */
 void* ntt_Array_Get(ntt_Array* pArray, usize index);
 
+void ntt_Array_Set(ntt_Array* pArray, usize index, void* pElement);
+
 /**
  * Erases the element at the specified index in the array, and shifts all the subsequent elements to fill the gap.
  *

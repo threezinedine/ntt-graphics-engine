@@ -145,6 +145,26 @@ void* ntt_Array_Get(ntt_Array* pArray, usize index)
 	return (char*)pArray->pData + (index * pArray->elementSize);
 }
 
+void ntt_Array_Set(ntt_Array* pArray, usize index, void* pElement)
+{
+	NTT_ASSERT_IF(pArray == NULL)
+	{
+		return;
+	}
+
+	NTT_ASSERT_IF(pElement == NULL)
+	{
+		return;
+	}
+
+	NTT_ASSERT_IF(index >= pArray->length)
+	{
+		return;
+	}
+
+	memcpy((char*)pArray->pData + (index * pArray->elementSize), pElement, pArray->elementSize);
+}
+
 ntt_Result ntt_Array_Erase(ntt_Array* pArray, usize index)
 {
 	NTT_ASSERT_IF(pArray == NULL)
