@@ -138,9 +138,9 @@ ntt_Result ntt_LoggingMessage_FormatMessage(ntt_LoggingMessage* pMessage, const 
 		else
 		{
 			// Copy the character to the final message
-			usize len = 1;
+			usize len		 = 1;
 			usize bufferSize = sizeof(pMessage->finalMessage);
-			if (strlen(pMessage->finalMessage) + len >= bufferSize)
+			if ((usize)strlen(pMessage->finalMessage) + len >= bufferSize)
 			{
 				return NTT_RESULT_BUFFER_OVERFLOW;
 			}
