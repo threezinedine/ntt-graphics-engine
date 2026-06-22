@@ -4,6 +4,10 @@
 #include "engine/resources/resources.h"
 #include "engine/systems/systems.h"
 
+#if NTT_PLATFORM_WEB
+#include <emscripten/emscripten.h>
+#endif /* NTT_PLATFORM_WEB */
+
 ntt_Entity g_rootEntity;
 
 ntt_Result ntt_Application_Initialize(ntt_Application* pApplication)
@@ -35,6 +39,32 @@ ntt_Result ntt_Application_Initialize(ntt_Application* pApplication)
 	return NTT_RESULT_SUCCESS;
 }
 
+static b8 _UpdateFrame(ntt_Application* pApplication)
+{
+	NTT_UNUSED(pApplication);
+
+	NTT_ASSERT_IF(g_DisplayDriver->StartFrame == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	g_DisplayDriver->StartFrame();
+
+	if (g_DisplayDriver->ShouldCloseWindow(g_defaultWindowResource.windowID))
+	{
+		return TRUE;
+	}
+
+	NTT_ASSERT_IF(g_DisplayDriver->EndFrame == NULL)
+	{
+		return NTT_RESULT_NULL_POINTER;
+	}
+
+	g_DisplayDriver->EndFrame();
+
+	return FALSE;
+}
+
 ntt_Result ntt_Application_Run(ntt_Application* pApplication)
 {
 	NTT_ASSERT_IF(pApplication == NULL)
@@ -42,27 +72,17 @@ ntt_Result ntt_Application_Run(ntt_Application* pApplication)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
+#if NTT_PLATFORM_WEB
+	emscripten_set_main_loop_arg((em_arg_callback_func)_UpdateFrame, pApplication, -1, TRUE);
+#else  /* NTT_PLATFORM_WEB */
 	while (TRUE)
 	{
-		NTT_ASSERT_IF(g_DisplayDriver->StartFrame == NULL)
-		{
-			return NTT_RESULT_NULL_POINTER;
-		}
-
-		g_DisplayDriver->StartFrame();
-
-		if (g_DisplayDriver->ShouldCloseWindow(g_defaultWindowResource.windowID))
+		if (_UpdateFrame(pApplication))
 		{
 			break;
 		}
-
-		NTT_ASSERT_IF(g_DisplayDriver->EndFrame == NULL)
-		{
-			return NTT_RESULT_NULL_POINTER;
-		}
-
-		g_DisplayDriver->EndFrame();
 	}
+#endif /* NTT_PLATFORM_WEB */
 
 	return NTT_RESULT_SUCCESS;
 }

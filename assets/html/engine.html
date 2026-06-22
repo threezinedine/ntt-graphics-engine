@@ -6,7 +6,21 @@
     <title>NTT Graphics Engine</title>
   </head>
   <body>
-    <div>Hello</div>
+    <canvas
+      id="canvas"
+      width="800"
+      height="600"
+      oncontextmenu="event.preventDefault()"
+      tabindex="-1"
+    ></canvas>
+    <script>
+      var Module = {
+        canvas: document.getElementById("canvas"),
+        onRuntimeInitialized: function () {
+          console.log("Emscripten runtime initialized.");
+        },
+      };
+    </script>
     <script src="ntt-graphics-engine.js"></script>
   </body>
 </html>
