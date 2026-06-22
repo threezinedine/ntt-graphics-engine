@@ -4,6 +4,7 @@
 #include "component.h"
 #include "display/display.h"
 #include "entity.h"
+#include "rendering/rendering.h"
 #include "system.h"
 
 REGISTER_SYSTEM_DECLARE(Systems)
