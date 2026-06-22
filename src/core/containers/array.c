@@ -2,7 +2,8 @@
 #include "engine/core/memory/memory.h"
 #include <string.h>
 
-ntt_ArrayResult ntt_ArrayCreate(usize elementSize, usize initialCapacity, ntt_Allocator* pAllocator)
+ntt_ArrayResult
+ntt_Array_Create(usize elementSize, usize initialCapacity, ntt_Allocator* pAllocator, ntt_Array_Destructor destructor)
 {
 	ntt_ArrayResult result;
 	result.result = NTT_RESULT_SUCCESS;
@@ -14,6 +15,8 @@ ntt_ArrayResult ntt_ArrayCreate(usize elementSize, usize initialCapacity, ntt_Al
 		result.result = NTT_RESULT_INITIALIZE_WITHOUT_ALLOCATOR;
 		return result;
 	}
+
+	result.data.destructor = destructor;
 
 	NTT_ASSERT(initialCapacity > 0);
 	if (initialCapacity == 0)
@@ -43,7 +46,7 @@ ntt_ArrayResult ntt_ArrayCreate(usize elementSize, usize initialCapacity, ntt_Al
 	return result;
 }
 
-ntt_Result ntt_ArrayResize(ntt_Array* pArray, usize newCapacity)
+ntt_Result ntt_Array_Resize(ntt_Array* pArray, usize newCapacity)
 {
 	NTT_ASSERT(pArray != NULL);
 	if (pArray == NULL)
@@ -70,7 +73,7 @@ ntt_Result ntt_ArrayResize(ntt_Array* pArray, usize newCapacity)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ArrayDestroy(ntt_Array* pArray)
+ntt_Result ntt_Array_Destroy(ntt_Array* pArray)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -87,6 +90,8 @@ ntt_Result ntt_ArrayDestroy(ntt_Array* pArray)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
+	NTT_SUCCESS_ASSERT(ntt_Array_Clear(pArray));
+
 	ntt_Result deallocateResult =
 		ntt_Deallocate(pArray->pAllocator, pArray->pData, pArray->elementSize * pArray->capacity);
 	NTT_SUCCESS_ASSERT(deallocateResult);
@@ -99,7 +104,7 @@ ntt_Result ntt_ArrayDestroy(ntt_Array* pArray)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ArrayAppend(ntt_Array* pArray, void* pElement)
+ntt_Result ntt_Array_Append(ntt_Array* pArray, void* pElement)
 {
 	NTT_ASSERT(pArray != NULL);
 	if (pArray == NULL)
@@ -115,7 +120,7 @@ ntt_Result ntt_ArrayAppend(ntt_Array* pArray, void* pElement)
 
 	if (pArray->length >= pArray->capacity)
 	{
-		ntt_Result resizeResult = ntt_ArrayResize(pArray, pArray->capacity * 2);
+		ntt_Result resizeResult = ntt_Array_Resize(pArray, pArray->capacity * 2);
 		NTT_SUCCESS_ASSERT(resizeResult);
 	}
 
@@ -125,7 +130,7 @@ ntt_Result ntt_ArrayAppend(ntt_Array* pArray, void* pElement)
 	return NTT_RESULT_SUCCESS;
 }
 
-void* ntt_ArrayGet(ntt_Array* pArray, usize index)
+void* ntt_Array_Get(ntt_Array* pArray, usize index)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -140,7 +145,7 @@ void* ntt_ArrayGet(ntt_Array* pArray, usize index)
 	return (char*)pArray->pData + (index * pArray->elementSize);
 }
 
-ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index)
+ntt_Result ntt_Array_Erase(ntt_Array* pArray, usize index)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -164,11 +169,21 @@ ntt_Result ntt_ArrayErase(ntt_Array* pArray, usize index)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_ArrayClear(ntt_Array* pArray)
+ntt_Result ntt_Array_Clear(ntt_Array* pArray)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
 		return NTT_RESULT_NULL_POINTER;
+	}
+
+	for (usize i = pArray->length; i > 0; i--)
+	{
+		void* pElement = (char*)pArray->pData + ((i - 1) * pArray->elementSize);
+		if (pArray->destructor != NULL)
+		{
+			ntt_Result destructorResult = pArray->destructor(pElement);
+			NTT_SUCCESS_ASSERT(destructorResult);
+		}
 	}
 
 	pArray->length = 0;
@@ -176,7 +191,7 @@ ntt_Result ntt_ArrayClear(ntt_Array* pArray)
 	return NTT_RESULT_SUCCESS;
 }
 
-b8 ntt_ArrayAny(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
+b8 ntt_Array_Any(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -200,7 +215,7 @@ b8 ntt_ArrayAny(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 	return FALSE;
 }
 
-b8 ntt_ArrayAll(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
+b8 ntt_Array_All(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -224,7 +239,7 @@ b8 ntt_ArrayAll(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 	return TRUE;
 }
 
-usize ntt_ArrayFind(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
+usize ntt_Array_Find(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -248,7 +263,7 @@ usize ntt_ArrayFind(ntt_Array* pArray, ntt_ArrayElementPredicate predicate)
 	return NTT_ARRAY_INDEX_NOT_FOUND;
 }
 
-ntt_Result ntt_ArrayInsert(ntt_Array* pArray, usize index, void* pElement)
+ntt_Result ntt_Array_Insert(ntt_Array* pArray, usize index, void* pElement)
 {
 	NTT_ASSERT_IF(pArray == NULL)
 	{
@@ -267,7 +282,7 @@ ntt_Result ntt_ArrayInsert(ntt_Array* pArray, usize index, void* pElement)
 
 	if (pArray->length >= pArray->capacity)
 	{
-		ntt_Result resizeResult = ntt_ArrayResize(pArray, pArray->capacity * 2);
+		ntt_Result resizeResult = ntt_Array_Resize(pArray, pArray->capacity * 2);
 		NTT_SUCCESS_ASSERT(resizeResult);
 	}
 

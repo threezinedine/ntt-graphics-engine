@@ -7,6 +7,7 @@
 #include "mat.h"
 #include "queue.h"
 #include "stack.h"
+#include "storage.h"
 #include "string.h"
 #include "vec.h"
 

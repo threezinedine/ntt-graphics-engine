@@ -1,6 +1,6 @@
 #include "engine/core/containers/stack.h"
 
-ntt_StackResult ntt_StackCreate(ntt_Allocator* pAllocator)
+ntt_StackResult ntt_Stack_Create(ntt_Allocator* pAllocator)
 {
 	ntt_StackResult result;
 	result.result = NTT_RESULT_SUCCESS;
@@ -16,7 +16,7 @@ ntt_StackResult ntt_StackCreate(ntt_Allocator* pAllocator)
 	return result;
 }
 
-ntt_Result ntt_StackPush(ntt_Stack* pStack, void* pData, usize dataSize)
+ntt_Result ntt_Stack_Push(ntt_Stack* pStack, void* pData, usize dataSize)
 {
 	NTT_ASSERT_IF(pStack == NULL)
 	{
@@ -26,7 +26,7 @@ ntt_Result ntt_StackPush(ntt_Stack* pStack, void* pData, usize dataSize)
 	return ntt_ListHeadAppend(&pStack->list, pData, dataSize);
 }
 
-voidPtrResult ntt_StackTop(ntt_Stack* pStack)
+voidPtrResult ntt_Stack_Top(ntt_Stack* pStack)
 {
 	NTT_ASSERT_IF(pStack == NULL)
 	{
@@ -41,7 +41,7 @@ voidPtrResult ntt_StackTop(ntt_Stack* pStack)
 	return (voidPtrResult){.result = NTT_RESULT_SUCCESS, .pData = pStack->list.pTail->pData};
 }
 
-ntt_Result ntt_StackPop(ntt_Stack* pStack)
+ntt_Result ntt_Stack_Pop(ntt_Stack* pStack)
 {
 	NTT_ASSERT_IF(pStack == NULL)
 	{
@@ -51,7 +51,7 @@ ntt_Result ntt_StackPop(ntt_Stack* pStack)
 	return ntt_ListRemoveNode(&pStack->list, pStack->list.pTail);
 }
 
-b8 ntt_StackIsEmpty(ntt_Stack* pStack)
+b8 ntt_Stack_IsEmpty(ntt_Stack* pStack)
 {
 	NTT_ASSERT_IF(pStack == NULL)
 	{
@@ -61,7 +61,7 @@ b8 ntt_StackIsEmpty(ntt_Stack* pStack)
 	return pStack->list.length == 0;
 }
 
-ntt_Result ntt_StackClear(ntt_Stack* pStack)
+ntt_Result ntt_Stack_Clear(ntt_Stack* pStack)
 {
 	NTT_ASSERT_IF(pStack == NULL)
 	{
@@ -71,7 +71,7 @@ ntt_Result ntt_StackClear(ntt_Stack* pStack)
 	return ntt_ListClear(&pStack->list);
 }
 
-ntt_Result ntt_StackDestroy(ntt_Stack* pStack)
+ntt_Result ntt_Stack_Destroy(ntt_Stack* pStack)
 {
 	NTT_ASSERT_IF(pStack == NULL)
 	{
