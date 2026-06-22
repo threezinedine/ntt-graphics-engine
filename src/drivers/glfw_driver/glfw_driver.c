@@ -44,7 +44,7 @@ ntt_Result ntt_GLFW_Register()
 		return result.result;
 	}
 
-	ntt_MapResult mapResult = ntt_MapCreate(ntt_WindowIDHashFunction, 16, g_memoryGlobals.mallocAllocator);
+	ntt_MapResult mapResult = ntt_Map_Create(ntt_WindowIDHashFunction, 16, g_memoryGlobals.mallocAllocator);
 	NTT_ASSERT_IF(mapResult.result != NTT_RESULT_SUCCESS)
 	{
 		ntt_Deallocate(g_memoryGlobals.mallocAllocator, result.pData, sizeof(ntt_DisplayDriver));
@@ -132,7 +132,7 @@ static IDResult ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height)
 	}
 
 	NTT_ASSERT_IF(
-		ntt_MapInsert(&g_GLFW_WindowMap, &newIDResult.data, sizeof(ID), &windowData, sizeof(ntt_GLFW_WindowData)) !=
+		ntt_Map_Insert(&g_GLFW_WindowMap, &newIDResult.data, sizeof(ID), &windowData, sizeof(ntt_GLFW_WindowData)) !=
 		NTT_RESULT_SUCCESS)
 	{
 		glfwDestroyWindow(pWindow);
@@ -153,7 +153,7 @@ static ntt_Result ntt_GLFW_DestroyWindow(ID windowID)
 		return NTT_RESULT_NULL_POINTER;
 	}
 
-	ntt_KeyValuePairResult result = ntt_MapGet(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID));
+	ntt_KeyValuePairResult result = ntt_Map_Get(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID));
 	NTT_ASSERT_IF(result.result != NTT_RESULT_SUCCESS)
 	{
 		return NTT_RESULT_GLFW_WINDOW_NOT_FOUND;
@@ -163,7 +163,7 @@ static ntt_Result ntt_GLFW_DestroyWindow(ID windowID)
 
 	glfwDestroyWindow(pWindowData->pWindow);
 
-	NTT_SUCCESS_ASSERT(ntt_MapRemove(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID)));
+	NTT_SUCCESS_ASSERT(ntt_Map_Remove(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID)));
 
 	return NTT_RESULT_SUCCESS;
 }
@@ -175,7 +175,7 @@ static GLFWwindow* ntt_GLFW_GetWindowByID(ID windowID)
 		return NULL;
 	}
 
-	ntt_KeyValuePairResult result = ntt_MapGet(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID));
+	ntt_KeyValuePairResult result = ntt_Map_Get(&g_GLFW_WindowMap, &windowID, (usize)sizeof(ID));
 	NTT_ASSERT_IF(result.result != NTT_RESULT_SUCCESS)
 	{
 		return NULL;
@@ -197,7 +197,7 @@ static ntt_Result ntt_GLFW_Destroy()
 
 	while (ntt_Resource_IsUnloading((ntt_Resource*)&g_defaultWindowResource));
 
-	NTT_SUCCESS_ASSERT(ntt_MapDestroy(&g_GLFW_WindowMap));
+	NTT_SUCCESS_ASSERT(ntt_Map_Destroy(&g_GLFW_WindowMap));
 
 	glfwTerminate();
 	return NTT_RESULT_SUCCESS;

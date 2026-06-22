@@ -31,7 +31,7 @@ ntt_Result _destructorNodeData(void* pData, usize dataSize)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_MapResult ntt_MapCreate(ntt_HashFunction hashFunction, usize bucketCount, ntt_Allocator* pAllocator)
+ntt_MapResult ntt_Map_Create(ntt_HashFunction hashFunction, usize bucketCount, ntt_Allocator* pAllocator)
 {
 	ntt_MapResult result;
 	result.result = NTT_RESULT_SUCCESS;
@@ -79,7 +79,7 @@ ntt_MapResult ntt_MapCreate(ntt_HashFunction hashFunction, usize bucketCount, nt
 	return result;
 }
 
-ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue, usize valueSize)
+ntt_Result ntt_Map_Insert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue, usize valueSize)
 {
 	NTT_ASSERT_IF(pMap == NULL)
 	{
@@ -147,7 +147,7 @@ ntt_Result ntt_MapInsert(ntt_Map* pMap, void* pKey, usize keySize, void* pValue,
 	return NTT_RESULT_SUCCESS;
 }
 
-b8 ntt_MapContains(ntt_Map* pMap, void* pKey, usize keySize)
+b8 ntt_Map_Contains(ntt_Map* pMap, void* pKey, usize keySize)
 {
 	NTT_ASSERT_IF(pMap == NULL)
 	{
@@ -175,7 +175,7 @@ b8 _MapNodeDataKeyEquals(void* pElement, usize elementSize, void* pUserData, usi
 	return pNodeData->keySize == userDataSize && memcmp(pNodeData->pKey, pUserData, userDataSize) == 0;
 }
 
-ntt_KeyValuePairResult ntt_MapGet(ntt_Map* pMap, void* pKey, usize keySize)
+ntt_KeyValuePairResult ntt_Map_Get(ntt_Map* pMap, void* pKey, usize keySize)
 {
 	ntt_KeyValuePairResult result;
 	result.data.pKey   = NULL;
@@ -212,7 +212,7 @@ ntt_KeyValuePairResult ntt_MapGet(ntt_Map* pMap, void* pKey, usize keySize)
 	return result;
 }
 
-ntt_Result ntt_MapRemove(ntt_Map* pMap, void* pKey, usize keySize)
+ntt_Result ntt_Map_Remove(ntt_Map* pMap, void* pKey, usize keySize)
 {
 	NTT_ASSERT_IF(pMap == NULL)
 	{
@@ -237,7 +237,7 @@ ntt_Result ntt_MapRemove(ntt_Map* pMap, void* pKey, usize keySize)
 	return ntt_List_RemoveNode(pBucket, pNode);
 }
 
-ntt_Result ntt_MapClear(ntt_Map* pMap)
+ntt_Result ntt_Map_Clear(ntt_Map* pMap)
 {
 	NTT_ASSERT_IF(pMap == NULL)
 	{
@@ -247,7 +247,7 @@ ntt_Result ntt_MapClear(ntt_Map* pMap)
 	return NTT_RESULT_SUCCESS;
 }
 
-ntt_Result ntt_MapDestroy(ntt_Map* pMap)
+ntt_Result ntt_Map_Destroy(ntt_Map* pMap)
 {
 	NTT_ASSERT_IF(pMap == NULL)
 	{
@@ -302,7 +302,7 @@ static ntt_Result _remap(ntt_Map* pMap)
 		{
 			ntt_MapNodeData* pNodeData = (ntt_MapNodeData*)pCurrentNode->pData;
 			NTT_SUCCESS_ASSERT(
-				ntt_MapInsert(pMap, pNodeData->pKey, pNodeData->keySize, pNodeData->pValue, pNodeData->valueSize));
+				ntt_Map_Insert(pMap, pNodeData->pKey, pNodeData->keySize, pNodeData->pValue, pNodeData->valueSize));
 
 			pCurrentNode = pCurrentNode->pNext;
 		}
