@@ -32,7 +32,7 @@ const char* ntt_LoggingLevel_ToString(ntt_LoggingLevel level);
 enum ntt_LoggingHandlerType
 {
 #define ENUM_OPTION(name, value) LOGGING_HANDLER_TYPE_##name = value,
-#define ENUM_OPTION_END()
+#define ENUM_OPTION_END()		 LOGGING_HANDLER_TYPE_COUNT
 #include "logging_handler_type.inl"
 #undef ENUM_OPTION
 #undef ENUM_OPTION_END

@@ -36,8 +36,8 @@ DEFINE_RETURN_RESULT_TYPE(usize)
 #define NTT_SUCCESS_ASSERT(express)                                                                                    \
 	do                                                                                                                 \
 	{                                                                                                                  \
-		ntt_Result result = (express);                                                                                 \
-		NTT_ASSERT(result == NTT_RESULT_SUCCESS);                                                                      \
+		ntt_Result _result = (express);                                                                                 \
+		NTT_ASSERT(_result == NTT_RESULT_SUCCESS);                                                                      \
 	} while (0)
 
 #define NTT_SUCCESS_ASSERT_VAR(res) NTT_ASSERT(res.result == NTT_RESULT_SUCCESS);
@@ -46,10 +46,10 @@ DEFINE_RETURN_RESULT_TYPE(usize)
 #define NTT_SUCCESS_ASSERT(express)                                                                                    \
 	do                                                                                                                 \
 	{                                                                                                                  \
-		ntt_Result result = (express);                                                                                 \
-		if (result != NTT_RESULT_SUCCESS)                                                                              \
+		ntt_Result _result = (express);                                                                                 \
+		if (_result != NTT_RESULT_SUCCESS)                                                                              \
 		{                                                                                                              \
-			return result;                                                                                             \
+			return _result;                                                                                             \
 		}                                                                                                              \
 	} while (0)
 

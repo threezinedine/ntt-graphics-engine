@@ -1,6 +1,11 @@
 #ifndef _MAT_H_
 #define _MAT_H_
 
+#if NTT_MSVC
+#pragma warning(push)
+#pragma warning(disable : 4201) /* nonstandard extension used: nameless struct/union */
+#endif /* NTT_MSVC */
+
 #include "engine/core/types.h"
 #include "vec.h"
 
@@ -76,4 +81,7 @@ MAT_OPS_DECLARE(3, 2, u)
 MAT_OPS_DECLARE(3, 3, u)
 MAT_OPS_DECLARE(4, 4, u)
 
+#if NTT_MSVC
+#pragma warning(pop)
+#endif /* NTT_MSVC */
 #endif /* _MAT_H_ */

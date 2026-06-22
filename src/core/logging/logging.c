@@ -94,9 +94,9 @@ ntt_Logging_LogMessage(ntt_LoggingType type, ntt_LoggingLevel level, const char*
 	ntt_LoggingMessage logMessage;
 	logMessage.type	 = type;
 	logMessage.level = level;
-	strncpy(logMessage.file, file, sizeof(logMessage.file) - 1);
+	memcpy(logMessage.file, file, strlen(file) + 1);
 	logMessage.line = line;
-	strncpy(logMessage.message, message, sizeof(logMessage.message) - 1);
+	memcpy(logMessage.message, message, strlen(message) + 1);
 	memset(logMessage.finalMessage, 0, sizeof(logMessage.finalMessage));
 	NTT_SUCCESS_ASSERT(ntt_GetCurrentTime(&logMessage.timestamp));
 

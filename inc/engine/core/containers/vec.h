@@ -1,6 +1,11 @@
 #ifndef _VEC_H_
 #define _VEC_H_
 
+#if NTT_MSVC
+#pragma warning(push)
+#pragma warning(disable : 4201) /* nonstandard extension used: nameless struct/union */
+#endif /* NTT_MSVC */
+
 #include "engine/core/types.h"
 
 #define VEC2_DECLARE(type, abbrev)                                                                                     \
@@ -72,5 +77,9 @@ VEC4_DECLARE(f32, f)
 VEC4_DECLARE(f64, d)
 VEC4_DECLARE(i32, i)
 VEC4_DECLARE(u32, u)
+
+#if NTT_MSVC
+#pragma warning(pop)
+#endif /* NTT_MSVC */
 
 #endif /* _VEC_H_ */

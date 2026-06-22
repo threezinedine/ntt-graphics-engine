@@ -121,7 +121,7 @@ static IDResult ntt_GLFW_CreateWindow(const char* title, i32 width, i32 height)
 		.height	 = height,
 	};
 
-	strncpy(windowData.title, title, sizeof(windowData.title) - 1);
+	memcpy(windowData.title, title, sizeof(windowData.title) - 1);
 
 	IDResult newIDResult = ntt_NewID(NTT_OBJECT_TYPE_WINDOW, NULL);
 	NTT_ASSERT_IF(newIDResult.result != NTT_RESULT_SUCCESS)

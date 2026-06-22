@@ -3,7 +3,7 @@
 #endif
 
 #ifndef ENUM_OPTION_END
-#define ENUM_OPTION_END()
+#define ENUM_OPTION_END
 #endif
 
 ENUM_OPTION(NONE, 0x00)

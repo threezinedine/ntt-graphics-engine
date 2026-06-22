@@ -37,7 +37,7 @@ typedef struct ntt_LoggingMessageUserData ntt_LoggingMessageUserData;
 		i32			keywordLength = pReplacement->keywordLength;                                                       \
 		const char* str			  = getStr;                                                                            \
 		char		buffer[128]	  = {0};                                                                               \
-		strncpy(buffer, str, sizeof(buffer) - 1);                                                                      \
+		memcpy(buffer, str, strlen(str) + 1);                                                                          \
 		if (keywordLength > 0)                                                                                         \
 		{                                                                                                              \
 			if ((i32)strlen(buffer) < keywordLength)                                                                   \
@@ -47,7 +47,7 @@ typedef struct ntt_LoggingMessageUserData ntt_LoggingMessageUserData;
 					while (strlen(buffer) < (size_t)keywordLength)                                                     \
 					{                                                                                                  \
 						char temp[128] = {0};                                                                          \
-						strncpy(temp, buffer, sizeof(temp) - 1);                                                       \
+						memcpy(temp, buffer, strlen(buffer) + 1);                                                      \
 						ntt_FormatMessage(buffer, sizeof(buffer), "%s ", temp);                                        \
 					}                                                                                                  \
 				}                                                                                                      \
@@ -56,7 +56,7 @@ typedef struct ntt_LoggingMessageUserData ntt_LoggingMessageUserData;
 					while (strlen(buffer) < (size_t)keywordLength)                                                     \
 					{                                                                                                  \
 						char temp[128] = {0};                                                                          \
-						strncpy(temp, buffer, sizeof(temp) - 1);                                                       \
+						memcpy(temp, buffer, strlen(buffer) + 1);                                                      \
 						ntt_FormatMessage(buffer, sizeof(buffer), " %s", temp);                                        \
 					}                                                                                                  \
 				}                                                                                                      \
@@ -67,15 +67,15 @@ typedef struct ntt_LoggingMessageUserData ntt_LoggingMessageUserData;
 			}                                                                                                          \
 		}                                                                                                              \
                                                                                                                        \
-		usize len		 = strlen(buffer);                                                                             \
-		usize bufferSize = (u32)sizeof(pMessage->finalMessage);                                                        \
-		if (*pIndex + len >= bufferSize)                                                                               \
+		usize len		 = (usize)strlen(buffer);                                                                      \
+		usize bufferSize = (usize)sizeof(pMessage->finalMessage);                                                      \
+		if (*pIndex + (u32)len >= (u32)bufferSize)                                                                     \
 		{                                                                                                              \
 			return NTT_RESULT_BUFFER_OVERFLOW;                                                                         \
 		}                                                                                                              \
                                                                                                                        \
-		strncpy(&pMessage->finalMessage[*pIndex], buffer, len);                                                        \
-		*pIndex += (u32)len;                                                                                           \
+		memcpy(&pMessage->finalMessage[*pIndex], buffer, strlen(buffer) + 1);                                          \
+		*pIndex += len;                                                                                                \
 		pMessage->finalMessage[*pIndex] = '\0';                                                                        \
                                                                                                                        \
 		return NTT_RESULT_SUCCESS;                                                                                     \
@@ -138,7 +138,13 @@ ntt_Result ntt_LoggingMessage_FormatMessage(ntt_LoggingMessage* pMessage, const 
 		else
 		{
 			// Copy the character to the final message
-			strncat(pMessage->finalMessage, &pFormat[formatCharIndex], 1);
+			usize len = 1;
+			usize bufferSize = sizeof(pMessage->finalMessage);
+			if (strlen(pMessage->finalMessage) + len >= bufferSize)
+			{
+				return NTT_RESULT_BUFFER_OVERFLOW;
+			}
+			memcpy(&pMessage->finalMessage[strlen(pMessage->finalMessage)], &pFormat[formatCharIndex], len);
 			formatCharIndex++;
 		}
 	}
